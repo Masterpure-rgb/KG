@@ -84,7 +84,7 @@
     el("figure", { class: "hero-w" },
       el("div", { class: "win" }, el("div", { class: "win-bar" }, el("span", { class: "wt" }, "Teapot"), fps), winHost),
       chips,
-      el("figcaption", null, el("a", { href: O.link("sandbox/?demo=1") }, lang === "ru" ? "Открыть код этой программы в песочнице" : "Bu dastur kodini qumdonda ochish"))));
+      el("figcaption", null, el("a", { href: O.link("sandbox/?demo=1") }, lang === "ru" ? "Открыть код этой программы в мастерской" : "Bu dastur kodini ustaxonada oçiş"))));
   main.appendChild(hero);
   var handle = null;
   var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -122,11 +122,11 @@
   var how = lang === "ru"
     ? [["Объяснение", "У каждой темы — QR-код с аудио-объяснением на русском и узбекском языках и текстом."],
        ["Лаборатория", "Второй QR-код открывает пример и задания. Код C++ запускается прямо в браузере и проверяется автоматически."],
-       ["Индивидуальное задание", "Вариант назначает преподаватель. Работать можно в песочнице или в Visual Studio 2022 с freeglut."],
+       ["Индивидуальное задание", "Вариант назначает преподаватель. Работать можно в мастерской или в Visual Studio 2022 с freeglut."],
        ["Сдача через GitHub", "Кнопка «Сдать работу» заполняет форму. Посещаемость и статусы работ — в «Моём кабинете»."]]
     : [["Audio izoh", "Har bir mavzuga QR-kod biriktirilgan — oʻzbek va rus tillarida qisqa audio izoh va matn."],
        ["Amaliy iş", "Ikkinchi QR-kod misol va topşiriqlarni ochadi. C++ kodi brauzerda ishga tushadi va avtomatik tekşiriladi."],
-       ["Individual topşiriq", "Variantni oʻqituvchi tayinlaydi. Qumdon yoki Visual Studio 2022 + freeglut da ishlash mumkin."],
+       ["Individual topşiriq", "Variantni oʻqituvchi tayinlaydi. Ustaxona yoki Visual Studio 2022 + freeglut da işlaş mumkin."],
        ["GitHub orqali topşiriş", "«Topşiriş» tugmasi formani toʻldiradi. Davomat va holatlar — «Mening kabinetim» da."]];
   main.appendChild(el("section", { class: "how" },
     el("h2", null, lang === "ru" ? "Как устроено занятие" : "Maşğulot qanday tashkil etilgan"),

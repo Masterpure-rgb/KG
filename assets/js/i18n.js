@@ -6,20 +6,20 @@
 
   var DICT = {
     uz: {
-      "brand.name": "Kompyuter grafika",
+      "brand.name": "Kompyuter grafikasi",
       "brand.sub":  "Amaliy ishlar",
       "lang.uz": "OʻZ",
       "lang.ru": "RUS",
       "lang.switch": "Tilni almaştiriş",
 
       "nav.topics": "Mavzular",
-      "nav.sandbox": "Qumdon",
+      "nav.sandbox": "Ustaxona",
       "nav.srsp": "SRS va SRSP",
       "nav.me": "Mening kabinetim",
       "nav.help": "Yordam",
       "nav.teacher": "Oʻqituvchiga",
 
-      "home.hero.title": "«Kompyuter grafika» fani boʻyiça 15 ta amaliy iş",
+      "home.hero.title": "«Kompyuter grafikasi» fani boʻyiça 15 ta amaliy iş",
       "home.hero.sub":   "Brauzer ichida ishlaydigan interaktiv C++ muhit. Hech narsa oʻrnatish shart emas.",
       "home.hero.cta":   "Birinchi ishni boşlaş",
       "home.labs":       "Amaliy ishlar",
@@ -58,7 +58,7 @@
       "me.logout":       "Chiqish",
 
       "submit.title":    "Ishni qanday topşiriş",
-      "sandbox.title":   "Qumdon — erkin kod muharriri",
+      "sandbox.title":   "Ustaxona — topşiriqlarni bajariş uçun kod oynasi",
       "srsp.title":      "Mustaqil ishlar (SRS) va SRSP",
 
       "help.title":      "Yordam",
@@ -71,7 +71,7 @@
       "lang.switch": "Переключить язык",
 
       "nav.topics": "Темы",
-      "nav.sandbox": "Песочница",
+      "nav.sandbox": "Мастерская",
       "nav.srsp": "СРС и СРСП",
       "nav.me": "Мой кабинет",
       "nav.help": "Помощь",

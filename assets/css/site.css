@@ -3,7 +3,7 @@
    включённые возможности OpenGL видны «фишками» состояния. */
 :root {
   --paper: #F3F4F6; --card: #FFFFFF; --ink: #1A1D24; --ink2: #4B5262; --ink3: #6B7385; --rule: #D8DCE4; --rule2: #E8EBF0;
-  --red: #C21F32; --red-ink: #9C1426; --red-wash: #FBECEE; --blue: #1F5AA6; --blue-wash: #E8EFF9; --green: #1D7F4E; --green-wash: #E7F4EC;
+  --red: #1A3A6B; --red-ink: #0F2540; --red-wash: #F0F4FA; --blue: #1F5AA6; --blue-wash: #E8EFF9; --green: #1D7F4E; --green-wash: #E7F4EC;
   --amber: #9A5B00; --amber-wash: #FBF1DF; --err: #B42318; --err-wash: #FCEBE9;
   --win: #22272F; --win-bar: #2E343E;
   --sans: "PT Sans", "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;

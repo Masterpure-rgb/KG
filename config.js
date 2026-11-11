@@ -2,5 +2,5 @@
 window.KG_CONFIG = {
   repo: "Masterpure-rgb/KG",
   site: "https://masterpure-rgb.github.io/KG/",
-  v: 1
+  v: 4
 };

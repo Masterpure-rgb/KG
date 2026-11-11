@@ -1,39 +1,92 @@
-/* EXPLAIN — короткое аудиообъяснение темы (QR-1): плеер и текст, подсвечиваемый синхронно. */
+/* EXPLAIN — qisqa ovozli izoh (QR-1): pleyer va matn. UZ/RU. */
 (function () {
   "use strict";
-  var O = window.OGL, el = O.el;
-  var n = +document.body.getAttribute("data-topic"), T = O.topic(n);
-  O.header("home", [{ text: "Темы", href: O.link("") }, { text: "Тема " + O.k(n), href: O.link("#t" + n) }, { text: "Объяснение" }]);
-  var main = el("main", { class: "wrap doc" }); document.body.appendChild(main);
-  main.appendChild(el("div", { class: "pagehead flat" }, el("p", { class: "kicker" }, "Тема " + O.k(n) + ". Объяснение"), el("h1", null, T.lec), O.trio(n, "e")));
+  var O = window.KG || window.OGL, el = O.el, I = O.I || { getLang: function () { return "uz"; } };
+  var lang = I.getLang();
+  var n = +document.body.getAttribute("data-topic"), T = O.topic(n) || { k: n };
+  var topicName = O.topicName(n);
+
+  var L = lang === "ru" ? {
+    topics: "Темы", topic: "Тема ", explain: "Объяснение",
+    kicker: "Тема " + O.k(n) + ". Аудио-объяснение",
+    comingSoon: "Аудио-объяснение этой темы готовится. Пока откройте лабораторную — там есть теория и примеры кода.",
+    goLab: "Открыть лабораторную",
+    goTasks: "К заданиям",
+    listen: "Слушать",
+    pause: "Пауза",
+    transcript: "Текст объяснения",
+    nextLab: "Дальше — практика: пример и задания с проверкой прямо в браузере.",
+    openLab: "Открыть лабораторную",
+    loadErr: "Не удалось загрузить аудио."
+  } : {
+    topics: "Mavzular", topic: "A", explain: "Audio izoh",
+    kicker: "A" + O.k(n) + " — Audio izoh",
+    comingSoon: "Bu mavzuning ovozli izohi tayyorlanmoqda. Hozircha laboratoriyani oçing — unda nazariya va kod misollari bor.",
+    goLab: "Laboratoriyani oçiş",
+    goTasks: "Topşiriqlarga",
+    listen: "Tinglaş",
+    pause: "Toʻxtatiş",
+    transcript: "Izoh matni",
+    nextLab: "Keyingi — amaliyot: misol va topşiriqlar brauzerda tekşiriş bilan.",
+    openLab: "Laboratoriyani oçiş",
+    loadErr: "Audio yuklab boʻlmadi."
+  };
+
+  O.header("explain", [
+    { text: L.topics, href: O.link("") },
+    { text: L.topic + O.k(n), href: O.link("#t" + n) },
+    { text: L.explain }
+  ]);
+
+  var main = el("main", { class: "wrap doc" });
+  document.body.appendChild(main);
+  main.appendChild(el("div", { class: "pagehead flat" },
+    el("p", { class: "kicker" }, L.kicker),
+    el("h1", null, topicName),
+    O.trio(n, "e")));
+
   function mmss(s) { s = Math.max(0, Math.round(s || 0)); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); }
-  O.fetchJSON("data/audio/" + n + ".json").then(render, function () { main.appendChild(el("p", { class: "note" }, "Аудиообъяснение этой темы готовится.")); O.footer(); });
+
+  O.fetchJSON("data/audio/" + n + ".json").then(render, function () {
+    main.appendChild(el("p", { class: "note" }, L.comingSoon));
+    main.appendChild(el("div", { style: "margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap" },
+      el("a", { class: "btn", href: O.tpath("l", n) }, L.goLab),
+      el("a", { class: "btn ghost", href: O.tpath("z", n) }, L.goTasks)));
+    O.footer();
+  });
+
   function render(D) {
     var a = new Audio(); a.preload = "metadata"; a.src = O.link(D.file);
-    var btn = el("button", { class: "play", type: "button", "aria-label": "Слушать" }, el("span", { class: "ic ic-play", "aria-hidden": "true" }));
-    var fill = el("i"), bar = el("div", { class: "pbar", role: "slider", tabindex: "0", "aria-label": "Позиция", "aria-valuemin": "0", "aria-valuemax": String(Math.round(D.duration)), "aria-valuenow": "0" }, fill);
+    var btn = el("button", { class: "play", type: "button", "aria-label": L.listen }, el("span", { class: "ic ic-play", "aria-hidden": "true" }));
+    var fill = el("i"), bar = el("div", { class: "pbar", role: "slider", tabindex: "0", "aria-valuenow": "0" }, fill);
     var tc = el("span", { class: "tc" }, "0:00 / " + mmss(D.duration));
-    var speeds = el("div", { class: "spd", role: "group", "aria-label": "Скорость" });
-    [0.75, 1, 1.25, 1.5].forEach(function (s) { var b = el("button", { type: "button", class: s === 1 ? "on" : null, onclick: function () { a.playbackRate = s; O.$$("button", speeds).forEach(function (x) { x.classList.toggle("on", x === b); }); } }, String(s).replace(".", ",") + "×"); speeds.appendChild(b); });
-    main.appendChild(el("section", { class: "player" }, btn, el("div", { class: "pmid" }, el("b", null, D.title), bar, el("div", { class: "prow" }, tc, speeds))));
-    var tr = el("section", { class: "transcript" }, el("h2", null, "Текст объяснения"));
-    var ps = D.paragraphs.map(function (p) { var e = el("p", { tabindex: "0" }, p.text); e.addEventListener("click", function () { a.currentTime = p.start + 0.01; a.play(); }); e.addEventListener("keydown", function (ev) { if (ev.key === "Enter") e.click(); }); tr.appendChild(e); return e; });
-    main.appendChild(tr);
-    main.appendChild(el("section", { class: "next" }, el("p", null, "Дальше — практика: пример и задания с проверкой прямо в браузере."), el("a", { class: "btn run", href: O.tpath("l", n) }, "Открыть лабораторную")));
-    btn.addEventListener("click", function () { if (a.paused) a.play(); else a.pause(); });
-    a.addEventListener("play", function () { btn.classList.add("on"); btn.setAttribute("aria-label", "Пауза"); });
-    a.addEventListener("pause", function () { btn.classList.remove("on"); btn.setAttribute("aria-label", "Слушать"); });
-    a.addEventListener("error", function () { O.toast("Не удалось загрузить аудио. Проверьте подключение к интернету.", "bad"); });
-    var last = -1;
-    a.addEventListener("timeupdate", function () {
-      var d = a.duration || D.duration, c = a.currentTime; fill.style.width = (100 * c / d) + "%"; bar.setAttribute("aria-valuenow", String(Math.round(c)));
-      tc.textContent = mmss(c) + " / " + mmss(d);
-      var k = -1; D.paragraphs.forEach(function (p, i) { if (c >= p.start - 0.05) k = i; });
-      if (k !== last) { ps.forEach(function (e, i) { e.classList.toggle("now", i === k); }); last = k; }
+    var speeds = el("div", { class: "spd" });
+    [0.75, 1, 1.25, 1.5].forEach(function (s) {
+      var b = el("button", { type: "button", class: s === 1 ? "on" : null, onclick: function () { a.playbackRate = s; O.$$("button", speeds).forEach(function (x) { x.classList.toggle("on", x === b); }); } }, String(s).replace(".", ",") + "×");
+      speeds.appendChild(b);
     });
-    function seek(x) { var r = bar.getBoundingClientRect(); a.currentTime = Math.max(0, Math.min(1, (x - r.left) / r.width)) * (a.duration || D.duration); }
-    bar.addEventListener("click", function (e) { seek(e.clientX); });
-    bar.addEventListener("keydown", function (e) { if (e.key === "ArrowRight") a.currentTime += 5; if (e.key === "ArrowLeft") a.currentTime = Math.max(0, a.currentTime - 5); });
+    main.appendChild(el("section", { class: "player" }, btn, el("div", { class: "pmid" }, el("b", null, D.title), bar, el("div", { class: "prow" }, tc, speeds))));
+
+    var tr = el("section", { class: "transcript" }, el("h2", null, L.transcript));
+    (D.paragraphs || []).forEach(function (p) {
+      var e = el("p", { tabindex: "0" }, p.text);
+      e.addEventListener("click", function () { a.currentTime = p.start + 0.01; a.play(); });
+      tr.appendChild(e);
+    });
+    main.appendChild(tr);
+    main.appendChild(el("section", { class: "next" },
+      el("p", null, L.nextLab),
+      el("a", { class: "btn run", href: O.tpath("l", n) }, L.openLab)));
+
+    btn.addEventListener("click", function () { if (a.paused) a.play(); else a.pause(); });
+    a.addEventListener("play", function () { btn.classList.add("on"); btn.setAttribute("aria-label", L.pause); });
+    a.addEventListener("pause", function () { btn.classList.remove("on"); btn.setAttribute("aria-label", L.listen); });
+    a.addEventListener("error", function () { O.toast(L.loadErr, "bad"); });
+    a.addEventListener("timeupdate", function () {
+      var d = a.duration || D.duration, c = a.currentTime;
+      fill.style.width = (100 * c / d) + "%";
+      tc.textContent = mmss(c) + " / " + mmss(d);
+    });
     O.footer();
   }
 })();

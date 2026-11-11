@@ -1,59 +1,63 @@
-/* TASKS — страница «Задания» темы: что сделать, варианты индивидуального задания, контрольные вопросы, сдача. */
+/* TASKS — «Topşiriqlar» sahifasi: variantlar, nazorat savollari, topşiriş. UZ/RU. */
 (function () {
   "use strict";
-  var O = window.OGL, el = O.el;
-  var n = +document.body.getAttribute("data-topic"), T = O.topic(n);
-  O.header("home", [{ text: "Темы", href: O.link("") }, { text: "Тема " + O.k(n), href: O.link("#t" + n) }, { text: "Задания" }]);
-  var main = el("main", { class: "wrap doc" }); document.body.appendChild(main);
-  main.appendChild(el("div", { class: "pagehead flat" }, el("p", { class: "kicker" }, "ЛР " + O.k(n) + ". Задания и сдача"), el("h1", null, T.prac), O.trio(n, "z")));
-  O.fetchJSON("data/topics/" + n + ".json").then(render, function () { main.appendChild(el("p", { class: "note" }, "Материалы темы ещё готовятся.")); O.footer(); });
+  var O = window.KG || window.OGL, el = O.el, I = O.I || { getLang: function () { return "uz"; } };
+  var lang = I.getLang();
+  var n = +document.body.getAttribute("data-topic"), T = O.topic(n) || { k: n };
+  var topicName = O.topicName(n);
 
-  function qa(list, open) {
-    return el("div", { class: "qa" }, list.map(function (x, i) {
-      return el("details", { class: "qa-i", open: open ? true : null }, el("summary", null, el("span", { class: "qn" }, String(i + 1)), el("span", null, O.rich(x.q))), el("div", { class: "qa-a" }, el("p", null, O.rich(x.a))));
-    }));
-  }
-  function render(D) {
-    var P = D.practice, L = D.lecture;
-    var labDone = (O.store.get("lab" + n + ":done", []) || []).length;
-    main.appendChild(el("section", { class: "blk" },
-      el("h2", null, "Порядок работы"),
-      el("ol", { class: "seq" },
-        el("li", null, el("b", null, "Пройдите лабораторную. "), "Пример и задания по шагам с автоматической проверкой. ", el("a", { href: O.tpath("l", n) }, labDone ? "Продолжить (выполнено шагов: " + labDone + ")" : "Открыть лабораторную")),
-        el("li", null, el("b", null, "Выполните индивидуальное задание своего варианта. "), "Номер варианта назначает преподаватель. Работайте в песочнице или в Visual Studio — код один и тот же."),
-        el("li", null, el("b", null, "Сдайте работу через GitHub. "), "Кнопка ниже заполнит форму сдачи; останется приложить скриншот. ", el("a", { href: O.link("help/") }, "Подробнее о сдаче")),
-        el("li", null, el("b", null, "Подготовьте ответы на контрольные вопросы "), "— преподаватель задаёт их при приёме работы."))));
-    if (P.goal) main.appendChild(el("p", { class: "lead" }, el("b", null, "Цель занятия. "), O.rich(P.goal)));
+  var L = lang === "ru" ? {
+    topics: "Темы", topic: "Тема ", tasks: "Задания",
+    kicker: "ЛР " + O.k(n) + ". Задания и сдача",
+    comingSoon: "Материалы по теме ещё готовятся. Пока можно ознакомиться с темой на странице лабораторной.",
+    goLab: "Открыть лабораторную",
+    goAudio: "Аудио-объяснение"
+  } : {
+    topics: "Mavzular", topic: "A", tasks: "Topşiriqlar",
+    kicker: "A" + O.k(n) + " — Topşiriqlar va topşiriş",
+    comingSoon: "Mavzu boʻyiça materiallar tayyorlanmoqda. Hozircha laboratoriya sahifasida mavzu bilan tanişiş mumkin.",
+    goLab: "Laboratoriyani oçiş",
+    goAudio: "Audio izoh"
+  };
 
-    // варианты
-    var myV = O.store.get("var" + n, "");
-    var sel = el("select", { "aria-label": "Мой вариант" }, el("option", { value: "" }, "—"), P.variants.map(function (v) { return el("option", { value: String(v.n), selected: String(v.n) === String(myV) ? true : null }, "Вариант " + v.n); }));
-    var list = el("ol", { class: "variants" });
-    function paint() {
-      list.innerHTML = "";
-      P.variants.forEach(function (v) {
-        var mine = String(v.n) === sel.value;
-        list.appendChild(el("li", { class: mine ? "mine" : null, id: "v" + v.n }, el("span", { class: "vn" }, String(v.n)), el("div", null, el("p", null, O.rich(v.text)),
-          mine ? el("div", { class: "v-act" },
-            el("a", { class: "btn small", href: O.link("sandbox/?t=" + n + "&v=" + v.n) }, "Открыть в песочнице"),
-            el("button", { class: "btn small run", type: "button", onclick: function () { submit(v.n); } }, "Сдать работу")) : null)));
-      });
-    }
-    sel.addEventListener("change", function () { O.store.set("var" + n, sel.value); paint(); if (sel.value) { var t = document.getElementById("v" + sel.value); if (t) t.scrollIntoView({ block: "nearest", behavior: "smooth" }); } });
-    main.appendChild(el("section", { class: "blk" },
-      el("div", { class: "blk-h" }, el("h2", null, "Индивидуальные задания"), el("label", { class: "pick" }, "Мой вариант ", sel)),
-      list));
-    paint();
+  O.header("tasks", [
+    { text: L.topics, href: O.link("") },
+    { text: L.topic + O.k(n), href: O.link("#t" + n) },
+    { text: L.tasks }
+  ]);
 
-    if (P.deliverables && P.deliverables.length) main.appendChild(el("section", { class: "blk" }, el("h2", null, "Что сдаётся"), el("ul", { class: "ticks" }, P.deliverables.map(function (d) { return el("li", null, O.rich(d)); })),
-      el("button", { class: "btn run", type: "button", onclick: function () { submit(sel.value); } }, "Сдать работу")));
-    if (P.results && P.results.length) main.appendChild(el("section", { class: "blk" }, el("h2", null, "После занятия вы умеете"), el("ul", { class: "ticks" }, P.results.map(function (d) { return el("li", null, O.rich(d)); }))));
-    main.appendChild(el("section", { class: "blk" }, el("h2", null, "Контрольные вопросы к практическому занятию"), el("p", { class: "muted small" }, "Сначала ответьте сами, затем раскройте ответ."), qa(P.questions)));
-    if (L && L.selfcheck) main.appendChild(el("section", { class: "blk" }, el("h2", null, "Вопросы для самоконтроля по теме " + O.k(n)), qa(L.selfcheck)));
+  var main = el("main", { class: "wrap doc" });
+  document.body.appendChild(main);
+  main.appendChild(el("div", { class: "pagehead flat" },
+    el("p", { class: "kicker" }, L.kicker),
+    el("h1", null, topicName),
+    O.trio(n, "z")));
+
+  O.fetchJSON("data/topics/" + n + ".json").then(render, function () {
+    main.appendChild(el("p", { class: "note" }, L.comingSoon));
+    main.appendChild(el("div", { style: "margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap" },
+      el("a", { class: "btn", href: O.tpath("l", n) }, L.goLab),
+      el("a", { class: "btn ghost", href: O.tpath("e", n) }, L.goAudio)));
     O.footer();
-  }
-  function submit(v) {
-    var code = O.store.get("sandbox:t" + n + ":v" + (v || ""), null) || O.store.get("sandbox:last", "") || "";
-    Submit.open({ work: "SZ" + n, variant: v || "", code: code });
+  });
+
+  function render(D) {
+    // Agar data mavjud bo'lsa, oddiy variantlar roʻyxatini ko'rsatamiz
+    var P = D.practice || {};
+    if (P.variants && P.variants.length) {
+      var list = el("ol", { class: "variants" }, P.variants.map(function (v) {
+        return el("li", null,
+          el("b", { class: "vn" }, "№" + v.n),
+          el("span", null, O.rich(v.text || "")));
+      }));
+      main.appendChild(el("section", { class: "blk" },
+        el("h2", null, lang === "ru" ? "Варианты индивидуального задания" : "Individual topşiriq variantlari"),
+        list));
+    } else {
+      main.appendChild(el("p", { class: "note" }, L.comingSoon));
+    }
+    main.appendChild(el("div", { style: "margin-top: 20px" },
+      el("a", { class: "btn", href: O.tpath("l", n) }, L.goLab)));
+    O.footer();
   }
 })();
