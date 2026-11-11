@@ -1,0 +1,155 @@
+{
+ "n": 4,
+ "uz": {
+  "title": "Kesma, aylana va ellipsni Brezenxeym algoritmi yordamida hosil qiliş",
+  "goal": "rastr algoritmlari: Brezenxeym algoritmlari bilan kesma, aylana va ellips çiziş.",
+  "skills": "butun sonli arifmetikaga asoslangan tez çiziş algoritmlarini yoziş; simmetriyadan foydalaniş; silliqlaş (antialyasing) g'oyasini tuşuniş.",
+  "intro": "Variantdagi rasmni faqat özingiz yozgan Brezenxeym algoritmlari (kesma, aylana, ellips) bilan çizing. OpenGL ning GL_LINES va boşqa tayyor çiziş primitivlari işlatilmasin — faqat nuqtalar (GL_POINTS).",
+  "variants": [
+   {
+    "n": 1,
+    "text": "Şaxmat taxtasi 8×8 (kataklar çegaralari)"
+   },
+   {
+    "n": 2,
+    "text": "Nişon: 6 ta konsentrik aylana, R = 10…60"
+   },
+   {
+    "n": 3,
+    "text": "Avtomobil: kuzov (kesmalar) va 2 ta ğildirak (aylanalar)"
+   },
+   {
+    "n": 4,
+    "text": "Uy: devorlar, uçburçak tom, eşik, deraza"
+   },
+   {
+    "n": 5,
+    "text": "Robot yuzi: ellips, 2 ta köz (aylanalar), oğiz (kesma)"
+   },
+   {
+    "n": 6,
+    "text": "Olimpiya halqalari: 5 ta aylana"
+   },
+   {
+    "n": 7,
+    "text": "Spidometr: yarim aylana, 9 ta belgi va strelka"
+   },
+   {
+    "n": 8,
+    "text": "Gul: 6 ta ellips yaproq va markaziy aylana"
+   },
+   {
+    "n": 9,
+    "text": "Panda yuzi: aylanalar va ellipslar"
+   },
+   {
+    "n": 10,
+    "text": "Qarağaylar: 3 ta uçburçak daraxt va quyoş (aylana)"
+   },
+   {
+    "n": 11,
+    "text": "Siniq spiral: 20 ta kesma"
+   },
+   {
+    "n": 12,
+    "text": "Atom modeli: 3 ta orbita (ellips) va yadro (aylana)"
+   },
+   {
+    "n": 13,
+    "text": "Samolyot: fyuzelyaj (ellips) va qanotlar (kesmalar)"
+   },
+   {
+    "n": 14,
+    "text": "Çaşka: labi (ellips), devorlari va dastasi"
+   },
+   {
+    "n": 15,
+    "text": "Köprik: 3 ta yarim aylana arka va yöl"
+   }
+  ],
+  "questions": [
+   "Nima uçun Brezenxeym algoritmi haqiqiy sonlar bilan işlaydigan algoritmdan tezroq?",
+   "Aylana çizişda qanday simmetriyadan foydalaniladi va u neça marta hisobni kamaytiradi?",
+   "Ellips çizişda nima uçun ikki soha alohida qayta işlanadi?",
+   "Antialyasing nima va Vu algoritmi qirralarni qanday silliqlaydi?",
+   "Brezenxeym kesmasi neça pikseldan iborat böladi? Bu son nimaga böğliq?",
+   "Qaror parametri d ning boşlanğiç qiymati qayerdan olinadi?"
+  ]
+ },
+ "ru": {
+  "title": "Построение отрезка, окружности и эллипса алгоритмами Брезенхема",
+  "goal": "растровые алгоритмы: построение отрезка, окружности и эллипса алгоритмами Брезенхема.",
+  "skills": "реализация быстрых алгоритмов рисования на целочисленной арифметике; использование симметрии; понимание идеи сглаживания (antialiasing).",
+  "intro": "Нарисуйте изображение варианта только собственными алгоритмами Брезенхема (отрезок, окружность, эллипс). Готовые примитивы OpenGL (GL_LINES и др.) не использовать — только точки (GL_POINTS).",
+  "variants": [
+   {
+    "n": 1,
+    "text": "Шахматная доска 8×8 (границы клеток)"
+   },
+   {
+    "n": 2,
+    "text": "Мишень: 6 концентрических окружностей, R = 10…60"
+   },
+   {
+    "n": 3,
+    "text": "Автомобиль: кузов (отрезки) и 2 колеса (окружности)"
+   },
+   {
+    "n": 4,
+    "text": "Дом: стены, треугольная крыша, дверь, окно"
+   },
+   {
+    "n": 5,
+    "text": "Лицо робота: эллипс, 2 глаза (окружности), рот (отрезок)"
+   },
+   {
+    "n": 6,
+    "text": "Олимпийские кольца: 5 окружностей"
+   },
+   {
+    "n": 7,
+    "text": "Спидометр: полуокружность, 9 делений и стрелка"
+   },
+   {
+    "n": 8,
+    "text": "Цветок: 6 лепестков-эллипсов и центральная окружность"
+   },
+   {
+    "n": 9,
+    "text": "Морда панды: окружности и эллипсы"
+   },
+   {
+    "n": 10,
+    "text": "Ели: 3 треугольных дерева и солнце (окружность)"
+   },
+   {
+    "n": 11,
+    "text": "Ломаная спираль: 20 отрезков"
+   },
+   {
+    "n": 12,
+    "text": "Модель атома: 3 орбиты (эллипсы) и ядро (окружность)"
+   },
+   {
+    "n": 13,
+    "text": "Самолёт: фюзеляж (эллипс) и крылья (отрезки)"
+   },
+   {
+    "n": 14,
+    "text": "Чашка: край (эллипс), стенки и ручка"
+   },
+   {
+    "n": 15,
+    "text": "Мост: 3 полукруглые арки и дорога"
+   }
+  ],
+  "questions": [
+   "Почему алгоритм Брезенхема быстрее алгоритма на вещественных числах?",
+   "Какая симметрия используется при построении окружности и во сколько раз она сокращает вычисления?",
+   "Почему при построении эллипса две области обрабатываются отдельно?",
+   "Что такое сглаживание и как алгоритм Ву сглаживает края?",
+   "Из скольких пикселей состоит отрезок Брезенхема? От чего зависит это число?",
+   "Откуда берётся начальное значение параметра решения d?"
+  ]
+ }
+}

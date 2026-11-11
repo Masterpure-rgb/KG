@@ -1,0 +1,29 @@
+{
+ "topic": 2,
+ "lang": "uz",
+ "title": "Splayn egri çiziqlar va rastr böyaş",
+ "file": "audio/2.uz.mp3",
+ "duration": 86.85,
+ "paragraphs": [
+  {
+   "text": "Ikkinçi iş mavzusi — splayn egri çiziqlar va sohalarni böyaş algoritmlari. Silliq egri çiziqlarni nuqtama-nuqta yozib bölmaydi, şuning uçun ular bir neça tayanç nuqta va parametrik formula bilan beriladi.",
+   "start": 0.0
+  },
+  {
+   "text": "Eng maşhuri — kubik Beze egri çiziği. U törtta tayanç nuqta bilan beriladi: egri birinçi va oxirgi nuqtadan ötadi, örtadagi ikkitasi esa uni özlariga tortadi. Bir neça Beze segmentini silliq ulaş uçun ulaniş nuqtasi va unga qöşni tayanç nuqtalar bir töğri çiziqda yotişi kerak.",
+   "start": 17.53
+  },
+  {
+   "text": "B-splayn esa tayanç nuqtalardan ötmaydi, lekin silliqroq va lokal: bitta nuqtani surganda egrining faqat yaqin qismi özgaradi.",
+   "start": 41.46
+  },
+  {
+   "text": "Yopiq sohani böyaşning ikki asosiy usuli bor. Uruğdan töldiriş — bitta içki nuqtadan boşlab qöşni piksellarni böyab boradi. Skanlovçi çiziq usuli esa har bir gorizontal çiziq uçun çegaralar bilan kesişişlarni topib, ularni juft-juft töldiradi. Ikkinçisi ancha tez.",
+   "start": 52.65
+  },
+  {
+   "text": "Laboratoriyada siz Beze va B-splayn egri çiziqlarini çizasiz, yopiq barg şaklini qurasiz, uni flood fill, scanline va gradient bilan böyaysiz.",
+   "start": 75.01
+  }
+ ]
+}

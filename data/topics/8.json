@@ -1,0 +1,155 @@
+{
+ "n": 8,
+ "uz": {
+  "title": "OpenGL yordamida geometrik obyektlarga materiallar va yoruğlik beriş",
+  "goal": "OpenGL ning yoritiş va material tizimi: uç tarkibiy qismli yoritiş modeli, manba turlari, normallar.",
+  "skills": "GL_LIGHT0…GL_LIGHT7 manbalarini sozlaş (nuqtaviy, yönaltirilgan, spot); material xossalarini berish; normallarni töğri belgilaş; susayişni sozlaş.",
+  "intro": "Variantdagi sahnani quring va körsatilgan manbalar bilan yoriting. Materiallarni obyektlarga mos tanlang.",
+  "variants": [
+   {
+    "n": 1,
+    "text": "Çaynik, qizil şar va pol; yuqoridan oq nuqtaviy manba"
+   },
+   {
+    "n": 2,
+    "text": "Kub, tor va silindr; ikki xil rangli manba"
+   },
+   {
+    "n": 3,
+    "text": "Şaxmat taxtasi va 4 ta figura (konus, sfera); bitta manba"
+   },
+   {
+    "n": 4,
+    "text": "Çöl: quyoş (yönaltirilgan manba) va kaktuslar (silindrlar)"
+   },
+   {
+    "n": 5,
+    "text": "Studiya: sfera atrofida ikki oq manba"
+   },
+   {
+    "n": 6,
+    "text": "Diskoteka: rangi vaqt bilan özgaradigan uçta manba"
+   },
+   {
+    "n": 7,
+    "text": "Bolalar xonasi: spot manba va öyinçoqlar (kub, şar)"
+   },
+   {
+    "n": 8,
+    "text": "Muzey: baland spot manba va haykal (çaynik)"
+   },
+   {
+    "n": 9,
+    "text": "Zargarlik: oltin va kumuş şar, yuqori yaltiroqlik"
+   },
+   {
+    "n": 10,
+    "text": "Xira xona: susayişli zaif manba va oq şar"
+   },
+   {
+    "n": 11,
+    "text": "Avtomobil faralari: ikki spot, polda çaynik"
+   },
+   {
+    "n": 12,
+    "text": "Globus: kök manba bilan yoritilgan aylanuvçi sfera"
+   },
+   {
+    "n": 13,
+    "text": "Şimoliy yoğdu: ikki yaşil yönaltirilgan manba"
+   },
+   {
+    "n": 14,
+    "text": "Tungi köça: susayişli 4 ta çiroq va pol"
+   },
+   {
+    "n": 15,
+    "text": "Uçta sfera: metall, plastik, şişa (yarim şaffof)"
+   }
+  ],
+  "questions": [
+   "Manba pozitsiyasining oxirgi komponenti w = 0 yoki 1 nimani anglatadi?",
+   "GL_COLOR_MATERIAL ni yoqişning afzalligi nimada?",
+   "Nima uçun normal har bir uç uçun beriladi?",
+   "GL_NORMALIZE qaçon kerak böladi?",
+   "Spot manbaning GL_SPOT_EXPONENT parametri nimaga taʼsir qiladi?",
+   "Susayiş (attenuation) nima va u qanday koeffitsiyentlar bilan beriladi?"
+  ]
+ },
+ "ru": {
+  "title": "Материалы и источники света в OpenGL",
+  "goal": "система освещения и материалов OpenGL: трёхкомпонентная модель освещения, типы источников, нормали.",
+  "skills": "настройка источников GL_LIGHT0…GL_LIGHT7 (точечный, направленный, прожектор); задание свойств материалов; правильные нормали; настройка ослабления.",
+  "intro": "Постройте сцену варианта и осветите её указанными источниками. Подберите материалы под объекты.",
+  "variants": [
+   {
+    "n": 1,
+    "text": "Чайник, красный шар и пол; белый точечный источник сверху"
+   },
+   {
+    "n": 2,
+    "text": "Куб, тор и цилиндр; два источника разного цвета"
+   },
+   {
+    "n": 3,
+    "text": "Шахматная доска и 4 фигуры (конус, сфера); один источник"
+   },
+   {
+    "n": 4,
+    "text": "Пустыня: солнце (направленный источник) и кактусы (цилиндры)"
+   },
+   {
+    "n": 5,
+    "text": "Студия: два белых источника вокруг сферы"
+   },
+   {
+    "n": 6,
+    "text": "Дискотека: три источника, меняющие цвет со временем"
+   },
+   {
+    "n": 7,
+    "text": "Детская: прожектор и игрушки (куб, шар)"
+   },
+   {
+    "n": 8,
+    "text": "Музей: высокий прожектор и скульптура (чайник)"
+   },
+   {
+    "n": 9,
+    "text": "Ювелирный салон: золотой и серебряный шар, сильный блеск"
+   },
+   {
+    "n": 10,
+    "text": "Тёмная комната: слабый источник с ослаблением и белый шар"
+   },
+   {
+    "n": 11,
+    "text": "Автомобильные фары: два прожектора, чайник на полу"
+   },
+   {
+    "n": 12,
+    "text": "Глобус: вращающаяся сфера под синим источником"
+   },
+   {
+    "n": 13,
+    "text": "Северное сияние: два зелёных направленных источника"
+   },
+   {
+    "n": 14,
+    "text": "Ночная улица: 4 фонаря с ослаблением и пол"
+   },
+   {
+    "n": 15,
+    "text": "Три сферы: металл, пластик, стекло (полупрозрачное)"
+   }
+  ],
+  "questions": [
+   "Что означает последняя компонента позиции источника w = 0 или 1?",
+   "В чём преимущество включения GL_COLOR_MATERIAL?",
+   "Почему нормаль задаётся для каждой вершины?",
+   "Когда нужен GL_NORMALIZE?",
+   "На что влияет параметр GL_SPOT_EXPONENT прожектора?",
+   "Что такое ослабление (attenuation) и какими коэффициентами оно задаётся?"
+  ]
+ }
+}

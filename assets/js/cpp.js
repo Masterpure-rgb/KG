@@ -68,6 +68,21 @@
     var dead = new Array(N).fill(false);
     function R(k, v) { rep[sig[k]] = v; dead[sig[k]] = false; }
     function X(k) { rep[sig[k]] = ""; dead[sig[k]] = true; }
+    // bloklar tuzilişi: o'zgaruvçi turlari ko'rinish sohasi bo'yiça aniqlanadi (int w va float w — turli funksiyalarda)
+    var blockOf = new Array(sig.length), blockAt = Object.create(null), blockParent = [-1];
+    (function () { var st = [0]; for (var q = 0; q < sig.length; q++) { var vq = T[sig[q]].v; blockOf[q] = st[st.length - 1];
+      if (vq === "{") { var id = blockParent.length; blockParent.push(st[st.length - 1]); blockAt[q] = id; st.push(id); }
+      else if (vq === "}" && st.length > 1) { st.pop(); blockOf[q] = st[st.length - 1]; } } })();
+    var declsByName = Object.create(null);
+    function addDecl(name, k, isInt, block) { (declsByName[name] = declsByName[name] || []).push({ k: k, isInt: !!isInt, block: block === undefined ? blockOf[k] : block }); }
+    function isIntAt(name, kk) {
+      var L = declsByName[name];
+      if (L) for (var b = blockOf[kk]; b >= 0; b = blockParent[b]) {
+        var best = null; for (var q = 0; q < L.length; q++) if (L[q].block === b && L[q].k < kk && (!best || L[q].k > best.k)) best = L[q];
+        if (best) return best.isInt;
+      }
+      return intVars.has(name);
+    }
     function rawOf(a, b) { var o = ""; for (var j = a; j < b; j++) o += (j > a ? " " : "") + T[sig[j]].v; return o; }
     function xlate(a, b) { return a >= b ? "" : translate(rawOf(a, b), { expr: true, types: types, intTypes: intTypes, structs: structs, intVars: intVars }).js.trim(); }
 
@@ -184,6 +199,7 @@
         var dims = []; while (V(j) === "[") { var c = match(j, "[", "]"); dims.push([j + 1, c]); j = c + 1; }
         varType[name] = { base: sType, ptr: ptr, dims: dims.length, isInt: ti.isInt && !ptr && !dims.length, isStruct: ti.isStruct };
         if (ti.isInt && !ptr && !dims.length) intVars.add(name);
+        addDecl(name, nameK, ti.isInt && !ptr && !dims.length);
         var dimStr = dims.map(function (d) { return d[0] === d[1] ? "null" : xlate(d[0], d[1]); }).join(", ");
         clearRange(dims.length ? dims[0][0] - 1 : j, j);
         var ctor = ti.isStruct ? "() => new " + ti.last + "()" : (sType === "string" || sType === "std string") ? '""' : (ptr ? "null" : "0");
@@ -273,6 +289,7 @@
         if (JS_RESERVED.indexOf(name) >= 0) name += "_";
         if (ti && ti.isInt && !ptr && !isArr) intVars.add(name);
         if (ti) varType[name] = { base: ti.base, ptr: ptr, dims: isArr ? 1 : 0, isInt: ti.isInt && !ptr && !isArr };
+        if (isDef && ti) { var bk = close + 1; while (bk < sig.length && V(bk) !== "{" && V(bk) !== ";") bk++; if (V(bk) === "{") addDecl(name, bk, ti.isInt && !ptr && !isArr, blockAt[bk]); }
         list.push({ name: name, def: def });
         if (eqk >= 0) { clearRange(j, eqk); R(j, name + " "); } // «= значение» остаётся и обрабатывается дальше
         else { clearRange(j, e); R(j, name); }
@@ -584,7 +601,7 @@
     function isIntOperand(tok, kk) {
       if (!tok || dead[sig[kk]]) return false;
       if (tok.t === "num") return (!/[.eE]/.test(tok.v) || /^0[xX]/.test(tok.v)) && !/[fF]$/.test(tok.v);
-      if (tok.t === "id") return intVars.has(tok.v) && rep[sig[kk]] === tok.v;
+      if (tok.t === "id") return isIntAt(tok.v, kk) && rep[sig[kk]] === tok.v;
       if (tok.t === "chr") return true;
       return false;
     }

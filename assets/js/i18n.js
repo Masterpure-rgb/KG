@@ -7,22 +7,22 @@
   var DICT = {
     uz: {
       "brand.name": "Kompyuter grafikasi",
-      "brand.sub":  "Amaliy ishlar",
-      "lang.uz": "OʻZ",
+      "brand.sub":  "Amaliy işlar",
+      "lang.uz": "ÖZ",
       "lang.ru": "RUS",
       "lang.switch": "Tilni almaştiriş",
 
       "nav.topics": "Mavzular",
       "nav.sandbox": "Ustaxona",
-      "nav.srsp": "SRS va SRSP",
+      "nav.srsp": "Mustaqil iş",
       "nav.me": "Mening kabinetim",
       "nav.help": "Yordam",
-      "nav.teacher": "Oʻqituvchiga",
+      "nav.teacher": "Öqituvçiga",
 
-      "home.hero.title": "«Kompyuter grafikasi» fani boʻyiça 15 ta amaliy iş",
-      "home.hero.sub":   "Brauzer ichida ishlaydigan interaktiv C++ muhit. Hech narsa oʻrnatish shart emas.",
-      "home.hero.cta":   "Birinchi ishni boşlaş",
-      "home.labs":       "Amaliy ishlar",
+      "home.hero.title": "«Kompyuter grafikasi» fani böyiça 15 ta amaliy iş",
+      "home.hero.sub":   "Brauzer içida işlaydigan interaktiv C++ muhit. Heç narsa örnatiş şart emas.",
+      "home.hero.cta":   "Birinçi işni boşlaş",
+      "home.labs":       "Amaliy işlar",
       "home.lab":        "A",
       "home.theory":     "Nazariya",
       "home.practice":   "Amaliy iş",
@@ -31,35 +31,36 @@
       "home.authors":    "Mualliflar",
       "home.univ":       "Muhammad al-Xorazmiy nomidagi Toşkent axborot texnologiyalari universiteti",
 
-      "footer.doc":      "Uslubiy koʻrsatma (Word)",
-      "footer.submit":   "Qanday topşirish kerak",
+      "footer.doc":      "Uslubiy körsatma (Word)",
+      "footer.pdf":      "Uslubiy körsatma (PDF)",
+      "footer.submit":   "Qanday topşiriş kerak",
 
       "lab.theory":      "Nazariya",
       "lab.tasks":       "Topşiriqlar",
       "lab.audio":       "Audio izoh",
-      "lab.run":         "Ishga tushirish",
+      "lab.run":         "Işga tuşiriş",
       "lab.check":       "Tekşiriş",
-      "lab.reset":       "Dastlabkisiga qaytarish",
-      "lab.download":    "Skaçat .cpp",
+      "lab.reset":       "Dastlabkisiga qaytariş",
+      "lab.download":    "Yuklab oliş .cpp",
       "lab.screenshot":  "Skrinşot",
       "lab.console":     "Konsol",
       "lab.state":       "OpenGL holati",
-      "lab.steps":       "Qadamlar roʻyxati",
+      "lab.steps":       "Qadamlar röyxati",
 
-      "explain.listen":  "Audio tinglash",
+      "explain.listen":  "Audio tinglaş",
       "explain.transcript": "Matni",
 
       "me.title":        "Mening kabinetim",
       "me.attend":       "Davomat",
-      "me.submitted":    "Topşirilgan ishlar",
+      "me.submitted":    "Topşirilgan işlar",
       "me.id":           "ID",
-      "me.code":         "Kirish kodi",
-      "me.login":        "Kirish",
-      "me.logout":       "Chiqish",
+      "me.code":         "Kiriş kodi",
+      "me.login":        "Kiriş",
+      "me.logout":       "Çiqiş",
 
-      "submit.title":    "Ishni qanday topşiriş",
+      "submit.title":    "Işni qanday topşiriş",
       "sandbox.title":   "Ustaxona — topşiriqlarni bajariş uçun kod oynasi",
-      "srsp.title":      "Mustaqil ishlar (SRS) va SRSP",
+      "srsp.title":      "Mustaqil iş (SRS)",
 
       "help.title":      "Yordam",
     },
@@ -72,7 +73,7 @@
 
       "nav.topics": "Темы",
       "nav.sandbox": "Мастерская",
-      "nav.srsp": "СРС и СРСП",
+      "nav.srsp": "Самостоятельная работа",
       "nav.me": "Мой кабинет",
       "nav.help": "Помощь",
       "nav.teacher": "Преподавателю",
@@ -90,6 +91,7 @@
       "home.univ":       "Ташкентский университет информационных технологий имени Мухаммада аль-Хорезми",
 
       "footer.doc":      "Методичка (Word)",
+      "footer.pdf":      "Методичка (PDF)",
       "footer.submit":   "Как сдать работу",
 
       "lab.theory":      "Теория",
@@ -117,7 +119,7 @@
 
       "submit.title":    "Как сдать работу",
       "sandbox.title":   "Песочница — свободный редактор кода",
-      "srsp.title":      "Самостоятельная работа (СРС) и СРСП",
+      "srsp.title":      "Самостоятельная работа (СРС)",
 
       "help.title":      "Помощь",
     }

@@ -24,7 +24,7 @@
     tplAria: "Şablon", tplPh: "Şablon…",
     tpl2d: "Boş 2D-dastur", tpl3d: "Yoritişli 3D-sahna", tplEx: "A",
     submit: "Işni topşiriş",
-    resetAsk: "Şablonga qaytarilsinmi? Hozirgi kod oʻzgartiriladi.",
+    resetAsk: "Şablonga qaytarilsinmi? Hozirgi kod özgartiriladi.",
     replaceAsk: "Hozirgi kod şablon bilan almaştirilsinmi?",
     varCommentPref: "// A", varCommentMid: ", variant ",
     titleProgram: "Mening dasturim", title3D: "3D-sahna"
@@ -79,7 +79,7 @@
   else if (t) first = exampleOf(t).then(function (c) { return c; }, function () { return BLANK; });
   else first = Promise.resolve(BLANK);
   if (t) O.fetchJSON("data/topics/" + t + ".json").then(function (D) {
-    var V = (D.practice.variants || []).filter(function (x) { return String(x.n) === String(v); })[0];
+    var DD = D[lang === "ru" ? "ru" : "uz"] || D.uz || {}; var V = (DD.variants || (D.practice && D.practice.variants) || []).filter(function (x) { return String(x.n) === String(v); })[0];
     if (V) taskP.textContent = V.text; else taskP.remove();
     if (!saved && V) first.then(function (c) { if (ide.editor.get() === c) { ide.editor.set(L.varCommentPref + t + L.varCommentMid + v + ":\n// " + V.text.replace(/(.{1,90})(\s|$)/g, "$1\n// ").replace(/\n\/\/ $/, "") + "\n\n" + c); } });
   }, function () { taskP.remove(); });

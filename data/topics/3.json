@@ -1,0 +1,155 @@
+{
+ "n": 3,
+ "uz": {
+  "title": "Splayn sirtlardan foydalanib 3 ölçovli obyekt yaratiş",
+  "goal": "parametrik sirtlar: Beze sirti va B-splayn sirti, ularni ulaş şartlari.",
+  "skills": "16 ta tayanç nuqta böyiça bikubik sirt quriş; sirtni tör va yoq körinişida çiqariş; bir neçta sirtdan C0 va C1 ulaniş bilan obyekt yiğiş.",
+  "intro": "Variantdagi obyekt uçun tayanç nuqtalarni tanlang va uni Beze (yoki körsatilgan bölsa — B-splayn) sirtlaridan quring. Tayanç törni ham körsating.",
+  "variants": [
+   {
+    "n": 1,
+    "text": "Egar (giperbolik paraboloid), N = 16"
+   },
+   {
+    "n": 2,
+    "text": "Markazida tepaligi bor sirt — tör va sirt birga"
+   },
+   {
+    "n": 3,
+    "text": "Ikki tölqinli sirt, B-splayn"
+   },
+   {
+    "n": 4,
+    "text": "Ikki qismli sirt, C1 ulaniş bilan"
+   },
+   {
+    "n": 5,
+    "text": "Çaynik qopqoği — 4 qismli aylanma sirt"
+   },
+   {
+    "n": 6,
+    "text": "Kosa — 4 qism, ički va taşqi tomonlari bilan"
+   },
+   {
+    "n": 7,
+    "text": "Vaza — 2 qator × 4 qism, aylanma sirt"
+   },
+   {
+    "n": 8,
+    "text": "Qayiq korpusi — 2 ta simmetrik qism"
+   },
+   {
+    "n": 9,
+    "text": "Yostiq — çetlari pastga egilgan törtburçak sirt"
+   },
+   {
+    "n": 10,
+    "text": "Gumbaz — 4 qismdan yarim sfera"
+   },
+   {
+    "n": 11,
+    "text": "Daraxt bargi — markaziy tomirli egilgan sirt"
+   },
+   {
+    "n": 12,
+    "text": "Şlyapa — soyabon qismi va toj"
+   },
+   {
+    "n": 13,
+    "text": "Soyabon — 8 bölakli, har bölak Beze sirti"
+   },
+   {
+    "n": 14,
+    "text": "Tanlangan tayanç nuqtasi klaviatura bilan suriladigan sirt"
+   },
+   {
+    "n": 15,
+    "text": "Bir xil tör böyiça Beze va B-splayn sirtlarini yonma-yon soliştiriş"
+   }
+  ],
+  "questions": [
+   "Bikubik sirt uçun nima uçun aynan 16 ta tayanç nuqta kerak?",
+   "Beze sirti va B-splayn sirtining asosiy farqi nimada?",
+   "Ikki Beze sirti orasida C1 uzluksizlik uçun qanday şart bajarilişi kerak?",
+   "Sirtni çiqarişdagi N parametri nimani belgilaydi va u tezlikka qanday taʼsir qiladi?",
+   "Nima uçun Beze sirti 4 ta burçak nuqtadan ötadi, ički nuqtalardan esa ötmaydi?",
+   "Aylanma sirtni Beze qismlaridan qanday yiğiş mumkin?"
+  ]
+ },
+ "ru": {
+  "title": "Сплайновые поверхности и построение 3D-объектов",
+  "goal": "параметрические поверхности: поверхность Безье и B-сплайновая поверхность, условия их стыковки.",
+  "skills": "построение бикубической поверхности по 16 опорным точкам; вывод поверхности сеткой и гранями; сборка объекта из нескольких лоскутов с соединением C0 и C1.",
+  "intro": "Подберите опорные точки для объекта варианта и постройте его из лоскутов Безье (или B-сплайна, если указано). Покажите и опорную сетку.",
+  "variants": [
+   {
+    "n": 1,
+    "text": "Седло (гиперболический параболоид), N = 16"
+   },
+   {
+    "n": 2,
+    "text": "Поверхность с холмом в центре — сетка и поверхность вместе"
+   },
+   {
+    "n": 3,
+    "text": "Поверхность с двумя волнами, B-сплайн"
+   },
+   {
+    "n": 4,
+    "text": "Составная поверхность из двух лоскутов с соединением C1"
+   },
+   {
+    "n": 5,
+    "text": "Крышка чайника — поверхность вращения из 4 лоскутов"
+   },
+   {
+    "n": 6,
+    "text": "Чаша — 4 лоскута, с внутренней и внешней стороной"
+   },
+   {
+    "n": 7,
+    "text": "Ваза — 2 ряда × 4 лоскута, поверхность вращения"
+   },
+   {
+    "n": 8,
+    "text": "Корпус лодки — 2 симметричных лоскута"
+   },
+   {
+    "n": 9,
+    "text": "Подушка — прямоугольная поверхность с опущенными краями"
+   },
+   {
+    "n": 10,
+    "text": "Купол — полусфера из 4 лоскутов"
+   },
+   {
+    "n": 11,
+    "text": "Лист дерева — изогнутая поверхность с центральной жилкой"
+   },
+   {
+    "n": 12,
+    "text": "Шляпа — поля и тулья"
+   },
+   {
+    "n": 13,
+    "text": "Зонт — 8 секций, каждая — поверхность Безье"
+   },
+   {
+    "n": 14,
+    "text": "Поверхность, у которой выбранная опорная точка двигается с клавиатуры"
+   },
+   {
+    "n": 15,
+    "text": "Сравнение поверхностей Безье и B-сплайна по одной сетке, рядом"
+   }
+  ],
+  "questions": [
+   "Почему для бикубической поверхности нужно ровно 16 опорных точек?",
+   "В чём основное отличие поверхности Безье от B-сплайновой?",
+   "Какое условие обеспечивает непрерывность C1 между двумя поверхностями Безье?",
+   "Что определяет параметр N при выводе поверхности и как он влияет на скорость?",
+   "Почему поверхность Безье проходит через 4 угловые точки, но не через внутренние?",
+   "Как собрать поверхность вращения из лоскутов Безье?"
+  ]
+ }
+}

@@ -1,0 +1,155 @@
+{
+ "n": 1,
+ "uz": {
+  "title": "Poligonal törlardan foydalanib 3 ölçovli obyekt yaratiş va almaştirişlarni amalga oşiriş",
+  "goal": "poligonal tör tuşunçasi va uni saqlaş usullari, tekislikda va fazoda geometrik almaştirişlar, bir jinsli koordinatalar.",
+  "skills": "poligonal tör körinişida fazoviy obyekt quriş; köçiriş, masştablaş va buriş matritsalarini yoziş va qöllaş; natijani ekranga çiqariş.",
+  "intro": "Variant raqamini öqituvçi tayinlaydi. Variantda keltirilgan Platon jismini quring va unga ikkita berilgan almaştirişni ketma-ket qöllang. Dastlabki va natijaviy holatni bitta oynada körsating.",
+  "variants": [
+   {
+    "n": 1,
+    "text": "Tetraedr: (1, 2, 0) ga köçiriş, keyin Oz atrofida 45° ga buriş"
+   },
+   {
+    "n": 2,
+    "text": "Kub: Ox atrofida 60° ga buriş, keyin (1; 1,5; 1) masştablaş"
+   },
+   {
+    "n": 3,
+    "text": "Oktaedr: Oy atrofida 30° ga buriş, keyin (0, 2, 1) ga köçiriş"
+   },
+   {
+    "n": 4,
+    "text": "Kub: (0,5; 0,5; 0,5) masştablaş, keyin Oz atrofida 90° ga buriş"
+   },
+   {
+    "n": 5,
+    "text": "Tetraedr: Ox atrofida 45° ga, keyin Oz atrofida 45° ga buriş"
+   },
+   {
+    "n": 6,
+    "text": "Dodekaedr: (0, 0, 2) ga köçiriş, keyin xy tekisligiga nisbatan aks ettiriş"
+   },
+   {
+    "n": 7,
+    "text": "Ikosaedr: (1,5; 1,5; 1,5) masştablaş, keyin Oy atrofida 60° ga buriş"
+   },
+   {
+    "n": 8,
+    "text": "Kub: (2, 1, 1) ga köçiriş, keyin Oz atrofida −30° ga buriş"
+   },
+   {
+    "n": 9,
+    "text": "Oktaedr: (1, 1, 1) ga köçiriş, keyin Ox atrofida 90° ga buriş"
+   },
+   {
+    "n": 10,
+    "text": "Tetraedr: Oy atrofida 120° ga buriş, keyin (1, 0, 1) ga köçiriş"
+   },
+   {
+    "n": 11,
+    "text": "Kub: Ox atrofida 30° ga va Oy atrofida 45° ga ketma-ket buriş"
+   },
+   {
+    "n": 12,
+    "text": "Dodekaedr: (0,8; 0,8; 0,8) masştablaş, keyin (1, 0, 0) ga köçiriş"
+   },
+   {
+    "n": 13,
+    "text": "Ikosaedr: Oz atrofida 72° ga buriş, keyin (0, 1, 0) ga köçiriş"
+   },
+   {
+    "n": 14,
+    "text": "Kub: yz tekisligiga nisbatan aks ettiriş, keyin (2, 0, 0) ga köçiriş"
+   },
+   {
+    "n": 15,
+    "text": "Oktaedr: Oy atrofida 45° ga buriş, keyin (1,2; 1,2; 1) masştablaş"
+   }
+  ],
+  "questions": [
+   "Poligonal törni saqlaşning qaysi usuli xotirani eng köp tejaydi va nima uçun?",
+   "Bir jinsli koordinatalar kompyuter grafikasida nima uçun işlatiladi?",
+   "Köçiriş va buriş tartibini almaştirsak, natija özgaradimi? Misol bilan tuşuntiring.",
+   "Platon jismlari neçta va ularning umumiy xususiyati nima?",
+   "Kavalye va kabine proyeksiyalarining farqi nimada?",
+   "Eyler formulasi qanday yoziladi va u qaysi köpyoqliklar uçun örinli?"
+  ]
+ },
+ "ru": {
+  "title": "Полигональные сетки: построение 3D-объектов и геометрические преобразования",
+  "goal": "понятие полигональной сетки и способы её хранения, геометрические преобразования на плоскости и в пространстве, однородные координаты.",
+  "skills": "построение пространственного объекта в виде полигональной сетки; запись и применение матриц переноса, масштабирования и поворота; вывод результата на экран.",
+  "intro": "Номер варианта назначает преподаватель. Постройте указанное в варианте платоново тело и последовательно примените к нему два заданных преобразования. Покажите исходное и итоговое положение в одном окне.",
+  "variants": [
+   {
+    "n": 1,
+    "text": "Тетраэдр: перенос на (1, 2, 0), затем поворот вокруг Oz на 45°"
+   },
+   {
+    "n": 2,
+    "text": "Куб: поворот вокруг Ox на 60°, затем масштабирование (1; 1,5; 1)"
+   },
+   {
+    "n": 3,
+    "text": "Октаэдр: поворот вокруг Oy на 30°, затем перенос на (0, 2, 1)"
+   },
+   {
+    "n": 4,
+    "text": "Куб: масштабирование (0,5; 0,5; 0,5), затем поворот вокруг Oz на 90°"
+   },
+   {
+    "n": 5,
+    "text": "Тетраэдр: поворот вокруг Ox на 45°, затем вокруг Oz на 45°"
+   },
+   {
+    "n": 6,
+    "text": "Додекаэдр: перенос на (0, 0, 2), затем отражение относительно плоскости xy"
+   },
+   {
+    "n": 7,
+    "text": "Икосаэдр: масштабирование (1,5; 1,5; 1,5), затем поворот вокруг Oy на 60°"
+   },
+   {
+    "n": 8,
+    "text": "Куб: перенос на (2, 1, 1), затем поворот вокруг Oz на −30°"
+   },
+   {
+    "n": 9,
+    "text": "Октаэдр: перенос на (1, 1, 1), затем поворот вокруг Ox на 90°"
+   },
+   {
+    "n": 10,
+    "text": "Тетраэдр: поворот вокруг Oy на 120°, затем перенос на (1, 0, 1)"
+   },
+   {
+    "n": 11,
+    "text": "Куб: последовательные повороты вокруг Ox на 30° и вокруг Oy на 45°"
+   },
+   {
+    "n": 12,
+    "text": "Додекаэдр: масштабирование (0,8; 0,8; 0,8), затем перенос на (1, 0, 0)"
+   },
+   {
+    "n": 13,
+    "text": "Икосаэдр: поворот вокруг Oz на 72°, затем перенос на (0, 1, 0)"
+   },
+   {
+    "n": 14,
+    "text": "Куб: отражение относительно плоскости yz, затем перенос на (2, 0, 0)"
+   },
+   {
+    "n": 15,
+    "text": "Октаэдр: поворот вокруг Oy на 45°, затем масштабирование (1,2; 1,2; 1)"
+   }
+  ],
+  "questions": [
+   "Какой способ хранения полигональной сетки наиболее экономен по памяти и почему?",
+   "Зачем в компьютерной графике используются однородные координаты?",
+   "Изменится ли результат, если поменять порядок переноса и поворота? Поясните на примере.",
+   "Сколько существует платоновых тел и каково их общее свойство?",
+   "Чем отличаются проекции кавалье и кабине?",
+   "Как записывается формула Эйлера и для каких многогранников она справедлива?"
+  ]
+ }
+}

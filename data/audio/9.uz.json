@@ -1,0 +1,29 @@
+{
+ "topic": 9,
+ "lang": "uz",
+ "title": "OpenGL dasturlarini optimallaştiriş",
+ "file": "audio/9.uz.mp3",
+ "duration": 90.55,
+ "paragraphs": [
+  {
+   "text": "Töqqizinçi iş — bir xil tasvirni tezroq çiziş usullari. Darhol rejimda har bir uç alohida funksiya çaqiriği bilan yuboriladi: minglab uçli sahnada bu kadr vaqtining asosiy qismini egallaydi.",
+   "start": 0.0
+  },
+  {
+   "text": "Birinçi qadam — uç massivlari. Uçlar va normallar oldindan massivga yiğiladi va bitta glDrawArrays çaqiriği bilan çiziladi. Indeksli çiqarişda umumiy uçlar bir marta saqlanadi, uçburçaklar esa indekslar bilan beriladi.",
+   "start": 17.95
+  },
+  {
+   "text": "Displey röyxati buyruqlar ketma-ketligini bir marta yozib oladi va keyin bitta çaqiriq bilan ijro etadi. Bufer obyektlari, yaʼni VBO esa maʼlumotlarni videokarta xotirasiga bir marta yuklaydi.",
+   "start": 38.52
+  },
+  {
+   "text": "Katta sahnada boşqa usullar ham kerak. Frustum culling kameraga tuşmaydigan obyektlarni umuman çizmaydi. LOD uzoqdagi obyektlar uçun soddaroq modelni tanlaydi. Holat özgarişlarini kamaytiriş uçun obyektlar material böyiça guruhlanadi.",
+   "start": 55.49
+  },
+  {
+   "text": "Laboratoriyada har bir usulni alohida qöllaysiz va FPS ni ölçab, natijalarni jadvalga yozasiz. Tekşiriladigan narsa — tasvir emas, uning qanday çizilgani.",
+   "start": 76.24
+  }
+ ]
+}

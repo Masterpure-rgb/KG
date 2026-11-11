@@ -1,718 +1,451 @@
-/* Лабораторная 12: Преобразования объектов, материалы и освещение в OpenGL */
+/* A12. Maşina detallari dizayni: ekstruziya, aylanma sirtlar, tişli ğildiraklar, prujina, podşipnik (UZ/RU) */
 (function () {
-  const HEAD = `#define _USE_MATH_DEFINES   // M_PI в Visual Studio
-#include <GL/glew.h>   // GLEW: функции OpenGL 1.2+ в Windows
-#include <GL/glut.h>
-#include <cmath>
+  var C = LAB.C;
+  var HEAD = "#include <GL/glut.h>\n#include <cmath>\n#include <cstdio>\n\n#define PI 3.14159265f\n\n";
+  var LIGHT = `// ${C("Metall: kulrang diffuz rang va oq yaltiroqlik", "Металл: серый диффузный цвет и белый блик")}
+void initGL() {
+    GLfloat pos[] = { 4, 6, 5, 1 }, w[] = { 1, 1, 1, 1 }, amb[] = { 0.18f, 0.18f, 0.22f, 1 };
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glLightfv(GL_LIGHT0, GL_POSITION, pos);
+    glLightfv(GL_LIGHT0, GL_SPECULAR, w);
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);
+    glEnable(GL_COLOR_MATERIAL);
+    glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+    GLfloat spe[] = { 0.7f, 0.7f, 0.7f, 1 };
+    glMaterialfv(GL_FRONT, GL_SPECULAR, spe);
+    glMaterialf(GL_FRONT, GL_SHININESS, 50);
+    glEnable(GL_NORMALIZE);
+    glEnable(GL_DEPTH_TEST);
+}
+float now() { return glutGet(GLUT_ELAPSED_TIME) / 1000.0f; }
 
 `;
-  const RESHAPE = `void reshape(int w, int h) {
-    if (h == 0) h = 1;                       // защита от деления на ноль
-    glViewport(0, 0, w, h);                  // вся область окна
+  var PRISM = `// ${C("Muntazam n-burçakli prizma (ekstruziya): radius r, balandlik h, Oy öqi böylab", "Правильная n-угольная призма (экструзия): радиус r, высота h, вдоль оси Oy")}
+void prism(int n, float r, float h) {
+    glBegin(GL_QUADS);                          // ${C("yon yoqlar", "боковые грани")}
+    for (int i = 0; i < n; i++) {
+        float a0 = 2 * PI * i / n, a1 = 2 * PI * (i + 1) / n, am = (a0 + a1) / 2;
+        glNormal3f(cos(am), 0, sin(am));        // ${C("yoq normali — örta burçak yönalişida", "нормаль грани — по среднему углу")}
+        glVertex3f(r * cos(a0), 0, r * sin(a0));
+        glVertex3f(r * cos(a0), h, r * sin(a0));
+        glVertex3f(r * cos(a1), h, r * sin(a1));
+        glVertex3f(r * cos(a1), 0, r * sin(a1));
+    }
+    glEnd();
+    for (int s = 0; s < 2; s++) {               // ${C("pastki va ustki asoslar", "нижнее и верхнее основания")}
+        glNormal3f(0, s ? 1 : -1, 0);
+        glBegin(GL_TRIANGLE_FAN);
+        glVertex3f(0, s * h, 0);
+        for (int i = 0; i <= n; i++) {
+            float a = 2 * PI * (s ? n - i : i) / n;
+            glVertex3f(r * cos(a), s * h, r * sin(a));
+        }
+        glEnd();
+    }
+}
+
+`;
+  var CYL_BODY = `    glBegin(GL_QUAD_STRIP);
+    for (int i = 0; i <= n; i++) {
+        float a = 2 * PI * i / n;
+        glNormal3f(cos(a), 0, sin(a));
+        glVertex3f(r * cos(a), h, r * sin(a));
+        glVertex3f(r * cos(a), 0, r * sin(a));
+    }
+    glEnd();
+    for (int s = 0; s < 2; s++) {
+        glNormal3f(0, s ? 1 : -1, 0);
+        glBegin(GL_TRIANGLE_FAN);
+        glVertex3f(0, s * h, 0);
+        for (int i = 0; i <= n; i++) {
+            float a = 2 * PI * (s ? n - i : i) / n;
+            glVertex3f(r * cos(a), s * h, r * sin(a));
+        }
+        glEnd();
+    }
+`;
+  var CYL = `// ${C("Silindr: n segment, yon sirt normallari uçlarda (silliq)", "Цилиндр: n сегментов, нормали боковой поверхности в вершинах (гладко)")}
+void cylinder(float r, float h, int n) {
+` + CYL_BODY + `}
+
+`;
+  var LATHE = `// ${C("Aylanma sirt (tokarlik dastgohi): profil (R[i], Y[i]) Oy atrofida aylantiriladi", "Поверхность вращения («токарный станок»): профиль (R[i], Y[i]) вращается вокруг Oy")}
+void lathe(float R[], float Y[], int m, int n) {
+    for (int i = 0; i + 1 < m; i++) {
+        float dr = R[i + 1] - R[i], dy = Y[i + 1] - Y[i];
+        glBegin(GL_QUAD_STRIP);
+        for (int j = 0; j <= n; j++) {
+            float a = 2 * PI * j / n, c = cos(a), s = sin(a);
+            glNormal3f(dy * c, -dr, dy * s);    // ${C("profil urinmasiga perpendikulyar", "перпендикуляр к касательной профиля")}
+            glVertex3f(R[i + 1] * c, Y[i + 1], R[i + 1] * s);
+            glVertex3f(R[i] * c, Y[i], R[i] * s);
+        }
+        glEnd();
+    }
+}
+
+`;
+  var GEAR = `// ${C("Tişli ğildirak: n tiş, ički radius r0, taşqi r1, qalinligi w; kontur yulduzsimon — markazdan yelpiğ bilan yopiladi", "Шестерня: n зубьев, внутренний радиус r0, внешний r1, толщина w; контур звёздный — закрывается веером из центра")}
+void gear(int n, float r0, float r1, float w) {
+    int m = 4 * n;
+    float X[400], Z[400];
+    for (int i = 0; i < n; i++) {
+        float a = 2 * PI * i / n, d = 2 * PI / n / 4;
+        X[4*i] = r0 * cos(a);           Z[4*i] = r0 * sin(a);
+        X[4*i+1] = r1 * cos(a + d);     Z[4*i+1] = r1 * sin(a + d);
+        X[4*i+2] = r1 * cos(a + 2 * d); Z[4*i+2] = r1 * sin(a + 2 * d);
+        X[4*i+3] = r0 * cos(a + 3 * d); Z[4*i+3] = r0 * sin(a + 3 * d);
+    }
+    glBegin(GL_QUADS);
+    for (int k = 0; k < m; k++) {
+        int l = (k + 1) % m;
+        glNormal3f(Z[l] - Z[k], 0, -(X[l] - X[k]));
+        glVertex3f(X[k], -w / 2, Z[k]); glVertex3f(X[l], -w / 2, Z[l]);
+        glVertex3f(X[l],  w / 2, Z[l]); glVertex3f(X[k],  w / 2, Z[k]);
+    }
+    glEnd();
+    for (int s = 0; s < 2; s++) {
+        float y = s ? w / 2 : -w / 2;
+        glNormal3f(0, s ? 1 : -1, 0);
+        glBegin(GL_TRIANGLE_FAN);
+        glVertex3f(0, y, 0);
+        for (int k = 0; k <= m; k++) { int q = s ? (m - k) % m : k % m; glVertex3f(X[q], y, Z[q]); }
+        glEnd();
+    }
+}
+
+`;
+  var RESHAPE = `void reshape(int w, int h) {
+    glViewport(0, 0, w, h);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(45.0, (double)w / h, 1.0, 60.0);   // угол, пропорции, near, far
+    gluPerspective(40.0, (double)w / h, 0.3, 100.0);
     glMatrixMode(GL_MODELVIEW);
 }
-
 `;
-  const IDLE = `void idle() {
-    glutPostRedisplay();
-}
+  function MAIN(title, extra) {
+    return `
+void idle() { glutPostRedisplay(); }
 
-`;
-  const MAIN = (title, reshape, idle) => `
 int main(int argc, char** argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(480, 360);
     glutCreateWindow("${title}");
-    glewInit();
-    init();
-    glutDisplayFunc(display);
-${reshape ? "    glutReshapeFunc(reshape);\n" : ""}${idle ? "    glutIdleFunc(idle);\n" : ""}    glutMainLoop();
+    glClearColor(0.08f, 0.11f, 0.2f, 1.0f);
+    initGL();
+${extra || ""}    glutDisplayFunc(display);
+    glutReshapeFunc(reshape);
+    glutIdleFunc(idle);
+    glutMainLoop();
     return 0;
 }
 `;
-  const INIT_STD = `void init() {
-    glClearColor(0.10f, 0.12f, 0.18f, 1.0f);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-    glEnable(GL_NORMALIZE);
-    glEnable(GL_COLOR_MATERIAL);       // glColor задаёт фоновый и рассеянный цвета материала
-}
-
-`;
-  const AXES = `// Оси координат: красная - X, зелёная - Y, синяя - Z (без освещения)
-void axes(float L) {
-    glDisable(GL_LIGHTING);
-    glLineWidth(2.0f);
-    glBegin(GL_LINES);
-        glColor3f(1.0f, 0.3f, 0.3f); glVertex3f(0, 0, 0); glVertex3f(L, 0, 0);
-        glColor3f(0.3f, 1.0f, 0.3f); glVertex3f(0, 0, 0); glVertex3f(0, L, 0);
-        glColor3f(0.4f, 0.5f, 1.0f); glVertex3f(0, 0, 0); glVertex3f(0, 0, L);
-    glEnd();
-    glEnable(GL_LIGHTING);
-}
-
-`;
-
-  /* ---------- Пример ---------- */
-  const ex = HEAD + INIT_STD.replace("    glEnable(GL_COLOR_MATERIAL);       // glColor задаёт фоновый и рассеянный цвета материала\n",
-`    glEnable(GL_COLOR_MATERIAL);       // glColor задаёт фоновый и рассеянный цвета материала
-    GLfloat white[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-    glMaterialfv(GL_FRONT, GL_SPECULAR, white);      // белый блик
-    glMaterialf(GL_FRONT, GL_SHININESS, 60.0f);      // показатель блеска
-`) + RESHAPE + `void display() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glMatrixMode(GL_MODELVIEW);
+  }
+  function S(pre, todo, body, post) { return { starter: pre + todo + post, solution: pre + body + post }; }
+  function VIEW(y, d, cy) { return `    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glLoadIdentity();
-    gluLookAt(0.0, 2.5, 8.0,   0.0, 0.0, 0.0,   0.0, 1.0, 0.0);   // камера
+    gluLookAt(0, ${y}, ${d},  0, ${cy}, 0,  0, 1, 0);
+`; }
 
-    // Положение источника преобразуется текущей модельно-видовой матрицей,
-    // поэтому его задают ПОСЛЕ gluLookAt: источник закреплён в мировых координатах
-    GLfloat lightPos[] = { 4.0f, 5.0f, 5.0f, 1.0f };               // w = 1 - точечный
-    glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
-
-    float t = glutGet(GLUT_ELAPSED_TIME) / 1000.0f;
-
-    glPushMatrix();
-        glTranslatef(-1.8f, -0.2f, 0.0f);
-        glRotatef(30.0f * t, 0.0f, 1.0f, 0.0f);                    // вращение чайника
-        glColor3f(0.85f, 0.25f, 0.20f);
-        glutSolidTeapot(1.2);
-    glPopMatrix();
-
-    glPushMatrix();
-        glTranslatef(2.0f, 0.2f, 0.0f);
-        glColor3f(0.20f, 0.50f, 0.90f);
-        glutSolidSphere(1.0, 40, 30);
-    glPopMatrix();
-
+  /* ---------- Misol ---------- */
+  var ex = HEAD + LIGHT + PRISM + `void display() {
+` + VIEW(3, 6, 0.6) + `    glRotatef(20 * now(), 0, 1, 0);
+    glColor3f(0.7f, 0.72f, 0.78f);
+    prism(6, 1.3f, 1.2f);                      // ${C("oltiburçakli prizma — gayka kabi", "шестигранная призма — как гайка")}
     glutSwapBuffers();
 }
 
-` + IDLE + MAIN("Освещённая сцена", true, true);
+` + RESHAPE + MAIN("A12: prizma");
 
-  /* ---------- Шаг 1: порядок преобразований ---------- */
-  const s1 = (s) => HEAD + INIT_STD + AXES + RESHAPE +
-`// Окружность радиуса r в плоскости XZ (без освещения)
-void circleXZ(float r) {
-    glDisable(GL_LIGHTING);
-    glLineWidth(2.0f);
-    glColor3f(0.45f, 0.5f, 0.6f);
-    glBegin(GL_LINE_LOOP);
-    for (int i = 0; i < 72; i++) {
-        float a = 2.0f * (float)M_PI * i / 72.0f;
-        glVertex3f(r * cosf(a), 0.0f, -r * sinf(a));
-    }
-    glEnd();
-    glEnable(GL_LIGHTING);
-}
+  /* ---------- 1. Silindr ---------- */
+  var t1 = S(HEAD + LIGHT + `// ${C("Silindr: n segment, yon sirt normallari uçlarda (silliq)", "Цилиндр: n сегментов, нормали боковой поверхности в вершинах (гладко)")}
+void cylinder(float r, float h, int n) {
+`, `    // ${C("TODO 1: yon sirt — GL_QUAD_STRIP: har bir a = 2π·i/n uçun normal (cos a, 0, sin a) va ikki uç (y = h va y = 0)", "TODO 1: боковая поверхность — GL_QUAD_STRIP: для каждого a = 2π·i/n нормаль (cos a, 0, sin a) и две вершины (y = h и y = 0)")}
+    // ${C("TODO 2: pastki va ustki asoslar — GL_TRIANGLE_FAN, normallar (0, ∓1, 0)", "TODO 2: нижнее и верхнее основания — GL_TRIANGLE_FAN, нормали (0, ∓1, 0)")}
+`, CYL_BODY, `}
 
 void display() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluLookAt(0.0, 5.0, 8.0,   0.0, 0.0, 0.0,   0.0, 1.0, 0.0);
-    GLfloat lightPos[] = { 2.0f, 5.0f, 6.0f, 0.0f };      // направленный источник
-    glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
-
-    axes(4.5f);
-    circleXZ(3.0f);
-
-    // Красный чайник: сдвиг на 3 по X, затем поворот на 60 градусов вокруг оси Y
-    glPushMatrix();
-${s ? `        glTranslatef(3.0f, 0.0f, 0.0f);
-        glRotatef(60.0f, 0.0f, 1.0f, 0.0f);
-` : `        // TODO: glTranslatef(3, 0, 0), затем glRotatef(60, 0, 1, 0)
-`}        glColor3f(0.90f, 0.20f, 0.20f);
-        glutSolidTeapot(1.0);
-    glPopMatrix();
-
-    // Зелёный чайник: те же две команды, но в обратном порядке
-    glPushMatrix();
-${s ? `        glRotatef(60.0f, 0.0f, 1.0f, 0.0f);
-        glTranslatef(3.0f, 0.0f, 0.0f);
-` : `        // TODO: те же команды в обратном порядке (сначала поворот, потом сдвиг)
-`}        glColor3f(0.20f, 0.80f, 0.30f);
-        glutSolidTeapot(1.0);
-    glPopMatrix();
-
+` + VIEW(2.5, 6, 0.8) + `    glColor3f(0.7f, 0.72f, 0.78f);
+    glRotatef(-25, 0, 1, 0);
+    cylinder(1.0f, 2.0f, 32);
     glutSwapBuffers();
 }
-` + MAIN("Порядок преобразований", true, false);
 
-  /* ---------- Шаг 2: иерархия Солнце-Земля-Луна ---------- */
-  const s2 = (s) => HEAD + `void init() {
-    glClearColor(0.02f, 0.02f, 0.06f, 1.0f);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-    glEnable(GL_NORMALIZE);
-    glEnable(GL_COLOR_MATERIAL);
-}
+` + RESHAPE + MAIN("A12: silindr"));
 
-` + RESHAPE + `void display() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluLookAt(0.0, 7.0, 9.0,   0.0, 0.0, 0.0,   0.0, 1.0, 0.0);
-
-    GLfloat sunPos[] = { 0.0f, 0.0f, 0.0f, 1.0f };   // источник света - в центре Солнца
-    glLightfv(GL_LIGHT0, GL_POSITION, sunPos);
-
-    float t = glutGet(GLUT_ELAPSED_TIME) / 1000.0f;
-    float year  = 60.0f * t;          // угол орбиты Земли
-    float day   = 300.0f * t;             // вращение Земли вокруг оси
-    float month = 200.0f * t;             // угол орбиты Луны вокруг Земли
-
-    // Орбита Земли (без освещения)
-    glDisable(GL_LIGHTING);
-    glLineWidth(2.0f);
-    glColor3f(0.3f, 0.35f, 0.5f);
-    glBegin(GL_LINE_LOOP);
-    for (int i = 0; i < 90; i++) {
-        float a = 2.0f * (float)M_PI * i / 90.0f;
-        glVertex3f(4.0f * cosf(a), 0.0f, 4.0f * sinf(a));
+  /* ---------- 2. Konus ---------- */
+  var t2 = S(HEAD + LIGHT + `// ${C("Konus: asos radiusi r, balandlik h, ustki radius 0", "Конус: радиус основания r, высота h, верхний радиус 0")}
+void cone(float r, float h, int n) {
+    float k = r / h;          // ${C("yon sirt normali: (cos a, r/h, sin a) — yuqoriga oğgan", "нормаль боковой поверхности: (cos a, r/h, sin a) — наклонена вверх")}
+`, `    // ${C("TODO: silindrdagidek GL_QUAD_STRIP, lekin ustki uç — (0, h, 0), normal (cos a, k, sin a); keyin pastki asos", "TODO: как у цилиндра GL_QUAD_STRIP, но верхняя вершина — (0, h, 0), нормаль (cos a, k, sin a); затем нижнее основание")}
+`, `    glBegin(GL_QUAD_STRIP);
+    for (int i = 0; i <= n; i++) {
+        float a = 2 * PI * i / n;
+        glNormal3f(cos(a), k, sin(a));
+        glVertex3f(0, h, 0);                   // ${C("ustki radius 0 — barça uçlar bir nuqtada", "верхний радиус 0 — все вершины в одной точке")}
+        glVertex3f(r * cos(a), 0, r * sin(a));
     }
     glEnd();
+    glNormal3f(0, -1, 0);
+    glBegin(GL_TRIANGLE_FAN);
+    glVertex3f(0, 0, 0);
+    for (int i = 0; i <= n; i++) { float a = 2 * PI * i / n; glVertex3f(r * cos(a), 0, r * sin(a)); }
+    glEnd();
+`, `}
 
-    // Солнце: светится само, освещение отключено
-    glColor3f(1.0f, 0.85f, 0.10f);
-    glutSolidSphere(1.0, 32, 24);
-    glEnable(GL_LIGHTING);
-
-${s ? `    glPushMatrix();
-        glRotatef(year, 0.0f, 1.0f, 0.0f);        // движение по орбите
-        glTranslatef(4.0f, 0.0f, 0.0f);           // расстояние до Солнца
-
-        glPushMatrix();                           // суточное вращение - только для Земли
-            glRotatef(day, 0.0f, 1.0f, 0.0f);
-            glRotatef(23.5f, 0.0f, 0.0f, 1.0f);   // наклон оси
-            glColor3f(0.20f, 0.45f, 1.0f);
-            glutSolidSphere(0.6, 32, 24);
-            glDisable(GL_LIGHTING);               // сетка, чтобы вращение было видно
-            glColor3f(0.75f, 0.85f, 1.0f);
-            glutWireSphere(0.62, 12, 8);
-            glEnable(GL_LIGHTING);
-        glPopMatrix();
-
-        glRotatef(month, 0.0f, 1.0f, 0.0f);       // орбита Луны - относительно Земли
-        glTranslatef(1.3f, 0.0f, 0.0f);
-        glColor3f(0.80f, 0.80f, 0.80f);
-        glutSolidSphere(0.2, 20, 16);
-    glPopMatrix();
-` : `    // TODO: Земля (радиус 0.6, синяя) на орбите радиусом 4 вокруг Солнца,
-    //       Луна (радиус 0.2, серая) на орбите радиусом 1.3 вокруг Земли.
-    //       Используйте glPushMatrix / glPopMatrix, углы year, day, month заданы выше.
-`}
+void display() {
+` + VIEW(2.5, 6, 0.8) + `    glColor3f(0.85f, 0.6f, 0.35f);
+    cone(1.2f, 2.2f, 40);
     glutSwapBuffers();
 }
 
-` + IDLE + MAIN("Солнце - Земля - Луна", true, true);
+` + RESHAPE + MAIN("A12: konus"));
 
-  /* ---------- Шаг 3: камера и проекции ---------- */
-  const s3 = (s) => HEAD + `void init() {
-    glClearColor(0.10f, 0.12f, 0.18f, 1.0f);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-    glEnable(GL_NORMALIZE);
-    glEnable(GL_COLOR_MATERIAL);
-}
+  /* ---------- 3. Çaşka ---------- */
+  var t3 = S(HEAD + LIGHT + `// ${C("Çaşka profili: taglikdan boşlab taşqi devor, labi va ički devor", "Профиль чашки: от дна — внешняя стенка, край и внутренняя стенка")}
+float PR[9] = { 0.0f, 0.7f, 0.8f, 1.05f, 1.2f, 1.1f, 0.95f, 0.65f, 0.0f };
+float PY[9] = { 0.0f, 0.0f, 0.15f, 0.8f, 1.6f, 1.6f, 0.85f, 0.25f, 0.25f };
 
-// Сцена: пол-сетка и три ряда кубов, уходящих вдаль по оси -Z
-void drawScene() {
-    GLfloat lightPos[] = { 0.4f, 1.0f, 0.8f, 0.0f };
-    glLightfv(GL_LIGHT0, GL_POSITION, lightPos);   // камера уже установлена
-
-    glDisable(GL_LIGHTING);
-    glLineWidth(2.0f);
-    glColor3f(0.35f, 0.40f, 0.50f);
-    glBegin(GL_LINES);
-    for (int x = -4; x <= 4; x += 2) { glVertex3f(x, 0, -12); glVertex3f(x, 0, 2); }
-    for (int z = -12; z <= 2; z += 2) { glVertex3f(-4, 0, z); glVertex3f(4, 0, z); }
-    glEnd();
-    glEnable(GL_LIGHTING);
-
-    for (int row = -1; row <= 1; row++) {
-        for (int i = 0; i < 5; i++) {
-            float c = i / 4.0f;
-            glPushMatrix();
-                glTranslatef(2.4f * row, 0.5f, -2.5f * i);
-                glColor3f(1.0f - c, 0.45f, c);
-                glutSolidCube(1.0);
-            glPopMatrix();
-        }
+void lathe(float R[], float Y[], int m, int n) {
+    for (int i = 0; i + 1 < m; i++) {
+        float dr = R[i + 1] - R[i], dy = Y[i + 1] - Y[i];
+        glBegin(GL_QUAD_STRIP);
+        for (int j = 0; j <= n; j++) {
+            float a = 2 * PI * j / n, c = cos(a), s = sin(a);
+`, `            // ${C("TODO: normal (dy·cos a, −dr, dy·sin a) va ikki uç: (R[i+1]·cos a, Y[i+1], R[i+1]·sin a), (R[i]·cos a, Y[i], R[i]·sin a)", "TODO: нормаль (dy·cos a, −dr, dy·sin a) и две вершины: (R[i+1]·cos a, Y[i+1], R[i+1]·sin a), (R[i]·cos a, Y[i], R[i]·sin a)")}
+`, `            glNormal3f(dy * c, -dr, dy * s);
+            glVertex3f(R[i + 1] * c, Y[i + 1], R[i + 1] * s);
+            glVertex3f(R[i] * c, Y[i], R[i] * s);
+`, `        }
+        glEnd();
     }
 }
 
 void display() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    int w = glutGet(GLUT_WINDOW_WIDTH);
-    int h = glutGet(GLUT_WINDOW_HEIGHT);
-    double aspect = (double)(w / 2) / h;           // пропорции ОДНОЙ половины окна
-
-${s ? `    // Левая половина: ортографическая проекция
-    glViewport(0, 0, w / 2, h);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glOrtho(-8.0 * aspect, 8.0 * aspect, -8.0, 8.0, 0.5, 60.0);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluLookAt(4.0, 3.5, 7.0,   0.0, 0.0, -5.0,   0.0, 1.0, 0.0);
-    drawScene();
-
-    // Правая половина: перспективная проекция, та же камера
-    glViewport(w / 2, 0, w / 2, h);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(60.0, aspect, 0.5, 60.0);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluLookAt(4.0, 3.5, 7.0,   0.0, 0.0, -5.0,   0.0, 1.0, 0.0);
-    drawScene();
-` : `    // TODO 1: левая половина окна - glViewport, glOrtho(-8*aspect, 8*aspect, -8, 8, 0.5, 60),
-    //         камера gluLookAt(4, 3.5, 7,  0, 0, -5,  0, 1, 0), затем drawScene()
-    // TODO 2: правая половина - glViewport, gluPerspective(60, aspect, 0.5, 60),
-    //         та же камера, затем drawScene()
-    drawScene();
-`}
-    // Подписи (координаты окна, без освещения)
-    glDisable(GL_LIGHTING);
-    glColor3f(1.0f, 1.0f, 1.0f);
-    glWindowPos2i(10, 10);
-    glutBitmapString(GLUT_BITMAP_HELVETICA_12, "glOrtho");
-    glWindowPos2i(w / 2 + 10, 10);
-    glutBitmapString(GLUT_BITMAP_HELVETICA_12, "gluPerspective");
-    glEnable(GL_LIGHTING);
-
+` + VIEW(3, 5.5, 0.6) + `    glColor3f(0.9f, 0.9f, 0.95f);
+    lathe(PR, PY, 9, 48);
+    // ${C("Dasta — tor bölagi", "Ручка — часть тора")}
+    glPushMatrix();
+    glTranslatef(1.25f, 0.85f, 0);
+    glScalef(1, 1.2f, 1);
+    glutSolidTorus(0.08, 0.38, 12, 24);
+    glPopMatrix();
     glutSwapBuffers();
 }
-` + MAIN("Ортографическая и перспективная проекции", false, false);
 
-  /* ---------- Шаг 4: нормали ---------- */
-  const s4 = (s) => HEAD + `void init() {
-    glClearColor(0.10f, 0.12f, 0.18f, 1.0f);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-${s ? "    glEnable(GL_NORMALIZE);            // нормали вида (0, 2, 3) не единичные\n" : "    // TODO: нормали (0, 2, 3) не единичны - включите их нормализацию\n"}    glEnable(GL_COLOR_MATERIAL);
-}
+` + RESHAPE + MAIN("A12: chashka"));
 
-` + RESHAPE + `// Куб со стороной 2 (GL_QUADS, обход против часовой стрелки снаружи)
-void cube() {
-    glBegin(GL_QUADS);
-${s ? "        glNormal3f(0, 0, 1);   " : "        // TODO: normal (0, 0, 1)\n        "}glVertex3f(-1, -1,  1); glVertex3f( 1, -1,  1); glVertex3f( 1,  1,  1); glVertex3f(-1,  1,  1);
-${s ? "        glNormal3f(0, 0, -1);  " : "        // TODO: normal (0, 0, -1)\n        "}glVertex3f( 1, -1, -1); glVertex3f(-1, -1, -1); glVertex3f(-1,  1, -1); glVertex3f( 1,  1, -1);
-${s ? "        glNormal3f(1, 0, 0);   " : "        // TODO: normal (1, 0, 0)\n        "}glVertex3f( 1, -1,  1); glVertex3f( 1, -1, -1); glVertex3f( 1,  1, -1); glVertex3f( 1,  1,  1);
-${s ? "        glNormal3f(-1, 0, 0);  " : "        // TODO: normal (-1, 0, 0)\n        "}glVertex3f(-1, -1, -1); glVertex3f(-1, -1,  1); glVertex3f(-1,  1,  1); glVertex3f(-1,  1, -1);
-${s ? "        glNormal3f(0, 1, 0);   " : "        // TODO: normal (0, 1, 0)\n        "}glVertex3f(-1,  1,  1); glVertex3f( 1,  1,  1); glVertex3f( 1,  1, -1); glVertex3f(-1,  1, -1);
-${s ? "        glNormal3f(0, -1, 0);  " : "        // TODO: normal (0, -1, 0)\n        "}glVertex3f(-1, -1, -1); glVertex3f( 1, -1, -1); glVertex3f( 1, -1,  1); glVertex3f(-1, -1,  1);
-    glEnd();
-}
-
-// Четырёхугольная пирамида: основание - квадрат со стороной 2, высота 1.5
-void pyramid() {
-    glBegin(GL_TRIANGLES);
-${s ? "        glNormal3f(0, 2, 3);   " : "        // TODO: normal (0, 2, 3)\n        "}glVertex3f(-1, 0,  1); glVertex3f( 1, 0,  1); glVertex3f(0, 1.5f, 0);
-${s ? "        glNormal3f(3, 2, 0);   " : "        // TODO: normal (3, 2, 0)\n        "}glVertex3f( 1, 0,  1); glVertex3f( 1, 0, -1); glVertex3f(0, 1.5f, 0);
-${s ? "        glNormal3f(0, 2, -3);  " : "        // TODO: normal (0, 2, -3)\n        "}glVertex3f( 1, 0, -1); glVertex3f(-1, 0, -1); glVertex3f(0, 1.5f, 0);
-${s ? "        glNormal3f(-3, 2, 0);  " : "        // TODO: normal (-3, 2, 0)\n        "}glVertex3f(-1, 0, -1); glVertex3f(-1, 0,  1); glVertex3f(0, 1.5f, 0);
-    glEnd();
-    glBegin(GL_QUADS);
-${s ? "        glNormal3f(0, -1, 0);  " : "        // TODO: normal (0, -1, 0)\n        "}glVertex3f(-1, 0,  1); glVertex3f(-1, 0, -1); glVertex3f( 1, 0, -1); glVertex3f( 1, 0,  1);
-    glEnd();
-}
-
-void display() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluLookAt(0.0, 3.5, 9.0,   0.0, 0.0, 0.0,   0.0, 1.0, 0.0);
-    GLfloat lightPos[] = { 1.0f, 1.5f, 1.0f, 0.0f };     // направленный: сверху справа спереди
-    glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
-
-    glPushMatrix();
-        glTranslatef(-2.4f, 0.0f, 0.0f);
-        glRotatef(35.0f, 0.0f, 1.0f, 0.0f);
-        glColor3f(0.95f, 0.55f, 0.15f);
-        cube();
-    glPopMatrix();
-
-    glPushMatrix();
-        glTranslatef(2.4f, -1.0f, 0.0f);
-        glRotatef(35.0f, 0.0f, 1.0f, 0.0f);
-        glScalef(1.4f, 1.4f, 1.4f);
-        glColor3f(0.20f, 0.75f, 0.70f);
-        pyramid();
-    glPopMatrix();
-
-    glutSwapBuffers();
-}
-` + MAIN("Нормали куба и пирамиды", true, false);
-
-  /* ---------- Шаг 5: GL_FLAT и GL_SMOOTH ---------- */
-  const s5 = (s) => HEAD + `#define N 12      // число граней конуса
-
-void init() {
-    glClearColor(0.10f, 0.12f, 0.18f, 1.0f);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-    glEnable(GL_NORMALIZE);             // нормали (2cos, 1, 2sin) не единичные
-    glEnable(GL_COLOR_MATERIAL);
-    GLfloat spec[] = { 0.7f, 0.7f, 0.7f, 1.0f };
-    glMaterialfv(GL_FRONT, GL_SPECULAR, spec);
-    glMaterialf(GL_FRONT, GL_SHININESS, 40.0f);
-}
-
-` + RESHAPE + `// Боковая поверхность конуса: радиус 1, высота 2, ось Y, основание y = -1.
-// Нормаль боковой поверхности в точке с углом a пропорциональна (2*cos a, 1, 2*sin a).
-// Последняя вершина каждого треугольника - вершина конуса; в режиме GL_FLAT
-// цвет грани берётся именно по ней, поэтому её нормаль - нормаль грани (угол am).
-void cone() {
-    glBegin(GL_TRIANGLES);
-    for (int i = 0; i < N; i++) {
-        float a0 = 2.0f * (float)M_PI * i / N;
-        float a1 = 2.0f * (float)M_PI * (i + 1) / N;
-        float am = 0.5f * (a0 + a1);
-${s ? `        glNormal3f(2.0f * cosf(a1), 1.0f, 2.0f * sinf(a1));
-        glVertex3f(cosf(a1), -1.0f, sinf(a1));
-        glNormal3f(2.0f * cosf(a0), 1.0f, 2.0f * sinf(a0));
-        glVertex3f(cosf(a0), -1.0f, sinf(a0));
-        glNormal3f(2.0f * cosf(am), 1.0f, 2.0f * sinf(am));
-        glVertex3f(0.0f, 1.0f, 0.0f);
-` : `        // TODO: перед каждой из трёх вершин задайте glNormal3f(2cos a, 1, 2sin a)
-        //       с углом a1, a0 и am соответственно
-        glVertex3f(cosf(a1), -1.0f, sinf(a1));
-        glVertex3f(cosf(a0), -1.0f, sinf(a0));
-        glVertex3f(0.0f, 1.0f, 0.0f);
-`}    }
-    glEnd();
-}
-
-void display() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluLookAt(0.0, 3.0, 8.0,   0.0, 0.0, 0.0,   0.0, 1.0, 0.0);
-    GLfloat lightPos[] = { 1.0f, 1.0f, 1.0f, 0.0f };
-    glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
-
-    glColor3f(0.95f, 0.55f, 0.15f);
-
-    glPushMatrix();
-        glTranslatef(-2.2f, 0.0f, 0.0f);
-${s ? "        glShadeModel(GL_FLAT);\n" : "        // TODO: glShadeModel(GL_FLAT)\n"}        cone();
-    glPopMatrix();
-
-    glPushMatrix();
-        glTranslatef(2.2f, 0.0f, 0.0f);
-${s ? "        glShadeModel(GL_SMOOTH);\n" : "        // TODO: glShadeModel(GL_SMOOTH)\n"}        cone();
-    glPopMatrix();
-
-    glDisable(GL_LIGHTING);
-    glColor3f(1.0f, 1.0f, 1.0f);
-    glWindowPos2i(70, 20);
-    glutBitmapString(GLUT_BITMAP_HELVETICA_18, "GL_FLAT");
-    glWindowPos2i(300, 20);
-    glutBitmapString(GLUT_BITMAP_HELVETICA_18, "GL_SMOOTH");
-    glEnable(GL_LIGHTING);
-
-    glutSwapBuffers();
-}
-` + MAIN("GL_FLAT и GL_SMOOTH", true, false);
-
-  /* ---------- Шаг 6: несколько источников ---------- */
-  const FLOOR_SPHERES = (n, half) => `// Пол из мелких четырёхугольников: освещение считается в вершинах,
-// поэтому для заметного пятна света пол нужно разбить на много ячеек
-void floorGrid() {
-    const int n = ${n};
-    float step = ${(2 * half).toFixed(1)}f / n;
-    glNormal3f(0.0f, 1.0f, 0.0f);
-    glBegin(GL_QUADS);
+  /* ---------- 4. Tişli ğildirak ---------- */
+  var t4 = S(HEAD + LIGHT + `void gear(int n, float r0, float r1, float w) {
+    int m = 4 * n;
+    float X[400], Z[400];
     for (int i = 0; i < n; i++) {
-        for (int j = 0; j < n; j++) {
-            float x = -${half.toFixed(1)}f + i * step;
-            float z = -${half.toFixed(1)}f + j * step;
-            glVertex3f(x, 0.0f, z + step);
-            glVertex3f(x + step, 0.0f, z + step);
-            glVertex3f(x + step, 0.0f, z);
-            glVertex3f(x, 0.0f, z);
-        }
+        float a = 2 * PI * i / n, d = 2 * PI / n / 4;
+`, `        // ${C("TODO: har bir tiş — 4 ta kontur nuqtasi: (r0, a), (r1, a + d), (r1, a + 2d), (r0, a + 3d)", "TODO: каждый зуб — 4 точки контура: (r0, a), (r1, a + d), (r1, a + 2d), (r0, a + 3d)")}
+        // ${C("X[4i + k] = radius·cos(burçak), Z[4i + k] = radius·sin(burçak)", "X[4i + k] = радиус·cos(угол), Z[4i + k] = радиус·sin(угол)")}
+        for (int k = 0; k < 4; k++) { X[4*i+k] = r0 * cos(a + k * d); Z[4*i+k] = r0 * sin(a + k * d); }
+`, `        X[4*i] = r0 * cos(a);           Z[4*i] = r0 * sin(a);
+        X[4*i+1] = r1 * cos(a + d);     Z[4*i+1] = r1 * sin(a + d);
+        X[4*i+2] = r1 * cos(a + 2 * d); Z[4*i+2] = r1 * sin(a + 2 * d);
+        X[4*i+3] = r0 * cos(a + 3 * d); Z[4*i+3] = r0 * sin(a + 3 * d);
+`, `    }
+    glBegin(GL_QUADS);
+    for (int k = 0; k < m; k++) {
+        int l = (k + 1) % m;
+        glNormal3f(Z[l] - Z[k], 0, -(X[l] - X[k]));
+        glVertex3f(X[k], -w / 2, Z[k]); glVertex3f(X[l], -w / 2, Z[l]);
+        glVertex3f(X[l],  w / 2, Z[l]); glVertex3f(X[k],  w / 2, Z[k]);
     }
     glEnd();
+    for (int s = 0; s < 2; s++) {
+        float y = s ? w / 2 : -w / 2;
+        glNormal3f(0, s ? 1 : -1, 0);
+        glBegin(GL_TRIANGLE_FAN);
+        glVertex3f(0, y, 0);
+        for (int k = 0; k <= m; k++) { int q = s ? (m - k) % m : k % m; glVertex3f(X[q], y, Z[q]); }
+        glEnd();
+    }
 }
 
-`;
-  const s6 = (s) => HEAD + `void init() {
-    glClearColor(0.05f, 0.06f, 0.09f, 1.0f);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_NORMALIZE);
-    glEnable(GL_COLOR_MATERIAL);
+void display() {
+` + VIEW(4, 4, 0) + `    glRotatef(30 * now(), 0, 1, 0);            // ${C("aylaniş animatsiyasi", "анимация вращения")}
+    glColor3f(0.75f, 0.7f, 0.5f);
+    gear(12, 1.3f, 1.7f, 0.5f);
+    glColor3f(0.4f, 0.42f, 0.48f);
+    glPushMatrix(); glTranslatef(0, -0.6f, 0); glScalef(0.3f, 1.2f, 0.3f); glutSolidCube(1.0); glPopMatrix();
+    glutSwapBuffers();
 }
 
-` + RESHAPE + FLOOR_SPHERES(24, 8.0) + `void display() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluLookAt(0.0, 5.0, 9.0,   0.0, 0.0, 0.0,   0.0, 1.0, 0.0);
+` + RESHAPE + MAIN("A12: tishli g'ildirak"));
 
-    // Положения источников задаются после камеры - они закреплены в мире
-${s ? `    GLfloat sunDir[]   = { -0.5f, 1.0f, 0.3f, 0.0f };      // w = 0: направленный
-    GLfloat sunCol[]   = {  0.35f, 0.35f, 0.35f, 1.0f };   // слабый белый
-    GLfloat redPos[]   = { -3.0f, 1.5f, 1.0f, 1.0f };      // w = 1: точечный
-    GLfloat redCol[]   = {  1.0f, 0.15f, 0.15f, 1.0f };
-    GLfloat bluePos[]  = {  3.0f, 1.5f, 1.0f, 1.0f };
-    GLfloat blueCol[]  = {  0.2f, 0.3f, 1.0f, 1.0f };
+  /* ---------- 5. Ikki tişli ---------- */
+  var t5 = S(HEAD + LIGHT + GEAR + `void display() {
+` + VIEW(5, 5, 0) + `    float t = now();
+    int n1 = 12, n2 = 24;
+    float r1 = 1.0f, r2 = 2.0f;               // ${C("boşlanğiç aylana radiuslari (tişlar soniga mutanosib)", "радиусы начальных окружностей (пропорциональны числу зубьев)")}
+    float w1 = 60;                            // ${C("birinçi ğildirak tezligi, °/s", "скорость первого колеса, °/с")}
+`, `    // ${C("TODO: ikkinçi ğildirak tezligi n1·ω1 = n2·ω2 dan, teskari yönalişda: w2 = −w1·n1/n2;", "TODO: скорость второго колеса из n1·ω1 = n2·ω2, в обратную сторону: w2 = −w1·n1/n2;")}
+    // ${C("tişlar bir-biriga kirişi uçun ikkinçisini yarim tişga (180/n2 °) burib qöying", "чтобы зубья вошли друг в друга, поверните второе на ползуба (180/n2 °)")}
+    float w2 = w1, phase = 0;
+`, `    float w2 = -w1 * n1 / n2;                 // ${C("chiziqli tezliklar ilaşiş nuqtasida teng", "линейные скорости в точке зацепления равны")}
+    float phase = 180.0f / n2;
+`, `    glPushMatrix();
+    glTranslatef(-r1 - 0.05f, 0, 0);
+    glRotatef(w1 * t, 0, 1, 0);
+    glColor3f(0.8f, 0.65f, 0.35f);
+    gear(n1, r1 - 0.2f, r1 + 0.2f, 0.4f);
+    glPopMatrix();
+    glPushMatrix();
+    glTranslatef(r2 + 0.05f, 0, 0);
+    glRotatef(w2 * t + phase, 0, 1, 0);
+    glColor3f(0.6f, 0.65f, 0.75f);
+    gear(n2, r2 - 0.2f, r2 + 0.2f, 0.4f);
+    glPopMatrix();
+    glutSwapBuffers();
+}
 
-    glEnable(GL_LIGHT0);
-    glLightfv(GL_LIGHT0, GL_POSITION, sunDir);
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, sunCol);
+` + RESHAPE + MAIN("A12: ikki tishli"));
 
-    glEnable(GL_LIGHT1);
-    glLightfv(GL_LIGHT1, GL_POSITION, redPos);
-    glLightfv(GL_LIGHT1, GL_DIFFUSE, redCol);
-    glLightf(GL_LIGHT1, GL_CONSTANT_ATTENUATION, 1.0f);    // 1 / (kc + kl*d + kq*d^2)
-    glLightf(GL_LIGHT1, GL_LINEAR_ATTENUATION, 0.1f);
-    glLightf(GL_LIGHT1, GL_QUADRATIC_ATTENUATION, 0.05f);
-
-    glEnable(GL_LIGHT2);
-    glLightfv(GL_LIGHT2, GL_POSITION, bluePos);
-    glLightfv(GL_LIGHT2, GL_DIFFUSE, blueCol);
-    glLightf(GL_LIGHT2, GL_CONSTANT_ATTENUATION, 1.0f);
-    glLightf(GL_LIGHT2, GL_LINEAR_ATTENUATION, 0.1f);
-    glLightf(GL_LIGHT2, GL_QUADRATIC_ATTENUATION, 0.05f);
-` : `    // TODO: GL_LIGHT0 - направленный (w = 0), слабый белый (0.35, 0.35, 0.35), направление (-0.5, 1, 0.3)
-    // TODO: GL_LIGHT1 - точечный красный (1, 0.15, 0.15) в точке (-3, 1.5, 1), затухание kc=1, kl=0.1, kq=0.05
-    // TODO: GL_LIGHT2 - точечный синий (0.2, 0.3, 1) в точке (3, 1.5, 1), то же затухание
-    // Не забудьте glEnable для каждого источника
-`}
-    glColor3f(0.85f, 0.85f, 0.85f);
-    floorGrid();
-    for (int k = -1; k <= 1; k++) {
+  /* ---------- 6. Vint ---------- */
+  var t6 = S(HEAD + LIGHT + PRISM + CYL + `void display() {
+` + VIEW(2.2, 6.5, 0) + `    glRotatef(-60, 0, 0, 1);                   // ${C("vintni yotqizib körsatamiz", "кладём болт набок")}
+    glRotatef(15 * now(), 0, 1, 0);
+    glColor3f(0.72f, 0.74f, 0.8f);
+    glTranslatef(0, -1.6f, 0);
+`, `    // ${C("TODO 1: kallak — oltiburçakli prizma prism(6, 0,8, 0,6) y = 2,4 da (glTranslatef bilan)", "TODO 1: головка — шестигранная призма prism(6, 0,8, 0,6) на y = 2,4 (через glTranslatef)")}
+    // ${C("TODO 2: özak — cylinder(0,4, 2,4, 32); rezba — 10 ta halqa glutSolidTorus(0,06, 0,42, 8, 24), har 0,22 da", "TODO 2: стержень — cylinder(0,4, 2,4, 32); резьба — 10 колец glutSolidTorus(0,06, 0,42, 8, 24) через 0,22")}
+    // ${C("(tor XY tekisligida yotadi — uni Ox atrofida 90° ga buring)", "(тор лежит в плоскости XY — поверните его на 90° вокруг Ox)")}
+`, `    glPushMatrix(); glTranslatef(0, 2.4f, 0); prism(6, 0.8f, 0.6f); glPopMatrix();   // ${C("kallak", "головка")}
+    cylinder(0.4f, 2.4f, 32);                                                        // ${C("özak", "стержень")}
+    for (int k = 0; k < 10; k++) {                                                    // ${C("rezba", "резьба")}
         glPushMatrix();
-            glTranslatef(2.5f * k, 0.7f, -0.5f);
-            glutSolidSphere(0.7, 32, 24);
+        glTranslatef(0, 0.15f + 0.22f * k, 0);
+        glRotatef(90, 1, 0, 0);
+        glutSolidTorus(0.06, 0.42, 8, 24);
         glPopMatrix();
     }
+`, `    glutSwapBuffers();
+}
 
-    // Маркеры источников: маленькие светящиеся шарики (без освещения)
-    glDisable(GL_LIGHTING);
-    glColor3f(1.0f, 0.3f, 0.3f);
-    glPushMatrix(); glTranslatef(-3.0f, 1.5f, 1.0f); glutSolidSphere(0.12, 12, 8); glPopMatrix();
-    glColor3f(0.4f, 0.5f, 1.0f);
-    glPushMatrix(); glTranslatef(3.0f, 1.5f, 1.0f); glutSolidSphere(0.12, 12, 8); glPopMatrix();
-    glEnable(GL_LIGHTING);
+` + RESHAPE + MAIN("A12: vint"));
 
+  /* ---------- 7. Prujina ---------- */
+  var t7 = S(HEAD + LIGHT + `// ${C("Prujina: radius R, sim radiusi r, N = 10 örama, qadam p = 0,5", "Пружина: радиус R, радиус проволоки r, N = 10 витков, шаг p = 0,5")}
+const float R = 1.0f, r = 0.12f, p = 0.5f;
+const int N = 10, SEG = 24, RING = 10;
+
+// ${C("Vint çiziği nuqtasi va kesim aylanasi: θ — örama burçagi, φ — kesim burçagi", "Точка винтовой линии и окружность сечения: θ — угол витка, φ — угол сечения")}
+void springVertex(float th, float ph) {
+`, `    // ${C("TODO: radial yönaliş (cos θ, 0, sin θ); markaz C = (R·cos θ, p·θ/2π, R·sin θ);", "TODO: радиальное направление (cos θ, 0, sin θ); центр C = (R·cos θ, p·θ/2π, R·sin θ);")}
+    // ${C("normal n = cos φ·radial + sin φ·(0, 1, 0); uç = C + r·n; glNormal3f(n), glVertex3f(uç)", "нормаль n = cos φ·radial + sin φ·(0, 1, 0); вершина = C + r·n; glNormal3f(n), glVertex3f(вершина)")}
+    glVertex3f(R * cos(th), p * th / (2 * PI), R * sin(th));
+`, `    float cx = cos(th), cz = sin(th);
+    float nx = cos(ph) * cx, ny = sin(ph), nz = cos(ph) * cz;
+    glNormal3f(nx, ny, nz);
+    glVertex3f(R * cx + r * nx, p * th / (2 * PI) + r * ny, R * cz + r * nz);
+`, `}
+
+void display() {
+` + VIEW(2.5, 7.5, 2.5) + `    glColor3f(0.75f, 0.78f, 0.85f);
+    glRotatef(20 * now(), 0, 1, 0);
+    // ${C("Sim — trubka: θ böyiça qadamlar, har qadamda kesim aylanasi (GL_QUAD_STRIP)", "Проволока — трубка: шаги по θ, на каждом шаге окружность сечения (GL_QUAD_STRIP)")}
+    for (int i = 0; i < N * SEG; i++) {
+        float t0 = 2 * PI * i / SEG, t1 = 2 * PI * (i + 1) / SEG;
+        glBegin(GL_QUAD_STRIP);
+        for (int j = 0; j <= RING; j++) {
+            float ph = 2 * PI * j / RING;
+            springVertex(t0, ph);
+            springVertex(t1, ph);
+        }
+        glEnd();
+    }
     glutSwapBuffers();
 }
-` + MAIN("Несколько источников света", true, false);
 
-  /* ---------- Шаг 7: прожектор ---------- */
-  const s7 = (s) => HEAD + `void init() {
-    glClearColor(0.03f, 0.03f, 0.05f, 1.0f);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_NORMALIZE);
-    glEnable(GL_COLOR_MATERIAL);
-    GLfloat amb[] = { 0.08f, 0.08f, 0.10f, 1.0f };
-    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);       // тусклый общий фон
+` + RESHAPE + MAIN("A12: prujina"));
+
+  /* ---------- 8. Podşipnik ---------- */
+  var t8 = S(HEAD + LIGHT + LATHE + `// ${C("Halqa profili (kesim — törtburçak): ički radius a, taşqi b, qalinlik h", "Профиль кольца (сечение — прямоугольник): внутренний радиус a, внешний b, толщина h")}
+void ring(float a, float b, float h) {
+    float R[5] = { a, b, b, a, a }, Y[5] = { -h / 2, -h / 2, h / 2, h / 2, -h / 2 };
+    lathe(R, Y, 5, 64);
 }
 
-` + RESHAPE + FLOOR_SPHERES(48, 6.0) + `void display() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluLookAt(0.0, 6.0, 9.0,   0.0, 0.0, 0.0,   0.0, 1.0, 0.0);
-
-${s ? `    GLfloat pos[]  = { -2.0f, 5.0f, 3.0f, 1.0f };      // лампа над сценой (w = 1)
-    GLfloat dir[]  = {  2.0f, -5.0f, -3.0f };          // направление на точку (0, 0, 0)
-    GLfloat col[]  = {  1.0f, 0.95f, 0.8f, 1.0f };
-
-    glEnable(GL_LIGHT0);
-    glLightfv(GL_LIGHT0, GL_POSITION, pos);
-    glLightfv(GL_LIGHT0, GL_SPOT_DIRECTION, dir);
-    glLightf(GL_LIGHT0, GL_SPOT_CUTOFF, 22.0f);        // половина угла при вершине конуса
-    glLightf(GL_LIGHT0, GL_SPOT_EXPONENT, 15.0f);      // концентрация света к оси
-    glLightfv(GL_LIGHT0, GL_DIFFUSE, col);
-` : `    // TODO: GL_LIGHT0 - прожектор в точке (-2, 5, 3), направленный на начало координат:
-    //       GL_SPOT_DIRECTION (2, -5, -3), GL_SPOT_CUTOFF 22, GL_SPOT_EXPONENT 15,
-    //       цвет GL_DIFFUSE (1, 0.95, 0.8). Включите источник (glEnable).
-`}
-    glColor3f(0.8f, 0.8f, 0.8f);
-    floorGrid();
-
-    glColor3f(0.9f, 0.3f, 0.2f);
+void display() {
+` + VIEW(4.5, 4.5, 0) + `    float t = now();
+    glColor3f(0.6f, 0.63f, 0.7f);
+    ring(2.0f, 2.4f, 0.5f);                    // ${C("taşqi halqa — qözğalmas", "внешнее кольцо — неподвижно")}
     glPushMatrix();
-        glTranslatef(0.0f, 0.6f, 0.0f);
-        glutSolidCube(1.2);
+    glRotatef(90 * t, 0, 1, 0);
+    glColor3f(0.7f, 0.72f, 0.78f);
+    ring(0.9f, 1.3f, 0.5f);                    // ${C("ički halqa — val bilan aylanadi", "внутреннее кольцо — вращается с валом")}
     glPopMatrix();
-    glColor3f(0.3f, 0.6f, 0.95f);
-    glPushMatrix();
-        glTranslatef(-2.0f, 0.5f, 0.5f);
-        glutSolidSphere(0.5, 32, 24);
-    glPopMatrix();
-    glColor3f(0.4f, 0.85f, 0.4f);
-    glPushMatrix();
-        glTranslatef(2.0f, 0.4f, -0.5f);
-        glRotatef(90.0f, 1.0f, 0.0f, 0.0f);
-        glutSolidTorus(0.2, 0.5, 20, 32);
-    glPopMatrix();
-
-    glutSwapBuffers();
-}
-` + MAIN("Прожектор", true, false);
-
-  /* ---------- Шаг 8: материалы ---------- */
-  const s8 = (s) => HEAD + `void init() {
-    glClearColor(0.12f, 0.13f, 0.18f, 1.0f);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);               // белый источник, диффузный и зеркальный цвет (1,1,1,1)
-    glEnable(GL_NORMALIZE);
+`, `    // ${C("TODO: 8 ta şar (radius 0,33) radiusi 1,65 bölgan aylanada, k·45° burçakda; separator 35°/s tezlikda aylanadi;", "TODO: 8 шаров (радиус 0,33) на окружности радиуса 1,65 под углами k·45°; сепаратор вращается со скоростью 35°/с;")}
+    // ${C("har bir şar özi ham aylanadi (glRotatef(−200·t, 0, 1, 0)) — glutSolidSphere(0,33, 20, 16)", "каждый шар ещё вращается сам (glRotatef(−200·t, 0, 1, 0)) — glutSolidSphere(0,33, 20, 16)")}
+`, `    glColor3f(0.9f, 0.85f, 0.6f);
+    for (int k = 0; k < 8; k++) {
+        glPushMatrix();
+        glRotatef(35 * t + 45 * k, 0, 1, 0);   // ${C("separator", "сепаратор")}
+        glTranslatef(1.65f, 0, 0);
+        glRotatef(-200 * t, 0, 1, 0);          // ${C("şarning öz aylanişi", "собственное вращение шара")}
+        glutSolidSphere(0.33, 20, 16);
+        glPopMatrix();
+    }
+`, `    glutSwapBuffers();
 }
 
-// Параметры материалов (стандартная таблица материалов OpenGL)
-GLfloat goldA[] = { 0.24725f, 0.1995f, 0.0745f, 1.0f };
-GLfloat goldD[] = { 0.75164f, 0.60648f, 0.22648f, 1.0f };
-GLfloat goldS[] = { 0.628281f, 0.555802f, 0.366065f, 1.0f };
-GLfloat plasA[] = { 0.0f, 0.0f, 0.0f, 1.0f };
-GLfloat plasD[] = { 0.5f, 0.0f, 0.0f, 1.0f };
-GLfloat plasS[] = { 0.7f, 0.6f, 0.6f, 1.0f };
-GLfloat rubA[]  = { 0.0f, 0.05f, 0.0f, 1.0f };
-GLfloat rubD[]  = { 0.4f, 0.5f, 0.4f, 1.0f };
-GLfloat rubS[]  = { 0.04f, 0.7f, 0.04f, 1.0f };
-GLfloat white[] = { 1.0f, 1.0f, 1.0f, 1.0f };
-
-` + RESHAPE + `void display() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluLookAt(0.0, 1.5, 9.0,   0.0, 0.0, 0.0,   0.0, 1.0, 0.0);
-    GLfloat lightPos[] = { -3.0f, 4.0f, 6.0f, 1.0f };
-    glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
-
-    // 1. Золото
-    glPushMatrix();
-        glTranslatef(-3.45f, 0.0f, 0.0f);
-${s ? `        glMaterialfv(GL_FRONT, GL_AMBIENT, goldA);
-        glMaterialfv(GL_FRONT, GL_DIFFUSE, goldD);
-        glMaterialfv(GL_FRONT, GL_SPECULAR, goldS);
-        glMaterialf(GL_FRONT, GL_SHININESS, 51.2f);
-` : `        // TODO: золото: ambient goldA, diffuse goldD, specular goldS, shininess 51.2
-`}        glutSolidSphere(1.0, 40, 30);
-    glPopMatrix();
-
-    // 2. Красный пластик
-    glPushMatrix();
-        glTranslatef(-1.15f, 0.0f, 0.0f);
-${s ? `        glMaterialfv(GL_FRONT, GL_AMBIENT, plasA);
-        glMaterialfv(GL_FRONT, GL_DIFFUSE, plasD);
-        glMaterialfv(GL_FRONT, GL_SPECULAR, plasS);
-        glMaterialf(GL_FRONT, GL_SHININESS, 32.0f);
-` : `        // TODO: красный пластик: plasA, plasD, plasS, shininess 32
-`}        glutSolidSphere(1.0, 40, 30);
-    glPopMatrix();
-
-    // 3. Зелёная резина
-    glPushMatrix();
-        glTranslatef(1.15f, 0.0f, 0.0f);
-${s ? `        glMaterialfv(GL_FRONT, GL_AMBIENT, rubA);
-        glMaterialfv(GL_FRONT, GL_DIFFUSE, rubD);
-        glMaterialfv(GL_FRONT, GL_SPECULAR, rubS);
-        glMaterialf(GL_FRONT, GL_SHININESS, 10.0f);
-` : `        // TODO: зелёная резина: rubA, rubD, rubS, shininess 10
-`}        glutSolidSphere(1.0, 40, 30);
-    glPopMatrix();
-
-    // 4. Глянцевый синий шар: цвет из glColor через GL_COLOR_MATERIAL
-    glPushMatrix();
-        glTranslatef(3.45f, 0.0f, 0.0f);
-${s ? `        glMaterialfv(GL_FRONT, GL_SPECULAR, white);       // блик и блеск задаём явно
-        glMaterialf(GL_FRONT, GL_SHININESS, 80.0f);
-        glEnable(GL_COLOR_MATERIAL);
-        glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
-        glColor3f(0.20f, 0.40f, 0.90f);
-` : `        // TODO: белый блик (white), shininess 80; затем GL_COLOR_MATERIAL с режимом
-        //       GL_AMBIENT_AND_DIFFUSE и цвет glColor3f(0.2, 0.4, 0.9)
-`}        glutSolidSphere(1.0, 40, 30);
-        glDisable(GL_COLOR_MATERIAL);
-    glPopMatrix();
-
-    glutSwapBuffers();
-}
-` + MAIN("Материалы", true, false);
+` + RESHAPE + MAIN("A12: podshipnik"));
 
   LAB.define({
     n: 12,
-    title: "Преобразования объектов, материалы и освещение в OpenGL",
+    title: { uz: "Maşina detallari dizaynini yaratiş", ru: "Моделирование деталей машин" },
     steps: [
-      {
-        id: "s0", kind: "example", title: "Пример: освещённая сцена",
-        text: "<p>Запустите программу. Чайник вращается, шар неподвижен; оба освещены точечным источником. Обратите внимание на структуру: <code>reshape</code> задаёт матрицу проекции (<code>gluPerspective</code>), а <code>display</code> — камеру (<code>gluLookAt</code>), положение источника и преобразования объектов в блоках <code>glPushMatrix</code>/<code>glPopMatrix</code>.</p><ul><li>Положение источника задано <b>после</b> <code>gluLookAt</code>, поэтому он закреплён в мире, а не на камере.</li><li>Цвет объектов берётся из <code>glColor</code> благодаря <code>GL_COLOR_MATERIAL</code>; белый блик и показатель блеска заданы один раз в <code>init</code>.</li></ul>",
-        code: ex
-      },
-      {
-        id: "s1", kind: "task", title: "Задание 1: порядок преобразований",
-        text: "<p>Два чайника получают одни и те же команды — <code>glTranslatef(3, 0, 0)</code> и <code>glRotatef(60, 0, 1, 0)</code>, но в разном порядке. Красному (T·R) задайте сначала сдвиг, затем поворот; зелёному (R·T) — сначала поворот, затем сдвиг.</p><p>Сравните положения: какой из чайников остался на оси X, а какой «переехал» по окружности?</p>",
-        hint: "Матрица, объявленная последней, применяется к вершинам первой. Поэтому «сдвиг, потом поворот» в коде означает: сначала объект поворачивается вокруг собственного центра, а затем переносится.",
-        check: { type: "both", calls: { "glTranslatef": ">=2", "glRotatef": ">=2", "glPushMatrix": ">=2" } },
-        starter: s1(false), solution: s1(true)
-      },
-      {
-        id: "s2", kind: "task", title: "Задание 2: иерархия «Солнце — Земля — Луна»",
-        text: "<p>Солнце уже нарисовано. Добавьте Землю, вращающуюся вокруг Солнца по орбите радиусом 4, и Луну, вращающуюся вокруг Земли по орбите радиусом 1.3.</p><ul><li>Суточное вращение (<code>day</code>) должно касаться только Земли, но не Луны — сохраните матрицу <code>glPushMatrix</code> и восстановите <code>glPopMatrix</code>.</li><li>Орбита Луны задаётся <b>относительно Земли</b>: преобразования Земли (орбитальные) остаются в силе.</li></ul>",
-        hint: "Порядок: glRotatef(year) → glTranslatef(4,0,0) → [push: glRotatef(day), нарисовать Землю, pop] → glRotatef(month) → glTranslatef(1.3,0,0) → нарисовать Луну.",
-        check: { type: "both", calls: { "glPushMatrix": ">=2", "glPopMatrix": ">=2", "glutSolidSphere": ">=3" } },
-        starter: s2(false), solution: s2(true)
-      },
-      {
-        id: "s3", kind: "task", title: "Задание 3: камера и проекции",
-        text: "<p>Разделите окно на две части с помощью <code>glViewport</code>. Слева сцену нужно показать в ортографической проекции (<code>glOrtho</code>), справа — в перспективной (<code>gluPerspective</code>). Камера в обеих частях одна и та же: <code>gluLookAt(4, 3.5, 7,  0, 0, -5,  0, 1, 0)</code>.</p><p>Пропорции <code>aspect</code> считаются по <b>половине</b> окна. Сравните: как изменяются размеры одинаковых кубов с удалением?</p>",
-        hint: "В каждой половине повторите последовательность: glViewport → glMatrixMode(GL_PROJECTION), glLoadIdentity, проекция → glMatrixMode(GL_MODELVIEW), glLoadIdentity, gluLookAt → drawScene().",
-        check: { type: "both", calls: { "glViewport": ">=2", "glOrtho": ">=1", "gluPerspective": ">=1", "gluLookAt": ">=2" } },
-        starter: s3(false), solution: s3(true)
-      },
-      {
-        id: "s4", kind: "task", title: "Задание 4: нормали куба и пирамиды",
-        text: "<p>Куб и пирамида заданы вершинами, но без нормалей, поэтому все грани освещены одинаково (нормаль по умолчанию — (0, 0, 1)). Задайте <code>glNormal3f</code> для каждой грани (значения указаны в комментариях). Пирамида нарисована с <code>glScalef</code>, а нормали (0, 2, 3) и т. п. не единичны — включите <code>GL_NORMALIZE</code>.</p>",
-        hint: "glNormal3f вызывается ПЕРЕД вершинами грани и действует на все последующие вершины, пока не будет задана новая нормаль.",
-        check: { type: "both", calls: { "glNormal3f": ">=11" }, source: [{ re: "GL_NORMALIZE", msg: "Включите нормализацию нормалей: glEnable(GL_NORMALIZE)" }] },
-        starter: s4(false), solution: s4(true)
-      },
-      {
-        id: "s5", kind: "task", title: "Задание 5: GL_FLAT и GL_SMOOTH",
-        text: "<p>Конус из 12 граней нарисован дважды. Задайте нормали в вершинах (формула в комментарии: в вершинах основания — нормаль гладкой поверхности, в вершине конуса — нормаль грани), а затем включите <code>GL_FLAT</code> для левого и <code>GL_SMOOTH</code> для правого конуса.</p><p>Объясните, почему в режиме <code>GL_FLAT</code> грани видны, а цвет каждой грани постоянен.</p>",
-        hint: "Нормаль для угла a: glNormal3f(2*cosf(a), 1, 2*sinf(a)). Углы: a1 — первая вершина, a0 — вторая, am — вершина конуса.",
-        check: { type: "both", calls: { "glShadeModel": ">=2", "glNormal3f": ">=36" } },
-        starter: s5(false), solution: s5(true)
-      },
-      {
-        id: "s6", kind: "task", title: "Задание 6: несколько источников света",
-        text: "<p>Освещение выключено — сцена почти чёрная. Настройте три источника: слабый белый направленный (<code>GL_LIGHT0</code>), красный точечный (<code>GL_LIGHT1</code>) и синий точечный (<code>GL_LIGHT2</code>) с затуханием. Включите каждый источник.</p><p>Обратите внимание: у <code>GL_LIGHT1</code> и <code>GL_LIGHT2</code> диффузный цвет по умолчанию чёрный, поэтому без <code>glLightfv(…, GL_DIFFUSE, …)</code> они ничего не осветят.</p>",
-        hint: "У направленного источника w = 0, у точечного w = 1. Затухание: glLightf(GL_LIGHT1, GL_CONSTANT_ATTENUATION | GL_LINEAR_ATTENUATION | GL_QUADRATIC_ATTENUATION, значение).",
-        check: { type: "both", calls: { "glLightfv": ">=6", "glLightf": ">=6" } },
-        starter: s6(false), solution: s6(true)
-      },
-      {
-        id: "s7", kind: "task", title: "Задание 7: прожектор",
-        text: "<p>Сделайте из <code>GL_LIGHT0</code> прожектор: расположите его в точке (−2, 5, 3), направьте на начало координат, задайте угол отсечения 22° и показатель концентрации 15, цвет — тёплый белый.</p><p>Дополнительно (без автопроверки): перенесите вызовы <code>glLightfv</code> выше <code>gluLookAt</code> и объясните, почему «фонарик» теперь движется вместе с камерой.</p>",
-        hint: "GL_SPOT_DIRECTION задаётся вектором из трёх компонент через glLightfv, GL_SPOT_CUTOFF и GL_SPOT_EXPONENT — одним числом через glLightf.",
-        check: { type: "both", calls: { "glLightfv": ">=3", "glLightf": ">=2" } },
-        starter: s7(false), solution: s7(true)
-      },
-      {
-        id: "s8", kind: "task", title: "Задание 8: материалы и glColorMaterial",
-        text: "<p>Четыре шара пока одинаковые. Первым трём задайте материалы «золото», «красный пластик» и «зелёная резина» с помощью <code>glMaterialfv</code> (<code>GL_AMBIENT</code>, <code>GL_DIFFUSE</code>, <code>GL_SPECULAR</code>) и <code>glMaterialf(GL_SHININESS)</code>; массивы параметров уже объявлены.</p><p>Четвёртый шар сделайте глянцевым синим: белый блик и <code>GL_SHININESS = 80</code> задайте явно, а фоновый и рассеянный цвета получите из <code>glColor3f(0.2, 0.4, 0.9)</code> через <code>glEnable(GL_COLOR_MATERIAL)</code> и <code>glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE)</code>.</p>",
-        hint: "Материал, заданный glMaterial*, действует на все последующие вершины, пока не будет изменён. Режим GL_COLOR_MATERIAL перехватывает только указанные компоненты (здесь — ambient и diffuse), остальные остаются прежними.",
-        check: { type: "both", calls: { "glMaterialfv": ">=10", "glMaterialf": ">=4", "glColorMaterial": ">=1" } },
-        starter: s8(false), solution: s8(true)
-      }
+      { id: "s0", kind: "example", title: { uz: "Misol: ekstruziya — oltiburçakli prizma", ru: "Пример: экструзия — шестигранная призма" },
+        text: { uz: "<p>Ko'p maşina detallari ikki usulda quriladi: <b>ekstruziya</b> (tekis konturni balandlik böylab «çöziş») va <b>aylanma sirt</b> (profilni öq atrofida aylantiriş). Misolda oltiburçak kontur ekstruziya qilingan: yon yoqlar <code>GL_QUADS</code>, asoslar <code>GL_TRIANGLE_FAN</code>; har bir yoqning öz normali bor.</p>",
+                ru: "<p>Многие детали машин строятся двумя способами: <b>экструзией</b> (вытягиванием плоского контура в высоту) и <b>поверхностью вращения</b> (вращением профиля вокруг оси). В примере шестиугольный контур вытянут: боковые грани — <code>GL_QUADS</code>, основания — <code>GL_TRIANGLE_FAN</code>; у каждой грани своя нормаль.</p>" },
+        code: ex },
+      { id: "s1", kind: "task", title: { uz: "Topşiriq 1. Oddiy silindr", ru: "Задание 1. Простой цилиндр" },
+        text: { uz: "<p><code>glutSolidCylinder</code> siz silindr quring: r = 1, h = 2, 32 segment. Yon sirt — <code>GL_QUAD_STRIP</code>, normal har bir <b>uçda</b> (cos a, 0, sin a) — şunda sirt silliq körinadi. Asoslar — <code>GL_TRIANGLE_FAN</code>; ustki asos uçlarini teskari tartibda bering, şunda u taşqariga qaraydi.</p>",
+                ru: "<p>Постройте цилиндр без <code>glutSolidCylinder</code>: r = 1, h = 2, 32 сегмента. Боковая поверхность — <code>GL_QUAD_STRIP</code>, нормаль в каждой <b>вершине</b> (cos a, 0, sin a) — тогда поверхность выглядит гладкой. Основания — <code>GL_TRIANGLE_FAN</code>; вершины верхнего задайте в обратном порядке, чтобы оно смотрело наружу.</p>" },
+        hint: { uz: "for i ≤ n: a = 2π·i/n; glNormal3f(cos a, 0, sin a); glVertex3f(r·cos a, h, r·sin a); glVertex3f(r·cos a, 0, r·sin a);", ru: "for i ≤ n: a = 2π·i/n; glNormal3f(cos a, 0, sin a); glVertex3f(r·cos a, h, r·sin a); glVertex3f(r·cos a, 0, r·sin a);" },
+        check: { type: "both", calls: { "glutSolidCylinder": 0 } }, starter: t1.starter, solution: t1.solution },
+      { id: "s2", kind: "task", title: { uz: "Topşiriq 2. Konus", ru: "Задание 2. Конус" },
+        text: { uz: "<p>Silindr kodini özgartirib konus quring: ustki radius 0 — barça ustki uçlar (0, h, 0) nuqtaga tuşadi. Yon sirt normali endi gorizontal emas: (cos a, r/h, sin a) — u konus yuzasiga perpendikulyar.</p>",
+                ru: "<p>Измените код цилиндра и постройте конус: верхний радиус 0 — все верхние вершины совпадают в точке (0, h, 0). Нормаль боковой поверхности теперь не горизонтальна: (cos a, r/h, sin a) — перпендикулярно поверхности конуса.</p>" },
+        hint: { uz: "glNormal3f(cos a, k, sin a); glVertex3f(0, h, 0); glVertex3f(r·cos a, 0, r·sin a);", ru: "glNormal3f(cos a, k, sin a); glVertex3f(0, h, 0); glVertex3f(r·cos a, 0, r·sin a);" },
+        check: { type: "both", calls: { "glutSolidCone": 0 } }, starter: t2.starter, solution: t2.solution },
+      { id: "s3", kind: "task", title: { uz: "Topşiriq 3. Çaşka — aylanma sirt", ru: "Задание 3. Чашка — поверхность вращения" },
+        text: { uz: "<p>Universal <code>lathe</code> funksiyasini yozing: profilning har bir kesmasi (Rᵢ, Yᵢ) → (Rᵢ₊₁, Yᵢ₊₁) Oy atrofida aylanib <code>GL_QUAD_STRIP</code> halqasini beradi. Normal — profil urinmasiga perpendikulyar: (dy·cos a, −dr, dy·sin a). Profil çaşkaning taşqi devori, labi va ički devoridan iborat.</p>",
+                ru: "<p>Напишите универсальную функцию <code>lathe</code>: каждый отрезок профиля (Rᵢ, Yᵢ) → (Rᵢ₊₁, Yᵢ₊₁) при вращении вокруг Oy даёт кольцо <code>GL_QUAD_STRIP</code>. Нормаль перпендикулярна касательной профиля: (dy·cos a, −dr, dy·sin a). Профиль — внешняя стенка, край и внутренняя стенка чашки.</p>" },
+        hint: { uz: "glNormal3f(dy·c, −dr, dy·s); glVertex3f(R[i+1]·c, Y[i+1], R[i+1]·s); glVertex3f(R[i]·c, Y[i], R[i]·s);", ru: "glNormal3f(dy·c, −dr, dy·s); glVertex3f(R[i+1]·c, Y[i+1], R[i+1]·s); glVertex3f(R[i]·c, Y[i], R[i]·s);" },
+        check: { type: "image" }, starter: t3.starter, solution: t3.solution },
+      { id: "s4", kind: "task", title: { uz: "Topşiriq 4. Tişli ğildirak", ru: "Задание 4. Шестерня" },
+        text: { uz: "<p>n = 12 tişli ğildirak konturini tuzing: har bir tiş 2π/n burçakli sektorda 4 ta nuqta — ički radiusda, taşqi radiusda (ikki marta) va yana ički radiusda. Kontur ekstruziya qilinadi (yon yoqlar) va asoslar markazdan yelpiğ bilan yopiladi. Ğildirak sekundiga 30° aylanadi.</p>",
+                ru: "<p>Постройте контур шестерни с n = 12 зубьями: каждый зуб в секторе 2π/n — 4 точки: на внутреннем радиусе, на внешнем (дважды) и снова на внутреннем. Контур вытягивается (боковые грани), основания закрываются веером из центра. Колесо вращается на 30° в секунду.</p>" },
+        hint: { uz: "X[4i] = r0·cos a; X[4i+1] = r1·cos(a + d); X[4i+2] = r1·cos(a + 2d); X[4i+3] = r0·cos(a + 3d); Z — sin bilan.", ru: "X[4i] = r0·cos a; X[4i+1] = r1·cos(a + d); X[4i+2] = r1·cos(a + 2d); X[4i+3] = r0·cos(a + 3d); Z — через sin." },
+        check: { type: "image" }, starter: t4.starter, solution: t4.solution },
+      { id: "s5", kind: "task", title: { uz: "Topşiriq 5. Ilaşgan ikki tişli ğildirak", ru: "Задание 5. Две зацепленные шестерни" },
+        text: { uz: "<p>12 va 24 tişli ğildiraklar bir-birini aylantiradi. Ilaşiş nuqtasida çiziqli tezliklar teng, şuning uçun n₁ω₁ = n₂ω₂: kattasi ikki marta sekin va teskari yönalişda aylanadi. Tişlar bir-biriga kirişi uçun ikkinçi ğildirakni yarim tişga (180°/n₂) burib qöying.</p>",
+                ru: "<p>Шестерни с 12 и 24 зубьями вращают друг друга. В точке зацепления линейные скорости равны, поэтому n₁ω₁ = n₂ω₂: большая вращается вдвое медленнее и в обратную сторону. Чтобы зубья вошли друг в друга, поверните второе колесо на ползуба (180°/n₂).</p>" },
+        hint: { uz: "w2 = −w1·n1/n2 = −30 °/s; phase = 180/n2 = 7,5°.", ru: "w2 = −w1·n1/n2 = −30 °/с; phase = 180/n2 = 7,5°." },
+        time: 1500, check: { type: "image" }, starter: t5.starter, solution: t5.solution },
+      { id: "s6", kind: "task", title: { uz: "Topşiriq 6. Vint", ru: "Задание 6. Болт" },
+        text: { uz: "<p>Vintni tayyor «gʻişt»lardan yiğing: oltiburçakli kallak (<code>prism</code>), silindrsimon özak (<code>cylinder</code>) va rezba — özak böylab har 0,22 da joylaşgan 10 ta ingiçka halqa (<code>glutSolidTorus</code>). Murakkab detal — oddiy primitivlar va almaştirişlar kombinatsiyasi.</p>",
+                ru: "<p>Соберите болт из готовых «кирпичиков»: шестигранная головка (<code>prism</code>), цилиндрический стержень (<code>cylinder</code>) и резьба — 10 тонких колец (<code>glutSolidTorus</code>) через каждые 0,22 вдоль стержня. Сложная деталь — комбинация простых примитивов и преобразований.</p>" },
+        hint: { uz: "Push; Translate(0, 2,4, 0); prism(6, 0,8, 0,6); Pop; cylinder(0,4, 2,4, 32); for k: Push; Translate(0, 0,15 + 0,22k, 0); Rotate(90, 1, 0, 0); Torus; Pop.", ru: "Push; Translate(0, 2,4, 0); prism(6, 0,8, 0,6); Pop; cylinder(0,4, 2,4, 32); for k: Push; Translate(0, 0,15 + 0,22k, 0); Rotate(90, 1, 0, 0); Torus; Pop." },
+        check: { type: "both", calls: { "glutSolidTorus": ">=10" } }, starter: t6.starter, solution: t6.solution },
+      { id: "s7", kind: "task", title: { uz: "Topşiriq 7. Prujina", ru: "Задание 7. Пружина" },
+        text: { uz: "<p>Spiral prujina — vint çiziği böylab «surilgan» aylana (trubka): N = 10 örama, qadam p = 0,5. Vint çiziği markazi C(θ) = (R·cos θ, p·θ/2π, R·sin θ); kesim aylanasi radial yönaliş va Oy öqi tekisligida yotadi. Har bir uçda normal — kesim aylanasining radiusi.</p>",
+                ru: "<p>Пружина — окружность, «протянутая» вдоль винтовой линии (трубка): N = 10 витков, шаг p = 0,5. Центр винтовой линии C(θ) = (R·cos θ, p·θ/2π, R·sin θ); окружность сечения лежит в плоскости радиального направления и оси Oy. В каждой вершине нормаль — радиус окружности сечения.</p>" },
+        hint: { uz: "n = (cos φ·cos θ, sin φ, cos φ·sin θ); uç = C + r·n.", ru: "n = (cos φ·cos θ, sin φ, cos φ·sin θ); вершина = C + r·n." },
+        check: { type: "image" }, starter: t7.starter, solution: t7.solution },
+      { id: "s8", kind: "task", title: { uz: "Topşiriq 8. Podşipnik", ru: "Задание 8. Подшипник" },
+        text: { uz: "<p>Podşipnik: qözğalmas taşqi halqa, val bilan aylanadigan ički halqa va ular orasida 8 ta şar. Şarlar separator bilan birga 35°/s tezlikda aylanadi va har biri özi ham aylanadi. Ierarxik almaştirişlar: separator burilişi → radius böyiça siljiş → şarning öz burilişi.</p>",
+                ru: "<p>Подшипник: неподвижное внешнее кольцо, вращающееся с валом внутреннее кольцо и 8 шаров между ними. Шары вместе с сепаратором вращаются со скоростью 35°/с, и каждый ещё вращается сам. Иерархия преобразований: поворот сепаратора → сдвиг по радиусу → собственный поворот шара.</p>" },
+        hint: { uz: "for k: Push; Rotate(35t + 45k, 0, 1, 0); Translate(1,65, 0, 0); Rotate(−200t, 0, 1, 0); Sphere(0,33); Pop.", ru: "for k: Push; Rotate(35t + 45k, 0, 1, 0); Translate(1,65, 0, 0); Rotate(−200t, 0, 1, 0); Sphere(0,33); Pop." },
+        check: { type: "both", calls: { "glutSolidSphere": ">=8" } }, starter: t8.starter, solution: t8.solution }
     ]
   });
 })();

@@ -1,33 +1,66 @@
-/* Лабораторная 13: Текстурирование и операции с пикселами в OpenGL */
+/* A13. Binolar dizaynini modellaştiriş: uy, tom, qavatlar, teksturalar, şahar, soyalar, kamera (UZ/RU) */
 (function () {
-
-// ---------- общие фрагменты кода ----------
-var CUBE_DATA = `float V[8][3] = { {-1,-1,-1}, {1,-1,-1}, {1,1,-1}, {-1,1,-1},
-                  {-1,-1, 1}, {1,-1, 1}, {1,1, 1}, {-1,1, 1} };
-int   F[6][4] = { {4,5,6,7}, {1,0,3,2}, {0,4,7,3}, {5,1,2,6}, {3,7,6,2}, {0,1,5,4} };
-float N[6][3] = { {0,0,1}, {0,0,-1}, {-1,0,0}, {1,0,0}, {0,1,0}, {0,-1,0} };
-float T[4][2] = { {0,0}, {1,0}, {1,1}, {0,1} };
-`;
-
-var CHECKER_FN = `// Процедурная текстура 8x8: шахматная доска оранжевого и кремового цветов
-void makeChecker() {
-    GLubyte img[8][8][3];
-    for (int i = 0; i < 8; i++)
-        for (int j = 0; j < 8; j++) {
-            bool dark = (i + j) % 2 == 0;
-            img[i][j][0] = dark ? 220 : 250;
-            img[i][j][1] = dark ? 110 : 235;
-            img[i][j][2] = dark ?  20 : 200;
-        }
-    glGenTextures(1, &tex);
-    glBindTexture(GL_TEXTURE_2D, tex);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 8, 8, 0, GL_RGB, GL_UNSIGNED_BYTE, img);
+  var C = LAB.C;
+  var HEAD = "#include <GL/glut.h>\n#include \"stb_image.h\"\n#include <cmath>\n#include <cstdio>\n#include <cstdlib>\n\n";
+  var LIGHT = `// ${C("Quyoş: yönaltirilgan manba; rang glColor dan", "Солнце: направленный источник; цвет из glColor")}
+float SUN[4] = { 0.9f, 1.0f, 0.6f, 0 };
+void initGL() {
+    GLfloat amb[] = { 0.35f, 0.35f, 0.4f, 1 };
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT0);
+    glLightModelfv(GL_LIGHT_MODEL_AMBIENT, amb);
+    glEnable(GL_COLOR_MATERIAL);
+    glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+    glEnable(GL_NORMALIZE);
+    glEnable(GL_DEPTH_TEST);
 }
-`;
+void setSun() { glLightfv(GL_LIGHT0, GL_POSITION, SUN); }   // ${C("kamera qurilgandan keyin çaqiriladi", "вызывается после установки камеры")}
 
-var LOAD_FN_DONE = `// Загрузка текстуры из файла: строки переворачиваются, строятся мип-уровни
+`;
+  var BOX = `// ${C("Quti [x0; x1] × [y0; y1] × [z0; z1]: 6 yoq, normallar va tekstura koordinatalari (u, v — metrlarda × ts)", "Коробка [x0; x1] × [y0; y1] × [z0; z1]: 6 граней, нормали и текстурные координаты (u, v — в метрах × ts)")}
+void box(float x0, float x1, float y0, float y1, float z0, float z1, float ts) {
+    glBegin(GL_QUADS);
+    glNormal3f(0, 0, 1);  glTexCoord2f(0, 0); glVertex3f(x0, y0, z1); glTexCoord2f((x1-x0)*ts, 0); glVertex3f(x1, y0, z1); glTexCoord2f((x1-x0)*ts, (y1-y0)*ts); glVertex3f(x1, y1, z1); glTexCoord2f(0, (y1-y0)*ts); glVertex3f(x0, y1, z1);
+    glNormal3f(0, 0, -1); glTexCoord2f(0, 0); glVertex3f(x1, y0, z0); glTexCoord2f((x1-x0)*ts, 0); glVertex3f(x0, y0, z0); glTexCoord2f((x1-x0)*ts, (y1-y0)*ts); glVertex3f(x0, y1, z0); glTexCoord2f(0, (y1-y0)*ts); glVertex3f(x1, y1, z0);
+    glNormal3f(1, 0, 0);  glTexCoord2f(0, 0); glVertex3f(x1, y0, z1); glTexCoord2f((z1-z0)*ts, 0); glVertex3f(x1, y0, z0); glTexCoord2f((z1-z0)*ts, (y1-y0)*ts); glVertex3f(x1, y1, z0); glTexCoord2f(0, (y1-y0)*ts); glVertex3f(x1, y1, z1);
+    glNormal3f(-1, 0, 0); glTexCoord2f(0, 0); glVertex3f(x0, y0, z0); glTexCoord2f((z1-z0)*ts, 0); glVertex3f(x0, y0, z1); glTexCoord2f((z1-z0)*ts, (y1-y0)*ts); glVertex3f(x0, y1, z1); glTexCoord2f(0, (y1-y0)*ts); glVertex3f(x0, y1, z0);
+    glNormal3f(0, 1, 0);  glVertex3f(x0, y1, z1); glVertex3f(x1, y1, z1); glVertex3f(x1, y1, z0); glVertex3f(x0, y1, z0);
+    glNormal3f(0, -1, 0); glVertex3f(x0, y0, z0); glVertex3f(x1, y0, z0); glVertex3f(x1, y0, z1); glVertex3f(x0, y0, z1);
+    glEnd();
+}
+// ${C("Old devorga (z = z0) yopişgan törtburçak — eşik yoki deraza", "Прямоугольник на передней стене (z = z0) — дверь или окно")}
+void panel(float x0, float x1, float y0, float y1, float z) {
+    glNormal3f(0, 0, 1);
+    glBegin(GL_QUADS);
+    glVertex3f(x0, y0, z + 0.01f); glVertex3f(x1, y0, z + 0.01f); glVertex3f(x1, y1, z + 0.01f); glVertex3f(x0, y1, z + 0.01f);
+    glEnd();
+}
+
+`;
+  var WINTEX = `// ${C("Protsedura teksturasi: 32×32 katakça — ramka (beton) va oyna (köm-kök, yarmi yoritilgan)", "Процедурная текстура: ячейка 32×32 — рама (бетон) и стекло (тёмно-синее, половина окон светится)")}
+unsigned char win[64 * 64 * 3];
+GLuint winTex;
+void makeWindowTexture() {
+    for (int y = 0; y < 64; y++)
+        for (int x = 0; x < 64; x++) {
+            int k = (y * 64 + x) * 3, cx = x % 32, cy = y % 32;
+            int glass = cx >= 6 && cx < 26 && cy >= 8 && cy < 28;
+            int lit = ((x / 32) + (y / 32)) % 2;
+            if (!glass) { win[k] = 190; win[k + 1] = 180; win[k + 2] = 165; }
+            else if (lit) { win[k] = 255; win[k + 1] = 220; win[k + 2] = 140; }
+            else { win[k] = 40; win[k + 1] = 70; win[k + 2] = 120; }
+        }
+    glGenTextures(1, &winTex);
+    glBindTexture(GL_TEXTURE_2D, winTex);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 64, 64, 0, GL_RGB, GL_UNSIGNED_BYTE, win);
+}
+
+`;
+  var LOADTEX = `// ${C("Fayldan tekstura (stbi_load) — mip-darajalar bilan", "Текстура из файла (stbi_load) — с мип-уровнями")}
 GLuint loadTexture(const char* file) {
     int w, h, n;
     stbi_set_flip_vertically_on_load(1);
@@ -38,1064 +71,369 @@ GLuint loadTexture(const char* file) {
     gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, w, h, GL_RGB, GL_UNSIGNED_BYTE, data);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
     stbi_image_free(data);
     return id;
 }
-`;
 
-var MAIN3D = function (title, extra) {
-  return `int main(int argc, char** argv) {
+`;
+  var RESHAPE = `void reshape(int w, int h) {
+    glViewport(0, 0, w, h);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(45.0, (double)w / h, 0.3, 300.0);
+    glMatrixMode(GL_MODELVIEW);
+}
+`;
+  function MAIN(title, extra) {
+    return `
+int main(int argc, char** argv) {
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
     glutInitWindowSize(480, 360);
     glutCreateWindow("${title}");
-    glewInit();
+    glClearColor(0.55f, 0.72f, 0.9f, 1.0f);       // ${C("osmon", "небо")}
+    initGL();
 ${extra || ""}    glutDisplayFunc(display);
-    glutIdleFunc(idle);
+    glutReshapeFunc(reshape);
     glutMainLoop();
     return 0;
 }
 `;
-};
+  }
+  function S(pre, todo, body, post) { return { starter: pre + todo + post, solution: pre + body + post }; }
+  function CAM(ex, ey, ez, cx, cy, cz) { return `    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glLoadIdentity();
+    gluLookAt(${ex}, ${ey}, ${ez},  ${cx}, ${cy}, ${cz},  0, 1, 0);
+    setSun();
+`; }
+  var GROUND = `// ${C("Oddiy yer — yaşil tekislik", "Простая земля — зелёная плоскость")}
+void ground(float s) {
+    glColor3f(0.35f, 0.55f, 0.3f);
+    glNormal3f(0, 1, 0);
+    glBegin(GL_QUADS);
+    glVertex3f(-s, 0, s); glVertex3f(s, 0, s); glVertex3f(s, 0, -s); glVertex3f(-s, 0, -s);
+    glEnd();
+}
 
-var IDLE = `void idle() { glutPostRedisplay(); }
+`;
+  var HOUSE = `    glColor3f(0.9f, 0.82f, 0.68f);  box(-2, 2, 0, 2.5f, -1.5f, 1.5f, 0);       // ${C("devorlar", "стены")}
+    glColor3f(0.45f, 0.3f, 0.2f);   panel(-0.4f, 0.4f, 0, 1.6f, 1.5f);           // ${C("eşik", "дверь")}
+    glColor3f(0.55f, 0.75f, 0.95f); panel(-1.6f, -0.8f, 1.1f, 1.9f, 1.5f);       // ${C("derazalar", "окна")}
+                                    panel(0.8f, 1.6f, 1.1f, 1.9f, 1.5f);
 `;
 
-LAB.define({
-  n: 13,
-  title: "Текстурирование и операции с пикселами в OpenGL",
-  steps: [
-    // ===================== ПРИМЕР =====================
-    {
-      id: "s0", kind: "example", title: "Пример: текстурированный квадрат",
-      text: "<p>Программа создаёт текстуру размером 8×8 текселей из массива <code>GLubyte</code>, настраивает фильтрацию и накладывает её на квадрат. Обратите внимание на порядок действий: <code>glGenTextures</code> → <code>glBindTexture</code> → параметры → <code>glTexImage2D</code>; перед рисованием нужно включить <code>GL_TEXTURE_2D</code>, а каждой вершине задать текстурные координаты <code>glTexCoord2f</code> до вызова <code>glVertex</code>.</p><p>Измените координаты в углах квадрата на (0;0)…(3;3) и добавьте <code>GL_REPEAT</code>-режим (он включён по умолчанию): шахматка повторится 3×3 раза. Затем замените фильтр <code>GL_NEAREST</code> на <code>GL_LINEAR</code> и посмотрите, как изменятся границы клеток.</p>",
-      code: `#include <GL/glew.h>   // GLEW: функции OpenGL 1.2+ в Windows
-#include <GL/glut.h>
+  /* ---------- Misol ---------- */
+  var ex = HEAD + LIGHT + BOX + GROUND + `void display() {
+` + CAM(5, 3, 8, 0, 1.5, 0) + `    ground(20);
+    // ${C("Bino — quti va derazalar qatori", "Здание — коробка и ряды окон")}
+    glColor3f(0.8f, 0.78f, 0.75f);
+    box(-1.5f, 1.5f, 0, 4, -1.5f, 1.5f, 0);
+    glColor3f(0.3f, 0.45f, 0.7f);
+    for (int f = 0; f < 3; f++)
+        for (int w = 0; w < 3; w++)
+            panel(-1.2f + w, -0.6f + w, 0.6f + 1.2f * f, 1.4f + 1.2f * f, 1.5f);
+    glutSwapBuffers();
+}
 
-GLuint tex;
+` + RESHAPE + MAIN("A13: bino");
 
-` + CHECKER_FN + `
+  /* ---------- 1. Oddiy uy ---------- */
+  var t1 = S(HEAD + LIGHT + BOX + GROUND + `void display() {
+` + CAM(5, 3, 8, 0, 1.2, 0) + `    ground(20);
+`, `    // ${C("TODO: devorlar — box(−2, 2, 0, 2,5, −1,5, 1,5, 0) och sariq; tekis tom — box(−2,2; 2,2; 2,5; 2,7; −1,7; 1,7, 0) kulrang;", "TODO: стены — box(−2, 2, 0, 2,5, −1,5, 1,5, 0) светло-жёлтые; плоская крыша — box(−2,2; 2,2; 2,5; 2,7; −1,7; 1,7, 0) серая;")}
+    // ${C("eşik panel(−0,4; 0,4; 0; 1,6; 1,5) jigarrang; ikki deraza panel(−1,6; −0,8; 1,1; 1,9; 1,5) va panel(0,8; 1,6; 1,1; 1,9; 1,5) havorang", "дверь panel(−0,4; 0,4; 0; 1,6; 1,5) коричневая; два окна panel(−1,6; −0,8; 1,1; 1,9; 1,5) и panel(0,8; 1,6; 1,1; 1,9; 1,5) голубые")}
+`, HOUSE + `    glColor3f(0.5f, 0.5f, 0.55f);   box(-2.2f, 2.2f, 2.5f, 2.7f, -1.7f, 1.7f, 0); // ${C("tekis tom", "плоская крыша")}
+`, `    glutSwapBuffers();
+}
+
+` + RESHAPE + MAIN("A13: oddiy uy"));
+
+  /* ---------- 2. Qiyma tom ---------- */
+  var t2 = S(HEAD + LIGHT + BOX + GROUND + `// ${C("Ikki qiyalikli tom: tizma (y = 4) Ox böylab, çetlari devordan 0,2 ga çiqib turadi", "Двускатная крыша: конёк (y = 4) вдоль Ox, края выступают за стены на 0,2")}
+void roof() {
+    float x0 = -2.2f, x1 = 2.2f, z0 = -1.7f, z1 = 1.7f, y0 = 2.5f, y1 = 4.0f;
+    glColor3f(0.7f, 0.3f, 0.25f);
+`, `    // ${C("TODO 1: ikki qiya yoq (GL_QUADS): old (z1 → 0) va orqa (z0 → 0); normal — yoqqa perpendikulyar:", "TODO 1: два ската (GL_QUADS): передний (z1 → 0) и задний (z0 → 0); нормаль перпендикулярна скату:")}
+    // ${C("old yoq uçun (0, z1, y1 − y0), orqa uçun (0, −z0... ) — ya'ni (0, 1,7, 1,5) va (0, 1,7, −1,5)", "для переднего (0, z1, y1 − y0), для заднего — т. е. (0, 1,7, 1,5) и (0, 1,7, −1,5)")}
+    // ${C("TODO 2: ikki uçburçakli peştoq (GL_TRIANGLES) x = −2 va x = 2 da, normallar (∓1, 0, 0)", "TODO 2: два треугольных фронтона (GL_TRIANGLES) на x = −2 и x = 2, нормали (∓1, 0, 0)")}
+`, `    glBegin(GL_QUADS);
+    glNormal3f(0, z1, y1 - y0);                       // ${C("old qiyalik", "передний скат")}
+    glVertex3f(x0, y0, z1); glVertex3f(x1, y0, z1); glVertex3f(x1, y1, 0); glVertex3f(x0, y1, 0);
+    glNormal3f(0, z1, -(y1 - y0));                    // ${C("orqa qiyalik", "задний скат")}
+    glVertex3f(x1, y0, z0); glVertex3f(x0, y0, z0); glVertex3f(x0, y1, 0); glVertex3f(x1, y1, 0);
+    glEnd();
+    glColor3f(0.9f, 0.82f, 0.68f);
+    glBegin(GL_TRIANGLES);
+    glNormal3f(1, 0, 0);  glVertex3f(2, y0, 1.5f);  glVertex3f(2, y0, -1.5f); glVertex3f(2, y1, 0);
+    glNormal3f(-1, 0, 0); glVertex3f(-2, y0, -1.5f); glVertex3f(-2, y0, 1.5f); glVertex3f(-2, y1, 0);
+    glEnd();
+`, `}
+
 void display() {
-    glClearColor(0.15f, 0.17f, 0.22f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+` + CAM(5.5, 3.5, 8, 0, 1.6, 0) + `    ground(20);
+` + HOUSE + `    roof();
+    glutSwapBuffers();
+}
 
+` + RESHAPE + MAIN("A13: qiyma tom"));
+
+  /* ---------- 3. Köp qavatli bino ---------- */
+  var t3 = S(HEAD + LIGHT + BOX + GROUND + `void display() {
+` + CAM(7, 5, 13, 0, 4, 0) + `    ground(30);
+    glColor3f(0.78f, 0.76f, 0.72f);
+    box(-2.5f, 2.5f, 0, 9, -2, 2, 0);          // ${C("5 qavat × 1,8 m", "5 этажей × 1,8 м")}
+    glColor3f(0.3f, 0.45f, 0.7f);
+`, `    // ${C("TODO: 5 qavat × 4 deraza old devorda (z = 2): qavat f, deraza w:", "TODO: 5 этажей × 4 окна на передней стене (z = 2): этаж f, окно w:")}
+    // ${C("panel(−2,2 + 1,15w; −1,4 + 1,15w; 0,5 + 1,8f; 1,4 + 1,8f; 2)", "panel(−2,2 + 1,15w; −1,4 + 1,15w; 0,5 + 1,8f; 1,4 + 1,8f; 2)")}
+`, `    for (int f = 0; f < 5; f++)
+        for (int w = 0; w < 4; w++)
+            panel(-2.2f + 1.15f * w, -1.4f + 1.15f * w, 0.5f + 1.8f * f, 1.4f + 1.8f * f, 2);
+`, `    glutSwapBuffers();
+}
+
+` + RESHAPE + MAIN("A13: qavatlar"));
+
+  /* ---------- 4. Deraza teksturasi ---------- */
+  var t4 = S(HEAD + LIGHT + BOX + GROUND + `// ${C("Protsedura teksturasi: 32×32 katakça — ramka (beton) va oyna", "Процедурная текстура: ячейка 32×32 — рама (бетон) и стекло")}
+unsigned char win[64 * 64 * 3];
+GLuint winTex;
+void makeWindowTexture() {
+    for (int y = 0; y < 64; y++)
+        for (int x = 0; x < 64; x++) {
+            int k = (y * 64 + x) * 3, cx = x % 32, cy = y % 32;
+`, `            // ${C("TODO: oyna — 6 ≤ cx < 26 va 8 ≤ cy < 28; oyna rangi: ((x/32)+(y/32)) juft bölsa (40,70,120), toq — (255,220,140);", "TODO: стекло — 6 ≤ cx < 26 и 8 ≤ cy < 28; цвет стекла: если ((x/32)+(y/32)) чётно — (40,70,120), нечётно — (255,220,140);")}
+            // ${C("ramka — (190,180,165)", "рама — (190,180,165)")}
+            win[k] = 190; win[k + 1] = 180; win[k + 2] = 165;
+`, `            int glass = cx >= 6 && cx < 26 && cy >= 8 && cy < 28;
+            int lit = ((x / 32) + (y / 32)) % 2;
+            if (!glass) { win[k] = 190; win[k + 1] = 180; win[k + 2] = 165; }
+            else if (lit) { win[k] = 255; win[k + 1] = 220; win[k + 2] = 140; }
+            else { win[k] = 40; win[k + 1] = 70; win[k + 2] = 120; }
+`, `        }
+    glGenTextures(1, &winTex);
+    glBindTexture(GL_TEXTURE_2D, winTex);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);       // ${C("tekstura takrorlanadi", "текстура повторяется")}
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 64, 64, 0, GL_RGB, GL_UNSIGNED_BYTE, win);
+}
+
+void display() {
+` + CAM(7, 5, 13, 0, 4, 0) + `    ground(30);
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, tex);
-    glColor3f(1.0f, 1.0f, 1.0f);      // белый цвет не искажает текстуру
+    glBindTexture(GL_TEXTURE_2D, winTex);
+    glColor3f(1, 1, 1);
+    box(-3.6f, 3.6f, 0, 9, -2, 2, 0.278f);     // ${C("1 katakça = 1,8 m: ts = 0,5/1,8 → 4 × 5 deraza", "1 ячейка = 1,8 м: ts = 0,5/1,8 → 4 × 5 окон")}
+    glDisable(GL_TEXTURE_2D);
+    glutSwapBuffers();
+}
 
+` + RESHAPE + MAIN("A13: deraza teksturasi", "    makeWindowTexture();\n"));
+
+  /* ---------- 5. Şahar ---------- */
+  var CITY = `float BH[5][5];
+float BC[5][5][3];
+void makeCity() {
+    srand(21);
+    for (int i = 0; i < 5; i++)
+        for (int j = 0; j < 5; j++) {
+            BH[i][j] = 3.6f + (rand() % 8) * 1.8f;              // ${C("2..9 qavat", "2..9 этажей")}
+            for (int c = 0; c < 3; c++) BC[i][j][c] = 0.7f + (rand() % 30) / 100.0f;
+        }
+}
+`;
+  var CITY_DRAW = `void city() {
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, winTex);
+    for (int i = 0; i < 5; i++)
+        for (int j = 0; j < 5; j++) {
+            float x = -12 + 6 * i, z = -12 + 6 * j;
+            glColor3fv(BC[i][j]);
+            box(x - 2, x + 2, 0, BH[i][j], z - 2, z + 2, 0.278f);
+        }
+    glDisable(GL_TEXTURE_2D);
+}
+`;
+  var t5 = S(HEAD + LIGHT + BOX + GROUND + WINTEX + `float BH[5][5];
+float BC[5][5][3];
+void makeCity() {
+    srand(21);
+    for (int i = 0; i < 5; i++)
+        for (int j = 0; j < 5; j++) {
+            BH[i][j] = 3.6f + (rand() % 8) * 1.8f;              // ${C("2..9 qavat", "2..9 этажей")}
+            for (int c = 0; c < 3; c++) BC[i][j][c] = 0.7f + (rand() % 30) / 100.0f;
+        }
+}
+void city() {
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, winTex);
+`, `    // ${C("TODO: 5×5 bino: markazi (−12 + 6i; −12 + 6j), asosi 4×4, balandligi BH[i][j], rangi BC[i][j] (glColor3fv)", "TODO: 5×5 зданий: центр (−12 + 6i; −12 + 6j), основание 4×4, высота BH[i][j], цвет BC[i][j] (glColor3fv)")}
+`, `    for (int i = 0; i < 5; i++)
+        for (int j = 0; j < 5; j++) {
+            float x = -12 + 6 * i, z = -12 + 6 * j;
+            glColor3fv(BC[i][j]);
+            box(x - 2, x + 2, 0, BH[i][j], z - 2, z + 2, 0.278f);
+        }
+`, `    glDisable(GL_TEXTURE_2D);
+}
+
+void display() {
+` + CAM(26, 22, 34, 0, 2, 0) + `    ground(60);
+    city();
+    glutSwapBuffers();
+}
+
+` + RESHAPE + MAIN("A13: shahar", "    makeWindowTexture();\n    makeCity();\n"));
+
+  /* ---------- 6. Yer teksturasi ---------- */
+  var t6 = S(HEAD + LIGHT + BOX + WINTEX + LOADTEX + CITY + CITY_DRAW + `GLuint grassTex;
+
+// ${C("Katta yer tekisligi: tekstura 60 marta takrorlanadi", "Большая плоскость земли: текстура повторяется 60 раз")}
+void ground(float s) {
+`, `    // ${C("TODO: GL_TEXTURE_2D ni yoqing, grassTex ni bog'lang, oq rang; GL_QUADS uçlariga tekstura koordinatalari 0 va 60", "TODO: включите GL_TEXTURE_2D, привяжите grassTex, белый цвет; вершинам GL_QUADS дайте текстурные координаты 0 и 60")}
+    glColor3f(0.35f, 0.55f, 0.3f);
+    glNormal3f(0, 1, 0);
     glBegin(GL_QUADS);
-        glTexCoord2f(0.0f, 0.0f); glVertex2f(-0.8f, -0.8f);
-        glTexCoord2f(1.0f, 0.0f); glVertex2f( 0.8f, -0.8f);
-        glTexCoord2f(1.0f, 1.0f); glVertex2f( 0.8f,  0.8f);
-        glTexCoord2f(0.0f, 1.0f); glVertex2f(-0.8f,  0.8f);
+    glVertex3f(-s, 0, s); glVertex3f(s, 0, s); glVertex3f(s, 0, -s); glVertex3f(-s, 0, -s);
+    glEnd();
+`, `    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D, grassTex);
+    glColor3f(1, 1, 1);
+    glNormal3f(0, 1, 0);
+    glBegin(GL_QUADS);
+    glTexCoord2f(0, 0);   glVertex3f(-s, 0, s);
+    glTexCoord2f(60, 0);  glVertex3f(s, 0, s);
+    glTexCoord2f(60, 60); glVertex3f(s, 0, -s);
+    glTexCoord2f(0, 60);  glVertex3f(-s, 0, -s);
     glEnd();
     glDisable(GL_TEXTURE_2D);
-    glFlush();
-}
+`, `}
 
-int main(int argc, char** argv) {
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
-    glutInitWindowSize(400, 400);
-    glutCreateWindow("Текстура на квадрате");
-    glewInit();
-    makeChecker();
-    glutDisplayFunc(display);
-    glutMainLoop();
-    return 0;
-}
-`
-    },
-
-    // ===================== ЗАДАНИЕ 1 =====================
-    {
-      id: "s1", kind: "task", title: "Задание 1: текстура на кубе",
-      text: "<p>Куб нарисован по таблицам вершин и граней, но все вершины имеют одинаковые (нулевые) текстурные координаты, поэтому каждая грань залита одним текселем.</p><ul><li>Для каждой из шести граней задайте координаты из массива <code>T[4][2]</code> перед соответствующей вершиной (<code>glTexCoord2f</code>).</li><li>Включите <code>GL_TEXTURE_2D</code> и свяжите текстуру <code>tex</code> (в заготовке она уже создана).</li></ul>",
-      hint: "Внутри цикла по вершинам грани: glTexCoord2f(T[k][0], T[k][1]); glVertex3fv(V[F[i][k]]). Текстура должна быть включена до glBegin.",
-      check: { type: "both", calls: { "glTexCoord2f": ">=24", "glEnable": ">=1" }, source: [{ re: "GL_TEXTURE_2D\\s*\\)\\s*;[\\s\\S]*glBegin", msg: "Включите GL_TEXTURE_2D до glBegin" }] },
-      starter: `#include <GL/glew.h>   // GLEW: функции OpenGL 1.2+ в Windows
-#include <GL/glut.h>
-
-GLuint tex;
-` + CUBE_DATA + `
-` + CHECKER_FN + `
 void display() {
-    glClearColor(0.15f, 0.17f, 0.22f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glTranslatef(0, 0, -5);
-    float a = glutGet(GLUT_ELAPSED_TIME) * 0.03f;
-    glRotatef(25, 1, 0, 0);
-    glRotatef(a, 0, 1, 0);
-
-    // TODO: включите текстурирование и свяжите текстуру tex
-    glColor3f(1, 1, 1);
-    glBegin(GL_QUADS);
-    for (int i = 0; i < 6; i++)
-        for (int k = 0; k < 4; k++) {
-            // TODO: задайте текстурные координаты вершины из T[k]
-            glVertex3fv(V[F[i][k]]);
-        }
-    glEnd();
+` + CAM(26, 22, 34, 0, 2, 0) + `    ground(60);
+    city();
     glutSwapBuffers();
 }
 
-void reshape(int w, int h) {
-    glViewport(0, 0, w, h);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(45.0, (double)w / h, 0.1, 50.0);
-}
+` + RESHAPE + MAIN("A13: yer", "    makeWindowTexture();\n    makeCity();\n    grassTex = loadTexture(\"grass.png\");\n"));
 
-` + IDLE + MAIN3D("Куб с текстурой", `    makeChecker();
-    glEnable(GL_DEPTH_TEST);
-    glutReshapeFunc(reshape);
-`),
-      solution: `#include <GL/glew.h>   // GLEW: функции OpenGL 1.2+ в Windows
-#include <GL/glut.h>
-
-GLuint tex;
-` + CUBE_DATA + `
-` + CHECKER_FN + `
-void display() {
-    glClearColor(0.15f, 0.17f, 0.22f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glTranslatef(0, 0, -5);
-    float a = glutGet(GLUT_ELAPSED_TIME) * 0.03f;
-    glRotatef(25, 1, 0, 0);
-    glRotatef(a, 0, 1, 0);
-
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, tex);
-    glColor3f(1, 1, 1);
-    glBegin(GL_QUADS);
-    for (int i = 0; i < 6; i++)
-        for (int k = 0; k < 4; k++) {
-            glTexCoord2f(T[k][0], T[k][1]);
-            glVertex3fv(V[F[i][k]]);
-        }
-    glEnd();
-    glutSwapBuffers();
-}
-
-void reshape(int w, int h) {
-    glViewport(0, 0, w, h);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(45.0, (double)w / h, 0.1, 50.0);
-}
-
-` + IDLE + MAIN3D("Куб с текстурой", `    makeChecker();
-    glEnable(GL_DEPTH_TEST);
-    glutReshapeFunc(reshape);
-`)
-    },
-
-    // ===================== ЗАДАНИЕ 2 =====================
-    {
-      id: "s2", kind: "task", title: "Задание 2: изображение из файла, GL_MODULATE и GL_REPLACE",
-      text: "<p>Напишите функцию загрузки текстуры из файла <code>crate.png</code> и нарисуйте два освещённых ящика.</p><ul><li>Загрузите изображение через <code>stbi_load</code> (3 компонента), включив переворот строк <code>stbi_set_flip_vertically_on_load(1)</code>; передайте данные в <code>glTexImage2D</code> и задайте фильтры <code>GL_LINEAR</code> (без мип-уровней фильтр по умолчанию делает текстуру неполной).</li><li>Левый куб рисуйте с режимом <code>GL_MODULATE</code>, правый — с <code>GL_REPLACE</code> через <code>glTexEnvi</code>. Сравните: у какого из них видно освещение?</li></ul>",
-      hint: "glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE); для загрузки: glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, data).",
-      check: { type: "both", calls: { "glTexEnvi": ">=2" },
-        source: [{ re: "glTexImage2D\\s*\\(", msg: "Передайте изображение в glTexImage2D" }, { re: "stbi_set_flip_vertically_on_load\\s*\\(\\s*1", msg: "Включите переворот строк: stbi_set_flip_vertically_on_load(1)" }, { re: "GL_REPLACE", msg: "Для правого куба нужен режим GL_REPLACE" }, { re: "GL_MODULATE", msg: "Для левого куба нужен режим GL_MODULATE" }] },
-      starter: `#include <GL/glew.h>   // GLEW: функции OpenGL 1.2+ в Windows
-#include <GL/glut.h>
-#define STB_IMAGE_IMPLEMENTATION     // stb_image.h: загрузка PNG/JPG
-#include "stb_image.h"
-
-GLuint tex;
-` + CUBE_DATA + `
-GLuint loadTexture(const char* file) {
-    int w, h, n;
-    // TODO: включите переворот строк при загрузке
-    unsigned char* data = stbi_load(file, &w, &h, &n, 3);
-    GLuint id;
-    glGenTextures(1, &id);
-    glBindTexture(GL_TEXTURE_2D, id);
-    // TODO: передайте data в glTexImage2D (GL_RGB, w x h) и задайте фильтры GL_LINEAR
-    stbi_image_free(data);
-    return id;
-}
-
-void cube() {
-    glBegin(GL_QUADS);
-    for (int i = 0; i < 6; i++) {
-        glNormal3fv(N[i]);
-        for (int k = 0; k < 4; k++) {
-            glTexCoord2f(T[k][0], T[k][1]);
-            glVertex3fv(V[F[i][k]]);
-        }
-    }
-    glEnd();
-}
+  /* ---------- 7. Soyalar ---------- */
+  var t7 = S(HEAD + LIGHT + BOX + GROUND + WINTEX + CITY + CITY_DRAW + `// ${C("Tekis proyeksion soya: nuqta yorug'lik yönalişi L böyiça y = 0 tekisligiga «bosiladi»", "Плоская проекционная тень: точка «придавливается» к плоскости y = 0 вдоль направления света L")}
+void shadowMatrix(float M[16]) {
+    float lx = SUN[0], ly = SUN[1], lz = SUN[2];
+    for (int i = 0; i < 16; i++) M[i] = 0;
+`, `    // ${C("TODO: x' = x − (lx/ly)·y, y' = 0, z' = z − (lz/ly)·y (ustunlar böyiça: M[0], M[4], M[8], M[10], M[15])", "TODO: x' = x − (lx/ly)·y, y' = 0, z' = z − (lz/ly)·y (по столбцам: M[0], M[4], M[8], M[10], M[15])")}
+    M[0] = M[5] = M[10] = M[15] = 1;
+`, `    M[0] = 1;            // x' = x
+    M[4] = -lx / ly;     //      − (lx/ly)·y
+    M[10] = 1;           // z' = z
+    M[6] = -lz / ly;     //      − (lz/ly)·y
+    M[15] = 1;           // ${C("y' = 0: ikkinçi qator nol", "y' = 0: вторая строка нулевая")}
+`, `}
 
 void display() {
-    glClearColor(0.15f, 0.17f, 0.22f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glTranslatef(0, 0, -7);
-    float a = glutGet(GLUT_ELAPSED_TIME) * 0.03f;
-
-    GLfloat pos[] = { 2.0f, 3.0f, 4.0f, 0.0f };
-    glLightfv(GL_LIGHT0, GL_POSITION, pos);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, tex);
-    glColor3f(1, 1, 1);
-
-    glPushMatrix();
-    glTranslatef(-1.7f, 0, 0);
-    glRotatef(25, 1, 0, 0); glRotatef(a, 0, 1, 0);
-    // TODO: режим GL_MODULATE
-    cube();
-    glPopMatrix();
-
-    glPushMatrix();
-    glTranslatef(1.7f, 0, 0);
-    glRotatef(25, 1, 0, 0); glRotatef(a, 0, 1, 0);
-    // TODO: режим GL_REPLACE
-    cube();
-    glPopMatrix();
-    glutSwapBuffers();
-}
-
-void reshape(int w, int h) {
-    glViewport(0, 0, w, h);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(45.0, (double)w / h, 0.1, 50.0);
-}
-
-` + IDLE + MAIN3D("Ящики: MODULATE и REPLACE", `    tex = loadTexture("crate.png");
-    glEnable(GL_DEPTH_TEST);
-    glutReshapeFunc(reshape);
-`),
-      solution: `#include <GL/glew.h>   // GLEW: функции OpenGL 1.2+ в Windows
-#include <GL/glut.h>
-#define STB_IMAGE_IMPLEMENTATION     // stb_image.h: загрузка PNG/JPG
-#include "stb_image.h"
-
-GLuint tex;
-` + CUBE_DATA + `
-GLuint loadTexture(const char* file) {
-    int w, h, n;
-    stbi_set_flip_vertically_on_load(1);
-    unsigned char* data = stbi_load(file, &w, &h, &n, 3);
-    GLuint id;
-    glGenTextures(1, &id);
-    glBindTexture(GL_TEXTURE_2D, id);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    stbi_image_free(data);
-    return id;
-}
-
-void cube() {
-    glBegin(GL_QUADS);
-    for (int i = 0; i < 6; i++) {
-        glNormal3fv(N[i]);
-        for (int k = 0; k < 4; k++) {
-            glTexCoord2f(T[k][0], T[k][1]);
-            glVertex3fv(V[F[i][k]]);
-        }
-    }
-    glEnd();
-}
-
-void display() {
-    glClearColor(0.15f, 0.17f, 0.22f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glTranslatef(0, 0, -7);
-    float a = glutGet(GLUT_ELAPSED_TIME) * 0.03f;
-
-    GLfloat pos[] = { 2.0f, 3.0f, 4.0f, 0.0f };
-    glLightfv(GL_LIGHT0, GL_POSITION, pos);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, tex);
-    glColor3f(1, 1, 1);
-
-    glPushMatrix();
-    glTranslatef(-1.7f, 0, 0);
-    glRotatef(25, 1, 0, 0); glRotatef(a, 0, 1, 0);
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-    cube();
-    glPopMatrix();
-
-    glPushMatrix();
-    glTranslatef(1.7f, 0, 0);
-    glRotatef(25, 1, 0, 0); glRotatef(a, 0, 1, 0);
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-    cube();
-    glPopMatrix();
-    glutSwapBuffers();
-}
-
-void reshape(int w, int h) {
-    glViewport(0, 0, w, h);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(45.0, (double)w / h, 0.1, 50.0);
-}
-
-` + IDLE + MAIN3D("Ящики: MODULATE и REPLACE", `    tex = loadTexture("crate.png");
-    glEnable(GL_DEPTH_TEST);
-    glutReshapeFunc(reshape);
-`)
-    },
-
-    // ===================== ЗАДАНИЕ 3 =====================
-    {
-      id: "s3", kind: "task", title: "Задание 3: пол из плиток, GL_REPEAT и туман",
-      text: "<p>Огромный пол растянут одной плиткой, а у горизонта виден резкий край. Исправьте это.</p><ul><li>Задайте координаты 0…8 по осям S и T, чтобы плитка <code>tiles.png</code> повторилась 8×8 раз, и установите режим <code>GL_REPEAT</code> для обеих осей (в заготовке стоит <code>GL_CLAMP_TO_EDGE</code>).</li><li>Включите линейный туман <code>GL_FOG</code> цвета фона: <code>GL_FOG_START</code> = 4, <code>GL_FOG_END</code> = 26.</li></ul>",
-      hint: "Туман задаётся так: glFogi(GL_FOG_MODE, GL_LINEAR); glFogfv(GL_FOG_COLOR, цвет); glFogf(GL_FOG_START, …); glFogf(GL_FOG_END, …); glEnable(GL_FOG).",
-      check: { type: "both", calls: { "glFogf": ">=2", "glFogfv": ">=1", "glFogi|glFogf": ">=3" },
-        source: [{ re: "GL_REPEAT", msg: "Нужен режим повторения GL_REPEAT" }, { re: "glEnable\\s*\\(\\s*GL_FOG", msg: "Включите туман: glEnable(GL_FOG)" }] },
-      starter: `#include <GL/glew.h>   // GLEW: функции OpenGL 1.2+ в Windows
-#include <GL/glut.h>
-#define STB_IMAGE_IMPLEMENTATION     // stb_image.h: загрузка PNG/JPG
-#include "stb_image.h"
-
-GLuint tex;
-` + LOAD_FN_DONE + `
-void display() {
-    GLfloat haze[] = { 0.70f, 0.78f, 0.88f, 1.0f };   // цвет неба и тумана
-    glClearColor(haze[0], haze[1], haze[2], 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluLookAt(0, 1.3, 4,  0, 0.6, -10,  0, 1, 0);
-
-    // TODO: включите линейный туман цвета haze (start = 4, end = 26)
-
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, tex);
-    // TODO: режим повторения GL_REPEAT по S и T
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glColor3f(1, 1, 1);
-    glBegin(GL_QUADS);
-        glTexCoord2f(0, 0); glVertex3f(-12, 0,  6);
-        glTexCoord2f(1, 0); glVertex3f( 12, 0,  6);
-        glTexCoord2f(1, 1); glVertex3f( 12, 0, -40);   // TODO: координаты 0..8
-        glTexCoord2f(0, 1); glVertex3f(-12, 0, -40);
-    glEnd();
-    glutSwapBuffers();
-}
-
-void reshape(int w, int h) {
-    glViewport(0, 0, w, h);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(50.0, (double)w / h, 0.1, 100.0);
-}
-
-` + IDLE + MAIN3D("Пол из плиток", `    tex = loadTexture("tiles.png");
-    glEnable(GL_DEPTH_TEST);
-    glutReshapeFunc(reshape);
-`),
-      solution: `#include <GL/glew.h>   // GLEW: функции OpenGL 1.2+ в Windows
-#include <GL/glut.h>
-#define STB_IMAGE_IMPLEMENTATION     // stb_image.h: загрузка PNG/JPG
-#include "stb_image.h"
-
-GLuint tex;
-` + LOAD_FN_DONE + `
-void display() {
-    GLfloat haze[] = { 0.70f, 0.78f, 0.88f, 1.0f };   // цвет неба и тумана
-    glClearColor(haze[0], haze[1], haze[2], 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluLookAt(0, 1.3, 4,  0, 0.6, -10,  0, 1, 0);
-
-    glEnable(GL_FOG);
-    glFogi(GL_FOG_MODE, GL_LINEAR);
-    glFogfv(GL_FOG_COLOR, haze);
-    glFogf(GL_FOG_START, 4.0f);
-    glFogf(GL_FOG_END, 26.0f);
-
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, tex);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    glColor3f(1, 1, 1);
-    glBegin(GL_QUADS);
-        glTexCoord2f(0, 0); glVertex3f(-12, 0,  6);
-        glTexCoord2f(8, 0); glVertex3f( 12, 0,  6);
-        glTexCoord2f(8, 8); glVertex3f( 12, 0, -40);
-        glTexCoord2f(0, 8); glVertex3f(-12, 0, -40);
-    glEnd();
-    glutSwapBuffers();
-}
-
-void reshape(int w, int h) {
-    glViewport(0, 0, w, h);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(50.0, (double)w / h, 0.1, 100.0);
-}
-
-` + IDLE + MAIN3D("Пол из плиток", `    tex = loadTexture("tiles.png");
-    glEnable(GL_DEPTH_TEST);
-    glutReshapeFunc(reshape);
-`)
-    },
-
-    // ===================== ЗАДАНИЕ 4 =====================
-    {
-      id: "s4", kind: "task", title: "Задание 4: фильтрация и мип-уровни",
-      text: "<p>Наклонная шахматная плоскость нарисована дважды: слева — текстура с фильтром <code>GL_NEAREST</code> без мип-уровней (видны муар и шум вдали), справа должна быть та же картинка с мип-уровнями. Сейчас правая половина белая: после <code>glTexImage2D</code> текстура <b>неполная</b> — фильтр по умолчанию <code>GL_NEAREST_MIPMAP_LINEAR</code> требует цепочки мип-уровней, а их нет.</p><ul><li>Для правой текстуры вместо <code>glTexImage2D</code> вызовите <code>gluBuild2DMipmaps</code>.</li><li>Задайте <code>GL_TEXTURE_MIN_FILTER</code> = <code>GL_LINEAR_MIPMAP_LINEAR</code>, <code>GL_TEXTURE_MAG_FILTER</code> = <code>GL_LINEAR</code>.</li></ul>",
-      hint: "gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, w, h, GL_RGB, GL_UNSIGNED_BYTE, data) заменяет glTexImage2D и создаёт все уровни до 1×1.",
-      check: { type: "both", calls: { "glBindTexture": ">=2" }, source: [{ re: "gluBuild2DMipmaps\\s*\\(", msg: "Постройте мип-уровни: gluBuild2DMipmaps" }, { re: "GL_LINEAR_MIPMAP_LINEAR", msg: "Используйте минифицирующий фильтр GL_LINEAR_MIPMAP_LINEAR" }] },
-      starter: `#include <GL/glew.h>   // GLEW: функции OpenGL 1.2+ в Windows
-#include <GL/glut.h>
-#define STB_IMAGE_IMPLEMENTATION     // stb_image.h: загрузка PNG/JPG
-#include "stb_image.h"
-
-GLuint texA, texB;
-
-void init() {
-    int w, h, n;
-    unsigned char* data = stbi_load("checker.png", &w, &h, &n, 3);
-    glGenTextures(1, &texA);
-    glBindTexture(GL_TEXTURE_2D, texA);          // левая: без мип-уровней, GL_NEAREST
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-
-    glGenTextures(1, &texB);
-    glBindTexture(GL_TEXTURE_2D, texB);          // правая: нужны мип-уровни
-    // TODO: замените glTexImage2D на gluBuild2DMipmaps и задайте фильтры
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-    stbi_image_free(data);
-}
-
-void plane(float x0, float x1) {
-    glBegin(GL_QUADS);
-        glTexCoord2f(0, 0);   glVertex3f(x0, 0,  5);
-        glTexCoord2f(3, 0);   glVertex3f(x1, 0,  5);
-        glTexCoord2f(3, 30);  glVertex3f(x1, 0, -60);
-        glTexCoord2f(0, 30);  glVertex3f(x0, 0, -60);
-    glEnd();
-}
-
-void display() {
-    glClearColor(0.55f, 0.65f, 0.8f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluLookAt(0, 1.2, 5,  0, 0.3, -10,  0, 1, 0);
-    glEnable(GL_TEXTURE_2D);
-    glColor3f(1, 1, 1);
-    glBindTexture(GL_TEXTURE_2D, texA);
-    plane(-6, -0.05f);
-    glBindTexture(GL_TEXTURE_2D, texB);
-    plane(0.05f, 6);
-    glutSwapBuffers();
-}
-
-void reshape(int w, int h) {
-    glViewport(0, 0, w, h);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(55.0, (double)w / h, 0.1, 100.0);
-}
-
-` + IDLE + MAIN3D("Мип-уровни", `    init();
-    glEnable(GL_DEPTH_TEST);
-    glutReshapeFunc(reshape);
-`),
-      solution: `#include <GL/glew.h>   // GLEW: функции OpenGL 1.2+ в Windows
-#include <GL/glut.h>
-#define STB_IMAGE_IMPLEMENTATION     // stb_image.h: загрузка PNG/JPG
-#include "stb_image.h"
-
-GLuint texA, texB;
-
-void init() {
-    int w, h, n;
-    unsigned char* data = stbi_load("checker.png", &w, &h, &n, 3);
-    glGenTextures(1, &texA);
-    glBindTexture(GL_TEXTURE_2D, texA);          // левая: без мип-уровней, GL_NEAREST
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, w, h, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-
-    glGenTextures(1, &texB);
-    glBindTexture(GL_TEXTURE_2D, texB);          // правая: нужны мип-уровни
-    gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGB, w, h, GL_RGB, GL_UNSIGNED_BYTE, data);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    stbi_image_free(data);
-}
-
-void plane(float x0, float x1) {
-    glBegin(GL_QUADS);
-        glTexCoord2f(0, 0);   glVertex3f(x0, 0,  5);
-        glTexCoord2f(3, 0);   glVertex3f(x1, 0,  5);
-        glTexCoord2f(3, 30);  glVertex3f(x1, 0, -60);
-        glTexCoord2f(0, 30);  glVertex3f(x0, 0, -60);
-    glEnd();
-}
-
-void display() {
-    glClearColor(0.55f, 0.65f, 0.8f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    gluLookAt(0, 1.2, 5,  0, 0.3, -10,  0, 1, 0);
-    glEnable(GL_TEXTURE_2D);
-    glColor3f(1, 1, 1);
-    glBindTexture(GL_TEXTURE_2D, texA);
-    plane(-6, -0.05f);
-    glBindTexture(GL_TEXTURE_2D, texB);
-    plane(0.05f, 6);
-    glutSwapBuffers();
-}
-
-void reshape(int w, int h) {
-    glViewport(0, 0, w, h);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(55.0, (double)w / h, 0.1, 100.0);
-}
-
-` + IDLE + MAIN3D("Мип-уровни", `    init();
-    glEnable(GL_DEPTH_TEST);
-    glutReshapeFunc(reshape);
-`)
-    },
-
-    // ===================== ЗАДАНИЕ 5 =====================
-    {
-      id: "s5", kind: "task", title: "Задание 5: текстура на сфере (квадрики GLU)",
-      text: "<p>Превратите белую сферу в глобус.</p><ul><li>Включите генерацию текстурных координат квадрики: <code>gluQuadricTexture(q, GL_TRUE)</code>.</li><li>Включите текстурирование и свяжите текстуру <code>earth.png</code> (функция <code>loadTexture</code> уже есть). Режим <code>GL_MODULATE</code> сохранит освещение.</li><li>Ось квадрики-сферы — это <i>z</i>; поверните сферу на −90° вокруг оси <i>x</i>, чтобы полюса были сверху и снизу, и добавьте вращение вокруг её оси на угол <code>a</code>.</li></ul>",
-      hint: "Порядок: glRotatef(-90, 1, 0, 0); затем glRotatef(a, 0, 0, 1) — вращение вокруг оси сферы; gluSphere(q, 1.5, 48, 32).",
-      check: { type: "both", calls: { "gluSphere": ">=1", "glBindTexture": ">=1" }, source: [{ re: "gluQuadricTexture\\s*\\(\\s*\\w+\\s*,\\s*GL_TRUE", msg: "Включите gluQuadricTexture(q, GL_TRUE)" }] },
-      starter: `#include <GL/glew.h>   // GLEW: функции OpenGL 1.2+ в Windows
-#include <GL/glut.h>
-#define STB_IMAGE_IMPLEMENTATION     // stb_image.h: загрузка PNG/JPG
-#include "stb_image.h"
-
-GLuint tex;
-` + LOAD_FN_DONE + `
-void display() {
-    glClearColor(0.02f, 0.03f, 0.08f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glTranslatef(0, 0, -5);
-    float a = glutGet(GLUT_ELAPSED_TIME) * 0.02f + 150;
-
-    GLfloat pos[] = { 1.0f, 1.0f, 4.0f, 0.0f };
-    glLightfv(GL_LIGHT0, GL_POSITION, pos);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-
-    GLUquadric* q = gluNewQuadric();
-    // TODO: включите текстурные координаты квадрики
-    // TODO: включите текстурирование, свяжите tex, режим GL_MODULATE
-    glColor3f(1, 1, 1);
-    glRotatef(-90, 1, 0, 0);
-    // TODO: вращение вокруг оси сферы на угол a
-    gluSphere(q, 1.5, 48, 32);
-    gluDeleteQuadric(q);
-    glutSwapBuffers();
-}
-
-void reshape(int w, int h) {
-    glViewport(0, 0, w, h);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(45.0, (double)w / h, 0.1, 50.0);
-}
-
-` + IDLE + MAIN3D("Глобус", `    tex = loadTexture("earth.png");
-    glEnable(GL_DEPTH_TEST);
-    glutReshapeFunc(reshape);
-`),
-      solution: `#include <GL/glew.h>   // GLEW: функции OpenGL 1.2+ в Windows
-#include <GL/glut.h>
-#define STB_IMAGE_IMPLEMENTATION     // stb_image.h: загрузка PNG/JPG
-#include "stb_image.h"
-
-GLuint tex;
-` + LOAD_FN_DONE + `
-void display() {
-    glClearColor(0.02f, 0.03f, 0.08f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glTranslatef(0, 0, -5);
-    float a = glutGet(GLUT_ELAPSED_TIME) * 0.02f + 150;
-
-    GLfloat pos[] = { 1.0f, 1.0f, 4.0f, 0.0f };
-    glLightfv(GL_LIGHT0, GL_POSITION, pos);
-    glEnable(GL_LIGHTING);
-    glEnable(GL_LIGHT0);
-
-    GLUquadric* q = gluNewQuadric();
-    gluQuadricTexture(q, GL_TRUE);
-    glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, tex);
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-    glColor3f(1, 1, 1);
-    glRotatef(-90, 1, 0, 0);
-    glRotatef(a, 0, 0, 1);
-    gluSphere(q, 1.5, 48, 32);
-    gluDeleteQuadric(q);
-    glutSwapBuffers();
-}
-
-void reshape(int w, int h) {
-    glViewport(0, 0, w, h);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(45.0, (double)w / h, 0.1, 50.0);
-}
-
-` + IDLE + MAIN3D("Глобус", `    tex = loadTexture("earth.png");
-    glEnable(GL_DEPTH_TEST);
-    glutReshapeFunc(reshape);
-`)
-    },
-
-    // ===================== ЗАДАНИЕ 6 =====================
-    {
-      id: "s6", kind: "task", title: "Задание 6: автоматическая генерация координат (glTexGen)",
-      text: "<p>У тора и сферы нет текстурных координат — их вычислит OpenGL.</p><ul><li>Тор: включите <code>GL_TEXTURE_GEN_S</code> с режимом <code>GL_OBJECT_LINEAR</code> и плоскостью <code>GL_OBJECT_PLANE</code> = (1,0,0,0)·k (используйте k = 0,8): получатся полосы вдоль оси <i>x</i>.</li><li>Сфера: включите генерацию <i>s</i> и <i>t</i> в режиме <code>GL_SPHERE_MAP</code> — имитация отражения окружения («хром»); для сферы используйте текстуру неба <code>env</code> и режим <code>GL_REPLACE</code>.</li><li>После рисования каждого объекта выключайте генерацию.</li></ul>",
-      hint: "Для тора: GLfloat plane[] = {0.8f, 0, 0, 0}; glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR); glTexGenfv(GL_S, GL_OBJECT_PLANE, plane); glEnable(GL_TEXTURE_GEN_S).",
-      check: { type: "both", calls: { "glTexGeni": ">=3", "glTexGenfv": ">=1" }, source: [{ re: "GL_SPHERE_MAP", msg: "Для сферы нужен GL_SPHERE_MAP" }, { re: "GL_OBJECT_LINEAR", msg: "Для тора нужен GL_OBJECT_LINEAR" }, { re: "glDisable\\s*\\(\\s*GL_TEXTURE_GEN_S", msg: "Выключайте генерацию после объекта: glDisable(GL_TEXTURE_GEN_S)" }] },
-      starter: `#include <GL/glew.h>   // GLEW: функции OpenGL 1.2+ в Windows
-#include <GL/glut.h>
-
-GLuint texStripe, texEnv;
-
-void init() {
-    GLubyte s[16][16][3];       // полосы: цвет зависит от столбца j
-    for (int i = 0; i < 16; i++)
-        for (int j = 0; j < 16; j++) {
-            bool a = (j / 4) % 2 == 0;
-            s[i][j][0] = a ? 230 : 40;
-            s[i][j][1] = a ? 190 : 90;
-            s[i][j][2] = a ?  30 : 160;
-        }
-    glGenTextures(1, &texStripe);
-    glBindTexture(GL_TEXTURE_2D, texStripe);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 16, 16, 0, GL_RGB, GL_UNSIGNED_BYTE, s);
-
-    GLubyte e[64][64][3];       // "окружение": небо сверху, земля снизу
-    for (int i = 0; i < 64; i++)
-        for (int j = 0; j < 64; j++) {
-            float y = (i - 32) / 32.0f, x = (j - 32) / 32.0f;
-            float r = sqrtf(x * x + y * y);
-            if (r > 1.0f) { e[i][j][0] = 20; e[i][j][1] = 20; e[i][j][2] = 30; continue; }
-            if (y > 0) { e[i][j][0] = 60 + 120 * (1 - y); e[i][j][1] = 120 + 90 * (1 - y); e[i][j][2] = 230; }
-            else       { e[i][j][0] = 110 + 60 * y; e[i][j][1] = 80 + 50 * y; e[i][j][2] = 40; }
-            if (fabsf(y) < 0.04f) { e[i][j][0] = 255; e[i][j][1] = 255; e[i][j][2] = 255; }
-        }
-    glGenTextures(1, &texEnv);
-    glBindTexture(GL_TEXTURE_2D, texEnv);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 64, 64, 0, GL_RGB, GL_UNSIGNED_BYTE, e);
-}
-
-void display() {
-    glClearColor(0.15f, 0.17f, 0.22f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glTranslatef(0, 0, -7);
-    GLfloat pos[] = { 2.0f, 3.0f, 4.0f, 0.0f };
-    glLightfv(GL_LIGHT0, GL_POSITION, pos);
-    glEnable(GL_LIGHT0);
-    glColor3f(1, 1, 1);
-    glEnable(GL_TEXTURE_2D);
-
-    // Тор с полосами
-    glPushMatrix();
-    glTranslatef(-1.8f, 0, 0);
-    glRotatef(60, 1, 0, 0);
-    glEnable(GL_LIGHTING);
-    glBindTexture(GL_TEXTURE_2D, texStripe);
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-    // TODO: GL_OBJECT_LINEAR для координаты s, плоскость (0.8, 0, 0, 0)
-    glutSolidTorus(0.45, 1.1, 24, 40);
-    // TODO: выключите генерацию s
-    glPopMatrix();
-
-    // Сфера "хром"
-    glPushMatrix();
-    glTranslatef(2.0f, 0, 0);
+` + CAM(26, 22, 34, 0, 2, 0) + `    ground(60);
+    // ${C("Soyalar: yoritişsiz, qora-yaşil, yer ustida 0,02 balandlikda", "Тени: без освещения, тёмно-зелёные, на высоте 0,02 над землёй")}
+    float M[16];
+    shadowMatrix(M);
     glDisable(GL_LIGHTING);
-    glBindTexture(GL_TEXTURE_2D, texEnv);
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-    // TODO: GL_SPHERE_MAP для s и t
-    glutSolidSphere(1.3, 40, 30);
-    // TODO: выключите генерацию s и t
-    glPopMatrix();
-    glutSwapBuffers();
-}
-
-void reshape(int w, int h) {
-    glViewport(0, 0, w, h);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(45.0, (double)w / h, 0.1, 50.0);
-}
-
-` + IDLE + MAIN3D("glTexGen", `    init();
-    glEnable(GL_DEPTH_TEST);
-    glutReshapeFunc(reshape);
-`),
-      solution: `#include <GL/glew.h>   // GLEW: функции OpenGL 1.2+ в Windows
-#include <GL/glut.h>
-
-GLuint texStripe, texEnv;
-
-void init() {
-    GLubyte s[16][16][3];       // полосы: цвет зависит от столбца j
-    for (int i = 0; i < 16; i++)
-        for (int j = 0; j < 16; j++) {
-            bool a = (j / 4) % 2 == 0;
-            s[i][j][0] = a ? 230 : 40;
-            s[i][j][1] = a ? 190 : 90;
-            s[i][j][2] = a ?  30 : 160;
-        }
-    glGenTextures(1, &texStripe);
-    glBindTexture(GL_TEXTURE_2D, texStripe);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 16, 16, 0, GL_RGB, GL_UNSIGNED_BYTE, s);
-
-    GLubyte e[64][64][3];       // "окружение": небо сверху, земля снизу
-    for (int i = 0; i < 64; i++)
-        for (int j = 0; j < 64; j++) {
-            float y = (i - 32) / 32.0f, x = (j - 32) / 32.0f;
-            float r = sqrtf(x * x + y * y);
-            if (r > 1.0f) { e[i][j][0] = 20; e[i][j][1] = 20; e[i][j][2] = 30; continue; }
-            if (y > 0) { e[i][j][0] = 60 + 120 * (1 - y); e[i][j][1] = 120 + 90 * (1 - y); e[i][j][2] = 230; }
-            else       { e[i][j][0] = 110 + 60 * y; e[i][j][1] = 80 + 50 * y; e[i][j][2] = 40; }
-            if (fabsf(y) < 0.04f) { e[i][j][0] = 255; e[i][j][1] = 255; e[i][j][2] = 255; }
-        }
-    glGenTextures(1, &texEnv);
-    glBindTexture(GL_TEXTURE_2D, texEnv);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, 64, 64, 0, GL_RGB, GL_UNSIGNED_BYTE, e);
-}
-
-void display() {
-    glClearColor(0.15f, 0.17f, 0.22f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glTranslatef(0, 0, -7);
-    GLfloat pos[] = { 2.0f, 3.0f, 4.0f, 0.0f };
-    glLightfv(GL_LIGHT0, GL_POSITION, pos);
-    glEnable(GL_LIGHT0);
-    glColor3f(1, 1, 1);
-    glEnable(GL_TEXTURE_2D);
-
-    // Тор с полосами
+    glColor3f(0.2f, 0.32f, 0.18f);
     glPushMatrix();
-    glTranslatef(-1.8f, 0, 0);
-    glRotatef(60, 1, 0, 0);
+    glTranslatef(0, 0.02f, 0);
+    glMultMatrixf(M);
+    for (int i = 0; i < 5; i++)
+        for (int j = 0; j < 5; j++) { float x = -12 + 6 * i, z = -12 + 6 * j; box(x - 2, x + 2, 0, BH[i][j], z - 2, z + 2, 0); }
+    glPopMatrix();
     glEnable(GL_LIGHTING);
-    glBindTexture(GL_TEXTURE_2D, texStripe);
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-    GLfloat plane[] = { 0.8f, 0.0f, 0.0f, 0.0f };
-    glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_OBJECT_LINEAR);
-    glTexGenfv(GL_S, GL_OBJECT_PLANE, plane);
-    glEnable(GL_TEXTURE_GEN_S);
-    glutSolidTorus(0.45, 1.1, 24, 40);
-    glDisable(GL_TEXTURE_GEN_S);
-    glPopMatrix();
-
-    // Сфера "хром"
-    glPushMatrix();
-    glTranslatef(2.0f, 0, 0);
-    glDisable(GL_LIGHTING);
-    glBindTexture(GL_TEXTURE_2D, texEnv);
-    glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-    glTexGeni(GL_S, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
-    glTexGeni(GL_T, GL_TEXTURE_GEN_MODE, GL_SPHERE_MAP);
-    glEnable(GL_TEXTURE_GEN_S);
-    glEnable(GL_TEXTURE_GEN_T);
-    glutSolidSphere(1.3, 40, 30);
-    glDisable(GL_TEXTURE_GEN_S);
-    glDisable(GL_TEXTURE_GEN_T);
-    glPopMatrix();
+    city();
     glutSwapBuffers();
 }
 
-void reshape(int w, int h) {
-    glViewport(0, 0, w, h);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(45.0, (double)w / h, 0.1, 50.0);
-}
+` + RESHAPE + MAIN("A13: soyalar", "    makeWindowTexture();\n    makeCity();\n"));
 
-` + IDLE + MAIN3D("glTexGen", `    init();
-    glEnable(GL_DEPTH_TEST);
-    glutReshapeFunc(reshape);
-`)
-    },
-
-    // ===================== ЗАДАНИЕ 7 =====================
-    {
-      id: "s7", kind: "task", title: "Задание 7: прозрачность — glass.png, смешивание и порядок вывода",
-      text: "<p>Перед кирпичной стеной стоят два стекла (RGBA-текстура <code>glass.png</code>): дальнее синеватое, ближнее красноватое. Сейчас они непрозрачны.</p><ul><li>Включите смешивание: <code>glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)</code>.</li><li>Непрозрачную стену рисуйте первой, прозрачные стёкла — после неё, <b>от дальнего к ближнему</b>.</li><li>На время вывода стёкол отключите запись в буфер глубины <code>glDepthMask(GL_FALSE)</code>, затем верните <code>GL_TRUE</code>.</li></ul>",
-      hint: "Сначала стена, потом glEnable(GL_BLEND); glDepthMask(GL_FALSE); дальнее стекло (z = −1); ближнее стекло (z = +0.5); glDepthMask(GL_TRUE); glDisable(GL_BLEND).",
-      check: { type: "both", calls: { "glBlendFunc": ">=1", "glDepthMask": ">=2" }, source: [{ re: "GL_ONE_MINUS_SRC_ALPHA", msg: "Коэффициенты: GL_SRC_ALPHA и GL_ONE_MINUS_SRC_ALPHA" }] },
-      starter: `#include <GL/glew.h>   // GLEW: функции OpenGL 1.2+ в Windows
-#include <GL/glut.h>
-#define STB_IMAGE_IMPLEMENTATION     // stb_image.h: загрузка PNG/JPG
-#include "stb_image.h"
-
-GLuint texWall, texGlass;
-
-GLuint load(const char* file, int comps, GLenum fmt) {
-    int w, h, n;
-    stbi_set_flip_vertically_on_load(1);
-    unsigned char* data = stbi_load(file, &w, &h, &n, comps);
-    GLuint id;
-    glGenTextures(1, &id);
-    glBindTexture(GL_TEXTURE_2D, id);
-    gluBuild2DMipmaps(GL_TEXTURE_2D, fmt, w, h, fmt, GL_UNSIGNED_BYTE, data);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    stbi_image_free(data);
-    return id;
-}
-
-void quad(float x, float y, float z, float hw, float hh) {
-    glBegin(GL_QUADS);
-        glTexCoord2f(0, 0); glVertex3f(x - hw, y - hh, z);
-        glTexCoord2f(1, 0); glVertex3f(x + hw, y - hh, z);
-        glTexCoord2f(1, 1); glVertex3f(x + hw, y + hh, z);
-        glTexCoord2f(0, 1); glVertex3f(x - hw, y + hh, z);
-    glEnd();
-}
+  /* ---------- 8. Yurgan kamera ---------- */
+  var t8 = S(HEAD + LIGHT + BOX + GROUND + WINTEX + CITY + CITY_DRAW + `float cx = 3, cz = 27, yaw = -0.12f;      // ${C("kamera: joy va buriliş", "камера: позиция и поворот")}
 
 void display() {
-    glClearColor(0.2f, 0.22f, 0.28f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
-    glTranslatef(0, 0, -6);
-    glEnable(GL_TEXTURE_2D);
-
-    // Ближнее стекло нарисовано первым, и смешивание выключено - исправьте
-    glBindTexture(GL_TEXTURE_2D, texGlass);
-    glColor4f(1.0f, 0.55f, 0.55f, 0.85f);
-    quad(0.9f, 0.0f, 0.5f, 1.3f, 1.3f);
-
-    glColor4f(0.55f, 0.7f, 1.0f, 0.85f);
-    quad(-0.9f, 0.2f, -1.0f, 1.3f, 1.3f);
-
-    glBindTexture(GL_TEXTURE_2D, texWall);
-    glColor4f(1, 1, 1, 1);
-    quad(0, 0, -3, 3.2f, 2.4f);
+    gluLookAt(cx, 1.7, cz,  cx + sin(yaw), 1.7, cz - cos(yaw),  0, 1, 0);
+    setSun();
+    ground(60);
+    city();
     glutSwapBuffers();
 }
 
-void reshape(int w, int h) {
-    glViewport(0, 0, w, h);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(45.0, (double)w / h, 0.1, 50.0);
+`, `// ${C("TODO: W/S — oldinga/orqaga 0,5 (sin yaw, −cos yaw), A/D — yonga (cos yaw, sin yaw), ←/→ — yaw ∓0,08", "TODO: W/S — вперёд/назад на 0,5 (sin yaw, −cos yaw), A/D — вбок (cos yaw, sin yaw), ←/→ — yaw ∓0,08")}
+void keyboard(unsigned char key, int x, int y) { }
+void special(int key, int x, int y) { }
+`, `void keyboard(unsigned char key, int x, int y) {
+    float fx = sin(yaw), fz = -cos(yaw), rx = cos(yaw), rz = sin(yaw);
+    if (key == 'w') { cx += 0.5f * fx; cz += 0.5f * fz; }
+    if (key == 's') { cx -= 0.5f * fx; cz -= 0.5f * fz; }
+    if (key == 'd') { cx += 0.5f * rx; cz += 0.5f * rz; }
+    if (key == 'a') { cx -= 0.5f * rx; cz -= 0.5f * rz; }
+    glutPostRedisplay();
 }
-
-` + IDLE + MAIN3D("Прозрачные стёкла", `    texWall = load("brick.png", 3, GL_RGB);
-    texGlass = load("glass.png", 4, GL_RGBA);
-    glEnable(GL_DEPTH_TEST);
-    glutReshapeFunc(reshape);
-`),
-      solution: `#include <GL/glew.h>   // GLEW: функции OpenGL 1.2+ в Windows
-#include <GL/glut.h>
-#define STB_IMAGE_IMPLEMENTATION     // stb_image.h: загрузка PNG/JPG
-#include "stb_image.h"
-
-GLuint texWall, texGlass;
-
-GLuint load(const char* file, int comps, GLenum fmt) {
-    int w, h, n;
-    stbi_set_flip_vertically_on_load(1);
-    unsigned char* data = stbi_load(file, &w, &h, &n, comps);
-    GLuint id;
-    glGenTextures(1, &id);
-    glBindTexture(GL_TEXTURE_2D, id);
-    gluBuild2DMipmaps(GL_TEXTURE_2D, fmt, w, h, fmt, GL_UNSIGNED_BYTE, data);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    stbi_image_free(data);
-    return id;
+void special(int key, int x, int y) {
+    if (key == GLUT_KEY_LEFT)  yaw -= 0.08f;
+    if (key == GLUT_KEY_RIGHT) yaw += 0.08f;
+    glutPostRedisplay();
 }
+`, `
+` + RESHAPE + MAIN("A13: kamera", "    makeWindowTexture();\n    makeCity();\n    glutKeyboardFunc(keyboard);\n    glutSpecialFunc(special);\n"));
 
-void quad(float x, float y, float z, float hw, float hh) {
-    glBegin(GL_QUADS);
-        glTexCoord2f(0, 0); glVertex3f(x - hw, y - hh, z);
-        glTexCoord2f(1, 0); glVertex3f(x + hw, y - hh, z);
-        glTexCoord2f(1, 1); glVertex3f(x + hw, y + hh, z);
-        glTexCoord2f(0, 1); glVertex3f(x - hw, y + hh, z);
-    glEnd();
-}
-
-void display() {
-    glClearColor(0.2f, 0.22f, 0.28f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-    glTranslatef(0, 0, -6);
-    glEnable(GL_TEXTURE_2D);
-
-    // 1. Непрозрачная стена - первой
-    glBindTexture(GL_TEXTURE_2D, texWall);
-    glColor4f(1, 1, 1, 1);
-    quad(0, 0, -3, 3.2f, 2.4f);
-
-    // 2. Прозрачные объекты - от дальнего к ближнему, без записи глубины
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glDepthMask(GL_FALSE);
-    glBindTexture(GL_TEXTURE_2D, texGlass);
-    glColor4f(0.55f, 0.7f, 1.0f, 0.85f);
-    quad(-0.9f, 0.2f, -1.0f, 1.3f, 1.3f);
-    glColor4f(1.0f, 0.55f, 0.55f, 0.85f);
-    quad(0.9f, 0.0f, 0.5f, 1.3f, 1.3f);
-    glDepthMask(GL_TRUE);
-    glDisable(GL_BLEND);
-    glutSwapBuffers();
-}
-
-void reshape(int w, int h) {
-    glViewport(0, 0, w, h);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluPerspective(45.0, (double)w / h, 0.1, 50.0);
-}
-
-` + IDLE + MAIN3D("Прозрачные стёкла", `    texWall = load("brick.png", 3, GL_RGB);
-    texGlass = load("glass.png", 4, GL_RGBA);
-    glEnable(GL_DEPTH_TEST);
-    glutReshapeFunc(reshape);
-`)
-    },
-
-    // ===================== ЗАДАНИЕ 8 =====================
-    {
-      id: "s8", kind: "task", title: "Задание 8: операции с пикселами — glDrawPixels, glPixelZoom, glPixelTransfer",
-      text: "<p>Массив 5×5 пикселов (сердечко) нужно вывести на экран напрямую, минуя геометрию и текстуры.</p><ul><li>Строка массива из 5 пикселов RGB занимает 15 байт — не кратно 4. Установите <code>glPixelStorei(GL_UNPACK_ALIGNMENT, 1)</code>, иначе строки «поплывут».</li><li>Задайте растровую позицию (40, 60), увеличение <code>glPixelZoom(40, 40)</code> и выведите массив <code>glDrawPixels</code> (получится 200×200 пикселов).</li><li>Выведите тот же массив второй раз в позиции (250, 60), предварительно уменьшив зелёную компоненту: <code>glPixelTransferf(GL_GREEN_SCALE, 0.3f)</code>. Масштаб 40 сохраняется. После вывода верните GL_GREEN_SCALE = 1: преобразование действует на все последующие операции с пикселами.</li></ul>",
-      hint: "Проекция gluOrtho2D(0, w, 0, h) делает единицу координат равной пикселу. glRasterPos2i(40, 60); glPixelZoom(40, 40); glDrawPixels(5, 5, GL_RGB, GL_UNSIGNED_BYTE, img).",
-      check: { type: "both", calls: { "glDrawPixels": ">=2", "glRasterPos2i|glRasterPos2f": ">=2" }, source: [{ re: "GL_UNPACK_ALIGNMENT\\s*,\\s*1", msg: "Установите выравнивание строк: glPixelStorei(GL_UNPACK_ALIGNMENT, 1)" }, { re: "GL_GREEN_SCALE", msg: "Используйте glPixelTransferf(GL_GREEN_SCALE, ...)" }] },
-      starter: `#include <GL/glew.h>   // GLEW: функции OpenGL 1.2+ в Windows
-#include <GL/glut.h>
-
-GLubyte heart[5][5][3];     // строки снизу вверх, как в OpenGL
-
-void makeHeart() {
-    int m[5][5] = { {0,0,1,0,0}, {0,1,1,1,0}, {1,1,1,1,1}, {1,1,1,1,1}, {0,1,0,1,0} };
-    for (int i = 0; i < 5; i++)
-        for (int j = 0; j < 5; j++) {
-            heart[i][j][0] = m[i][j] ? 230 : 245;
-            heart[i][j][1] = m[i][j] ?  40 : 245;
-            heart[i][j][2] = m[i][j] ?  70 : 235;
-        }
-}
-
-void display() {
-    glClearColor(0.25f, 0.28f, 0.35f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluOrtho2D(0, 480, 0, 360);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-
-    // TODO: выравнивание строк 1 байт
-    // TODO: позиция (40, 60), glPixelZoom(40, 40), glDrawPixels
-
-    // TODO: позиция (250, 60), GL_GREEN_SCALE = 0.3, тот же массив glDrawPixels, затем вернуть GL_GREEN_SCALE = 1
-
-    glutSwapBuffers();
-}
-
-int main(int argc, char** argv) {
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-    glutInitWindowSize(480, 360);
-    glutCreateWindow("Операции с пикселами");
-    glewInit();
-    makeHeart();
-    glutDisplayFunc(display);
-    glutMainLoop();
-    return 0;
-}
-`,
-      solution: `#include <GL/glew.h>   // GLEW: функции OpenGL 1.2+ в Windows
-#include <GL/glut.h>
-
-GLubyte heart[5][5][3];     // строки снизу вверх, как в OpenGL
-
-void makeHeart() {
-    int m[5][5] = { {0,0,1,0,0}, {0,1,1,1,0}, {1,1,1,1,1}, {1,1,1,1,1}, {0,1,0,1,0} };
-    for (int i = 0; i < 5; i++)
-        for (int j = 0; j < 5; j++) {
-            heart[i][j][0] = m[i][j] ? 230 : 245;
-            heart[i][j][1] = m[i][j] ?  40 : 245;
-            heart[i][j][2] = m[i][j] ?  70 : 235;
-        }
-}
-
-void display() {
-    glClearColor(0.25f, 0.28f, 0.35f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    gluOrtho2D(0, 480, 0, 360);
-    glMatrixMode(GL_MODELVIEW);
-    glLoadIdentity();
-
-    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-    glRasterPos2i(40, 60);
-    glPixelZoom(40, 40);
-    glDrawPixels(5, 5, GL_RGB, GL_UNSIGNED_BYTE, heart);
-
-    glRasterPos2i(250, 60);
-    glPixelTransferf(GL_GREEN_SCALE, 0.3f);
-    glDrawPixels(5, 5, GL_RGB, GL_UNSIGNED_BYTE, heart);
-    glPixelTransferf(GL_GREEN_SCALE, 1.0f);
-
-    glutSwapBuffers();
-}
-
-int main(int argc, char** argv) {
-    glutInit(&argc, argv);
-    glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-    glutInitWindowSize(480, 360);
-    glutCreateWindow("Операции с пикселами");
-    glewInit();
-    makeHeart();
-    glutDisplayFunc(display);
-    glutMainLoop();
-    return 0;
-}
-`
-    }
-  ]
-});
+  LAB.define({
+    n: 13,
+    title: { uz: "Binolar dizaynini modellaştiriş", ru: "Моделирование зданий" },
+    steps: [
+      { id: "s0", kind: "example", title: { uz: "Misol: bino — quti va derazalar", ru: "Пример: здание — коробка и окна" },
+        text: { uz: "<p>Arxitektura modellari oddiy bloklardan yiğiladi. <code>box(x0, x1, y0, y1, z0, z1, ts)</code> — normallari va tekstura koordinatalari bilan quti; <code>panel</code> — old devorga 1 sm oldinda yopişgan törtburçak (deraza, eşik): şunda u devor bilan bir xil çuqurlikda «titramaydi» (z-fighting yöq).</p>",
+                ru: "<p>Архитектурные модели собираются из простых блоков. <code>box(x0, x1, y0, y1, z0, z1, ts)</code> — коробка с нормалями и текстурными координатами; <code>panel</code> — прямоугольник на 1 см перед передней стеной (окно, дверь): так он не «мерцает» на одной глубине со стеной (нет z-fighting).</p>" },
+        code: ex },
+      { id: "s1", kind: "task", title: { uz: "Topşiriq 1. Oddiy uy", ru: "Задание 1. Простой дом" },
+        text: { uz: "<p>Oddiy uy quring: 4 ta devor (bitta <code>box</code>), tekis tom (devordan 0,2 ga çiqib turgan yupqa quti), eşik va 2 ta deraza (<code>panel</code>). Ölçamlar va ranglar kod izohida berilgan.</p>",
+                ru: "<p>Постройте простой дом: 4 стены (одна <code>box</code>), плоская крыша (тонкая коробка, выступающая за стены на 0,2), дверь и 2 окна (<code>panel</code>). Размеры и цвета — в комментарии к коду.</p>" },
+        hint: { uz: "glColor3f(0,9; 0,82; 0,68); box(−2, 2, 0, 2,5, −1,5, 1,5, 0); … glColor3f(0,5; 0,5; 0,55); box(−2,2; 2,2; 2,5; 2,7; −1,7; 1,7; 0);", ru: "glColor3f(0,9; 0,82; 0,68); box(−2, 2, 0, 2,5, −1,5, 1,5, 0); … glColor3f(0,5; 0,5; 0,55); box(−2,2; 2,2; 2,5; 2,7; −1,7; 1,7; 0);" },
+        check: { type: "image" }, starter: t1.starter, solution: t1.solution },
+      { id: "s2", kind: "task", title: { uz: "Topşiriq 2. Ikki qiyalikli tom", ru: "Задание 2. Двускатная крыша" },
+        text: { uz: "<p>Uyga ikki qiyalikli tom qöşing: tizma Ox böylab y = 4 da. Har bir qiya yoq — törtburçak, normali yoqqa perpendikulyar (old qiyalik uçun (0; 1,7; 1,5)). Yon tomonlar — uçburçakli peştoqlar devor rangida. Normallar töğri bölsa, ikki qiyalik turliça yoritiladi.</p>",
+                ru: "<p>Добавьте дому двускатную крышу: конёк вдоль Ox на y = 4. Каждый скат — четырёхугольник, нормаль перпендикулярна скату (для переднего (0; 1,7; 1,5)). По бокам — треугольные фронтоны цвета стен. При правильных нормалях скаты освещены по-разному.</p>" },
+        hint: { uz: "Old qiyalik uçlari: (x0, y0, z1), (x1, y0, z1), (x1, y1, 0), (x0, y1, 0).", ru: "Вершины переднего ската: (x0, y0, z1), (x1, y0, z1), (x1, y1, 0), (x0, y1, 0)." },
+        check: { type: "image" }, starter: t2.starter, solution: t2.solution },
+      { id: "s3", kind: "task", title: { uz: "Topşiriq 3. Köp qavatli bino", ru: "Задание 3. Многоэтажное здание" },
+        text: { uz: "<p>5 qavatli binoning old devorida har qavatda 4 ta deraza bölsin. Qavat balandligi 1,8 m: f-qavat derazasi y = 0,5 + 1,8f dan 1,4 + 1,8f gaça, w-deraza x = −2,2 + 1,15w dan boşlanadi. Ikki ički sikl — «deraza matritsasi».</p>",
+                ru: "<p>На передней стене 5-этажного здания — по 4 окна на этаже. Высота этажа 1,8 м: окно f-го этажа от y = 0,5 + 1,8f до 1,4 + 1,8f, w-е окно начинается с x = −2,2 + 1,15w. Два вложенных цикла — «матрица окон».</p>" },
+        hint: { uz: "for f < 5: for w < 4: panel(−2,2 + 1,15w, −1,4 + 1,15w, 0,5 + 1,8f, 1,4 + 1,8f, 2);", ru: "for f < 5: for w < 4: panel(−2,2 + 1,15w, −1,4 + 1,15w, 0,5 + 1,8f, 1,4 + 1,8f, 2);" },
+        check: { type: "both", calls: { "glBegin": ">=22" } }, starter: t3.starter, solution: t3.solution },
+      { id: "s4", kind: "task", title: { uz: "Topşiriq 4. Deraza teksturasi", ru: "Задание 4. Текстура окон" },
+        text: { uz: "<p>Har bir derazani alohida çizmasdan, uni <b>tekstura</b> qilib qöyamiz. 64×64 protsedura teksturasini yarating: 32×32 katakça — beton ramka va oyna; qöşni oynalar navbat bilan yorug' va qorong'i. <code>GL_REPEAT</code> tufayli tekstura butun devor böylab takrorlanadi — 4 ta yoq bitta <code>box</code> çaqirig'i bilan.</p>",
+                ru: "<p>Вместо того чтобы рисовать каждое окно отдельно, наложим их <b>текстурой</b>. Создайте процедурную текстуру 64×64: ячейка 32×32 — бетонная рама и стекло; соседние окна поочерёдно светлые и тёмные. Благодаря <code>GL_REPEAT</code> текстура повторяется по всей стене — 4 грани одним вызовом <code>box</code>.</p>" },
+        hint: { uz: "glass = cx ≥ 6 && cx < 26 && cy ≥ 8 && cy < 28; lit = ((x/32) + (y/32)) % 2;", ru: "glass = cx ≥ 6 && cx < 26 && cy ≥ 8 && cy < 28; lit = ((x/32) + (y/32)) % 2;" },
+        check: { type: "image" }, starter: t4.starter, solution: t4.solution },
+      { id: "s5", kind: "task", title: { uz: "Topşiriq 5. Şahar matritsasi", ru: "Задание 5. Матрица города" },
+        text: { uz: "<p>5×5 kvartal: 25 ta bino turli balandlik (2..9 qavat) va rangda; balandlik va rang <code>srand(21)</code> bilan tasodifiy, lekin har gal bir xil. Binolar orasidagi masofa 6 m, asosi 4×4 m. Deraza teksturasi barça binolarga bir xil masştabda tuşadi (ts = 0,278).</p>",
+                ru: "<p>Квартал 5×5: 25 зданий разной высоты (2..9 этажей) и цвета; высота и цвет случайны с <code>srand(21)</code>, но каждый раз одинаковы. Шаг между зданиями 6 м, основание 4×4 м. Текстура окон ложится на все здания в одном масштабе (ts = 0,278).</p>" },
+        hint: { uz: "x = −12 + 6i, z = −12 + 6j; glColor3fv(BC[i][j]); box(x − 2, x + 2, 0, BH[i][j], z − 2, z + 2, 0.278f);", ru: "x = −12 + 6i, z = −12 + 6j; glColor3fv(BC[i][j]); box(x − 2, x + 2, 0, BH[i][j], z − 2, z + 2, 0.278f);" },
+        check: { type: "image" }, starter: t5.starter, solution: t5.solution },
+      { id: "s6", kind: "task", title: { uz: "Topşiriq 6. Yer", ru: "Задание 6. Земля" },
+        text: { uz: "<p>Şahar ostidagi yerni <code>grass.png</code> teksturasi bilan qoplang. Tekstura 120×120 m maydonga 60 marta takrorlanadi (tekstura koordinatalari 0..60, <code>GL_REPEAT</code>). Uzoqdagi joylarda mip-darajalar (<code>gluBuild2DMipmaps</code>) tekstura «çaqnaşini» yöqotadi.</p>",
+                ru: "<p>Покройте землю под городом текстурой <code>grass.png</code>. Текстура повторяется 60 раз на площади 120×120 м (текстурные координаты 0..60, <code>GL_REPEAT</code>). Вдали мип-уровни (<code>gluBuild2DMipmaps</code>) убирают «мерцание» текстуры.</p>" },
+        hint: { uz: "glEnable(GL_TEXTURE_2D); glBindTexture(GL_TEXTURE_2D, grassTex); glColor3f(1,1,1); glTexCoord2f(0, 0); glVertex3f(−s, 0, s); …", ru: "glEnable(GL_TEXTURE_2D); glBindTexture(GL_TEXTURE_2D, grassTex); glColor3f(1,1,1); glTexCoord2f(0, 0); glVertex3f(−s, 0, s); …" },
+        check: { type: "both", tol: 16, source: [{ re: "glTexCoord2f", msg: { uz: "Yerga tekstura koordinatalarini bering", ru: "Задайте земле текстурные координаты" } }] }, starter: t6.starter, solution: t6.solution },
+      { id: "s7", kind: "task", title: { uz: "Topşiriq 7. Soyalar", ru: "Задание 7. Тени" },
+        text: { uz: "<p>Har bir binoning yerga tuşgan tekis soyasini çiqaring. Proyeksion soya matritsasi nuqtani quyoş nuri yönalişi L böyiça y = 0 tekisligiga «bosadi»: x' = x − (Lx/Ly)·y, z' = z − (Lz/Ly)·y, y' = 0. OpenGL matritsasi ustunlar böyiça saqlanadi: M[4] — x' dagi y koeffitsiyenti, M[6] — z' dagi y koeffitsiyenti.</p>",
+                ru: "<p>Выведите плоскую тень каждого здания на землю. Матрица проекционной тени «придавливает» точку к плоскости y = 0 вдоль направления солнечного света L: x' = x − (Lx/Ly)·y, z' = z − (Lz/Ly)·y, y' = 0. Матрица OpenGL хранится по столбцам: M[4] — коэффициент при y в x', M[6] — коэффициент при y в z'.</p>" },
+        hint: { uz: "M[0] = 1; M[4] = −lx/ly; M[6] = −lz/ly; M[10] = 1; M[15] = 1; qolganlari 0 (M[5] = 0!).", ru: "M[0] = 1; M[4] = −lx/ly; M[6] = −lz/ly; M[10] = 1; M[15] = 1; остальные 0 (M[5] = 0!)." },
+        check: { type: "image" }, starter: t7.starter, solution: t7.solution },
+      { id: "s8", kind: "task", title: { uz: "Topşiriq 8. Yurgan kamera", ru: "Задание 8. Камера-пешеход" },
+        text: { uz: "<p>Şaharda «piyoda» bölib yuring: köz balandligi 1,7 m, <b>W/S</b> — oldinga/orqaga, <b>A/D</b> — yon tomonga, <b>←/→</b> — burilish. Qadam 0,5 m. Oyna ustiga bosing va köçalarni aylanib çiqing.</p>",
+                ru: "<p>Пройдитесь по городу «пешком»: высота глаз 1,7 м, <b>W/S</b> — вперёд/назад, <b>A/D</b> — вбок, <b>←/→</b> — поворот. Шаг 0,5 м. Щёлкните по окну и обойдите улицы.</p>" },
+        hint: { uz: "if (key == 'w') { cx += 0.5·sin(yaw); cz −= 0.5·cos(yaw); } …", ru: "if (key == 'w') { cx += 0.5·sin(yaw); cz −= 0.5·cos(yaw); } …" },
+        check: { type: "both", source: [{ re: "glutKeyboardFunc\\s*\\(\\s*\\w+\\s*\\)", msg: { uz: "glutKeyboardFunc(keyboard) ni qayd qiling", ru: "Зарегистрируйте glutKeyboardFunc(keyboard)" } }, { re: "'w'", msg: { uz: "W tugmasini qayta işlang", ru: "Обработайте клавишу W" } }, { re: "yaw\\s*[-+]=", msg: { uz: "Strelkalar yaw ni özgartirsin", ru: "Стрелки должны менять yaw" } }] }, starter: t8.starter, solution: t8.solution }
+    ]
+  });
 })();

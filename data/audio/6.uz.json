@@ -1,0 +1,29 @@
+{
+ "topic": 6,
+ "lang": "uz",
+ "title": "Böyaş usullari: Flat, Guro, Fong",
+ "file": "audio/6.uz.mp3",
+ "duration": 94.1,
+ "paragraphs": [
+  {
+   "text": "Oltinçi iş — böyaş usullari. Sirt rangi yoruğlik manbaiga nisbatan qanday turganiga boğliq. Lambert qonuni böyiça diffuz yorqinlik normal va manbaga yönalgan vektor orasidagi burçak kosinusiga teng.",
+   "start": 0.0
+  },
+  {
+   "text": "Fong modeli yoritişni uç qismdan yiğadi: atrof yoruğligi — soyadagi rang, diffuz qism — asosiy rang va közgu qism — yaltiroq doğ. Yaltiroqlik darajasi qança katta bölsa, doğ şunça kiçik va keskin böladi.",
+   "start": 17.5
+  },
+  {
+   "text": "Bu hisobni qayerda bajariş muhim. Flat usulida har bir yoq bitta rangga böyaladi — sfera köpyoqliqqa öxşaydi. Guro usulida rang uçlarda hisoblanadi va yoq böylab interpolyatsiya qilinadi. Fong usulida esa normal interpolyatsiya qilinadi va yoritiş har bir pikselda hisoblanadi — eng silliq natija.",
+   "start": 32.71
+  },
+  {
+   "text": "OpenGL ning standart rejimi — Guro: glShadeModel GL_SMOOTH. Yirik törda yaltiroq doğ burçakli çiqadi, bölinmalar köpaygan sari natija Fongga yaqinlaşadi. Kubda esa Flat va Guro bir xil körinadi, çunki har bir yoqning barça uçlari bir xil normalga ega.",
+   "start": 58.72
+  },
+  {
+   "text": "Laboratoriyada siz Guro böyaşini qölda yozasiz, oltin materialini sozlaysiz, ikki rangli manba qöşasiz va Fong modelini har bir piksel uçun hisoblaysiz — xuddi fragment şader kabi.",
+   "start": 77.54
+  }
+ ]
+}

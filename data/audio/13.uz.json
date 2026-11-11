@@ -1,0 +1,29 @@
+{
+ "topic": 13,
+ "lang": "uz",
+ "title": "Binolarni modellaştiriş",
+ "file": "audio/13.uz.mp3",
+ "duration": 76.05,
+ "paragraphs": [
+  {
+   "text": "Ön uçinçi iş — binolar. Arxitektura modellari oddiy bloklardan yiğiladi: devorlar — quti, tom — qiya yoqlar va peştoqlar, derazalar va eşiklar — devorga yopişgan törtburçaklar.",
+   "start": 0.0
+  },
+  {
+   "text": "Deraza va eşikni devor bilan aynan bir xil çuqurlikda çizsangiz, ular «titraydi» — buni z-fighting deyiladi. Şuning uçun ular devordan bir oz oldinda joylaştiriladi. Har bir yoq töğri normalga ega bölişi kerak, şunda devorlar turliça yoritiladi.",
+   "start": 14.64
+  },
+  {
+   "text": "Köp qavatli binoda minglab derazani alohida çizmasdan, ularni tekstura bilan qöyiş qulay. Tekstura protsedura bilan yaratilişi yoki fayldan yuklanişi mumkin; GL_REPEAT rejimi uni butun devor böylab takrorlaydi.",
+   "start": 33.2
+  },
+  {
+   "text": "Şahar — parametrik generator: binolar balandligi va rangi tasodifiy, lekin boşlanğiç son, yaʼni seed tufayli har gal bir xil. Soyalar proyeksion matritsa bilan quriladi: bino nur yönalişi böyiça yer tekisligiga «bosiladi».",
+   "start": 48.99
+  },
+  {
+   "text": "Laboratoriyada siz uy, tom, köp qavatli bino, deraza teksturasi, butun şahar, yer teksturasi va soyalarni yasaysiz, söngra şaharda piyoda yurib çiqasiz.",
+   "start": 66.33
+  }
+ ]
+}

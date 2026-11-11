@@ -1,0 +1,29 @@
+{
+ "topic": 1,
+ "lang": "uz",
+ "title": "Poligonal törlar va geometrik almaştirişlar",
+ "file": "audio/1.uz.mp3",
+ "duration": 97.85,
+ "paragraphs": [
+  {
+   "text": "Birinçi amaliy iş — poligonal törlar va geometrik almaştirişlar haqida. Kompyuter grafikasida har qanday fazoviy obyekt sirti köpburçaklar — odatda uçburçak va törtburçaklar törti bilan yaqinlaştiriladi. Bunday tör uçlar, qirralar va yoqlar röyxatlari bilan saqlanadi.",
+   "start": 0.0
+  },
+  {
+   "text": "Törni saqlaşning uç usuli bor: har bir köpburçakni aniq koordinatalar bilan, umumiy uçlar röyxati va indekslar orqali, yoki qirralar röyxati orqali. Ikkinçi usul xotirani tejaydi va zamonaviy videokartalar aynan şu usulda işlaydi.",
+   "start": 23.01
+  },
+  {
+   "text": "Obyektni köçiriş, masştablaş va buriş matritsalar yordamida bajariladi. Bir jinsli koordinatalarda nuqta törtta son bilan yoziladi, şuning uçun köçiriş ham matritsaga köpaytiriş bilan ifodalanadi. Bir neça almaştirişni bitta matritsaga birlaştiriş mumkin, lekin ularning tartibi muhim.",
+   "start": 42.63
+  },
+  {
+   "text": "Amaliy işda siz kub, tetraedr, oktaedr va dodekaedrni qurasiz, ularni kabine proyeksiyasi bilan ekranga çiqarasiz, söngra köçiriş, masştablaş va burişlarni özingiz yozgan funksiyalar bilan qöllaysiz. Oxirida OpenGL ning glRotatef funksiyasi bilan aylaniş animatsiyasini qilasiz.",
+   "start": 65.53
+  },
+  {
+   "text": "Laboratoriya sahifasida har bir topşiriq brauzerda tekşiriladi: dastur natijasi etalon tasvir bilan soliştiriladi. Muvaffaqiyat!",
+   "start": 88.46
+  }
+ ]
+}

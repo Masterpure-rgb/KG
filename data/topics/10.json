@@ -1,0 +1,155 @@
+{
+ "n": 10,
+ "uz": {
+  "title": "Fraktal grafikasi asosida tasvir şakllarini yaratiş",
+  "goal": "fraktal tuşunçasi; klassik fraktallar — Mandelbrot va Julia töplamlari, Serpinskiy uçburçagi, Kox qor parçasi.",
+  "skills": "iteratsion jarayonlar va IFS ni amalga oşiriş; kompleks sonlar bilan işlaş; rangni iteratsiyalar soniga böğlaş; rekursiv geometrik fraktallar quriş.",
+  "intro": "Variantdagi fraktalni çizing va körsatilgan interaktiv imkoniyatni (zoom, c ni özgartiriş, palitra) qöşing.",
+  "variants": [
+   {
+    "n": 1,
+    "text": "Mandelbrot töplami, klaviatura bilan zoom"
+   },
+   {
+    "n": 2,
+    "text": "Julia töplami, c ni strelkalar bilan özgartiriş"
+   },
+   {
+    "n": 3,
+    "text": "Serpinskiy uçburçagi va Serpinskiy gilami"
+   },
+   {
+    "n": 4,
+    "text": "Kox qor parçasi (5 iteratsiya)"
+   },
+   {
+    "n": 5,
+    "text": "Mandelbrot töplami, 4 xil palitra"
+   },
+   {
+    "n": 6,
+    "text": "Julia: 3 ta tanlangan c qiymati, tugmalar bilan almaştiriş"
+   },
+   {
+    "n": 7,
+    "text": "Pifagor daraxti (rekursiv kvadratlar)"
+   },
+   {
+    "n": 8,
+    "text": "z³ + c fraktali"
+   },
+   {
+    "n": 9,
+    "text": "Burning Ship fraktali (|Re z| + i·|Im z|)"
+   },
+   {
+    "n": 10,
+    "text": "Nyuton fraktali: z³ = 1 ildizlari böyiça rang"
+   },
+   {
+    "n": 11,
+    "text": "Barnsli paporotnigi"
+   },
+   {
+    "n": 12,
+    "text": "Minkovski egri çiziği"
+   },
+   {
+    "n": 13,
+    "text": "Kantor töplami (gorizontal qatlamlar)"
+   },
+   {
+    "n": 14,
+    "text": "Serpinskiy gilami (5 daraja)"
+   },
+   {
+    "n": 15,
+    "text": "z⁴ + c fraktali (tört karrali simmetriya)"
+   }
+  ],
+  "questions": [
+   "Fraktal nima va u qanday xossalarga ega?",
+   "Mandelbrot va Julia töplamlarining asosiy farqi nimada?",
+   "IFS (xaos öyini) qanday işlaydi va nima uçun tasodifiy tanlov tartibli rasm beradi?",
+   "Fraktal ölçov nima va u nima uçun butun son bölmasligi mumkin?",
+   "Mandelbrot tasvirida iteratsiyalar soni oşirilsa nima özgaradi?",
+   "Kox qor parçasining perimetri va yuzi haqida nima deyiş mumkin?"
+  ]
+ },
+ "ru": {
+  "title": "Построение изображений на основе фрактальной графики",
+  "goal": "понятие фрактала; классические фракталы — множества Мандельброта и Жюлиа, треугольник Серпинского, снежинка Коха.",
+  "skills": "реализация итерационных процессов и IFS; работа с комплексными числами; привязка цвета к числу итераций; построение рекурсивных геометрических фракталов.",
+  "intro": "Нарисуйте фрактал варианта и добавьте указанную интерактивную возможность (масштаб, изменение c, палитра).",
+  "variants": [
+   {
+    "n": 1,
+    "text": "Множество Мандельброта, масштабирование с клавиатуры"
+   },
+   {
+    "n": 2,
+    "text": "Множество Жюлиа, изменение c стрелками"
+   },
+   {
+    "n": 3,
+    "text": "Треугольник Серпинского и ковёр Серпинского"
+   },
+   {
+    "n": 4,
+    "text": "Снежинка Коха (5 итераций)"
+   },
+   {
+    "n": 5,
+    "text": "Множество Мандельброта, 4 палитры"
+   },
+   {
+    "n": 6,
+    "text": "Жюлиа: 3 выбранных значения c, переключение клавишами"
+   },
+   {
+    "n": 7,
+    "text": "Дерево Пифагора (рекурсивные квадраты)"
+   },
+   {
+    "n": 8,
+    "text": "Фрактал z³ + c"
+   },
+   {
+    "n": 9,
+    "text": "Фрактал Burning Ship (|Re z| + i·|Im z|)"
+   },
+   {
+    "n": 10,
+    "text": "Фрактал Ньютона: цвет по корням z³ = 1"
+   },
+   {
+    "n": 11,
+    "text": "Папоротник Барнсли"
+   },
+   {
+    "n": 12,
+    "text": "Кривая Минковского"
+   },
+   {
+    "n": 13,
+    "text": "Множество Кантора (горизонтальные слои)"
+   },
+   {
+    "n": 14,
+    "text": "Ковёр Серпинского (5 уровней)"
+   },
+   {
+    "n": 15,
+    "text": "Фрактал z⁴ + c (четырёхкратная симметрия)"
+   }
+  ],
+  "questions": [
+   "Что такое фрактал и какими свойствами он обладает?",
+   "В чём основное отличие множеств Мандельброта и Жюлиа?",
+   "Как работает IFS («игра хаоса») и почему случайный выбор даёт упорядоченную картину?",
+   "Что такое фрактальная размерность и почему она может быть нецелой?",
+   "Что меняется на изображении Мандельброта при увеличении числа итераций?",
+   "Что можно сказать о периметре и площади снежинки Коха?"
+  ]
+ }
+}

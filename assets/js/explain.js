@@ -21,15 +21,15 @@
   } : {
     topics: "Mavzular", topic: "A", explain: "Audio izoh",
     kicker: "A" + O.k(n) + " — Audio izoh",
-    comingSoon: "Bu mavzuning ovozli izohi tayyorlanmoqda. Hozircha laboratoriyani oçing — unda nazariya va kod misollari bor.",
+    comingSoon: "Bu mavzuning ovozli izohi tayyorlanmoqda. Hozirça laboratoriyani oçing — unda nazariya va kod misollari bor.",
     goLab: "Laboratoriyani oçiş",
     goTasks: "Topşiriqlarga",
     listen: "Tinglaş",
-    pause: "Toʻxtatiş",
+    pause: "Töxtatiş",
     transcript: "Izoh matni",
     nextLab: "Keyingi — amaliyot: misol va topşiriqlar brauzerda tekşiriş bilan.",
     openLab: "Laboratoriyani oçiş",
-    loadErr: "Audio yuklab boʻlmadi."
+    loadErr: "Audio yuklab bölmadi."
   };
 
   O.header("explain", [
@@ -47,7 +47,10 @@
 
   function mmss(s) { s = Math.max(0, Math.round(s || 0)); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); }
 
-  O.fetchJSON("data/audio/" + n + ".json").then(render, function () {
+  var other = lang === "ru" ? "uz" : "ru";
+  O.fetchJSON("data/audio/" + n + "." + (lang === "ru" ? "ru" : "uz") + ".json").catch(function () {
+    return O.fetchJSON("data/audio/" + n + "." + other + ".json");
+  }).catch(function () { return O.fetchJSON("data/audio/" + n + ".json"); }).then(render, function () {
     main.appendChild(el("p", { class: "note" }, L.comingSoon));
     main.appendChild(el("div", { style: "margin-top: 16px; display: flex; gap: 10px; flex-wrap: wrap" },
       el("a", { class: "btn", href: O.tpath("l", n) }, L.goLab),
@@ -68,10 +71,13 @@
     main.appendChild(el("section", { class: "player" }, btn, el("div", { class: "pmid" }, el("b", null, D.title), bar, el("div", { class: "prow" }, tc, speeds))));
 
     var tr = el("section", { class: "transcript" }, el("h2", null, L.transcript));
+    var pe = [];
     (D.paragraphs || []).forEach(function (p) {
       var e = el("p", { tabindex: "0" }, p.text);
-      e.addEventListener("click", function () { a.currentTime = p.start + 0.01; a.play(); });
-      tr.appendChild(e);
+      function go() { a.currentTime = p.start + 0.01; a.play(); }
+      e.addEventListener("click", go);
+      e.addEventListener("keydown", function (ev) { if (ev.key === "Enter" || ev.key === " ") { ev.preventDefault(); go(); } });
+      tr.appendChild(e); pe.push(e);
     });
     main.appendChild(tr);
     main.appendChild(el("section", { class: "next" },
@@ -79,6 +85,12 @@
       el("a", { class: "btn run", href: O.tpath("l", n) }, L.openLab)));
 
     btn.addEventListener("click", function () { if (a.paused) a.play(); else a.pause(); });
+    function seekTo(fr) { var d = a.duration || D.duration; a.currentTime = Math.max(0, Math.min(d - 0.1, fr * d)); }
+    bar.addEventListener("click", function (ev) { var r = bar.getBoundingClientRect(); seekTo((ev.clientX - r.left) / r.width); });
+    bar.addEventListener("keydown", function (ev) {
+      if (ev.key === "ArrowRight") { a.currentTime = Math.min((a.duration || D.duration) - 0.1, a.currentTime + 5); ev.preventDefault(); }
+      if (ev.key === "ArrowLeft") { a.currentTime = Math.max(0, a.currentTime - 5); ev.preventDefault(); }
+    });
     a.addEventListener("play", function () { btn.classList.add("on"); btn.setAttribute("aria-label", L.pause); });
     a.addEventListener("pause", function () { btn.classList.remove("on"); btn.setAttribute("aria-label", L.listen); });
     a.addEventListener("error", function () { O.toast(L.loadErr, "bad"); });
@@ -86,6 +98,9 @@
       var d = a.duration || D.duration, c = a.currentTime;
       fill.style.width = (100 * c / d) + "%";
       tc.textContent = mmss(c) + " / " + mmss(d);
+      var cur = -1;
+      (D.paragraphs || []).forEach(function (p, i) { if (c + 0.05 >= p.start) cur = i; });
+      pe.forEach(function (e, i) { e.classList.toggle("now", i === cur && (c > 0 || !a.paused)); });
     });
     O.footer();
   }

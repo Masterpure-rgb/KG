@@ -1,0 +1,29 @@
+{
+ "topic": 12,
+ "lang": "uz",
+ "title": "Maşina detallarini modellaştiriş",
+ "file": "audio/12.uz.mp3",
+ "duration": 88.75,
+ "paragraphs": [
+  {
+   "text": "Ön ikkinçi iş — maşina detallari. Köp detallar ikki usulda quriladi: ekstruziya — tekis konturni balandlik böylab çöziş, va aylanma sirt — profilni öq atrofida aylantiriş, xuddi tokarlik dastgohida yönilgandek.",
+   "start": 0.0
+  },
+  {
+   "text": "Silindr — aylana konturining ekstruziyasi, konus — ustki radiusi nol bölgan silindr. Çaşka, vaza va halqalar profil nuqtalarini aylantiriş bilan olinadi. Har bir uçda normal beriladi: aylanma sirtda u profil urinmasiga perpendikulyar.",
+   "start": 19.91
+  },
+  {
+   "text": "Tişli ğildirak — tişli konturning ekstruziyasi. Ikki ilaşgan ğildirakda ilaşiş nuqtasidagi çiziqli tezliklar teng, şuning uçun tişlar soni va burçak tezliklarining köpaytmalari teng: kattasi sekinroq va teskari tomonga aylanadi.",
+   "start": 40.88
+  },
+  {
+   "text": "Prujina — vint çiziği böylab surilgan aylana. Murakkab detallar, masalan vint yoki podşipnik, oddiy qismlardan yiğiladi va ierarxik almaştirişlar bilan joylaştiriladi.",
+   "start": 60.45
+  },
+  {
+   "text": "Laboratoriyada siz silindr, konus, çaşka, tişli ğildiraklar, vint, prujina va aylanuvçi şarli podşipnikni GLUT ning tayyor funksiyalarisiz özingiz qurasiz.",
+   "start": 75.32
+  }
+ ]
+}

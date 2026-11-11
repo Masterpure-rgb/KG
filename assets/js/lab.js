@@ -36,28 +36,28 @@
   } : {
     topics: "Mavzular", topic: "A", lab: "Laboratoriya",
     kicker: "A" + O.k(n) + " — Laboratoriya iş",
-    comingSoon: "Bu ishning bosqiçma-bosqiç interaktiv topşiriqlari tayyorlanmoqda. Hozircha quyidagi starter kod va OpenGL oynasidan foydalanib mavzuni oʻrganiş mumkin.",
+    comingSoon: "Bu işning bosqiçma-bosqiç interaktiv topşiriqlari tayyorlanmoqda. Hozirça quyidagi starter kod va OpenGL oynasidan foydalanib mavzuni örganiş mumkin.",
     about: "Mavzu haqida",
     starter: "Starter kod",
-    runHint: "«Işga tuşuriş» tugmasini yoki Ctrl+Enter bosing — dastur kompilyatsiya qilinib, natija oʻngdagi oynada koʻrsatiladi.",
-    tryEdit: "Ranglarni, koordinatalarni, buriş burçaklarini oʻzgartirib koʻring — natija darhol yangilanadi.",
+    runHint: "«Işga tuşuriş» tugmasini yoki Ctrl+Enter bosing — dastur kompilyatsiya qilinib, natija öngdagi oynada körsatiladi.",
+    tryEdit: "Ranglarni, koordinatalarni, buriş burçaklarini özgartirib köring — natija darhol yangilanadi.",
     toTasks: "Topşiriqlar va variantlar sahifasiga",
-    audio: "Audio izohni tinglash",
+    audio: "Audio izohni tinglaş",
     steps: "Qadamlar",
-    allSteps: "Qadamlar roʻyxati",
+    allSteps: "Qadamlar röyxati",
     example: "Misol",
     task: "Topşiriq",
     done: "bajarildi",
     of: "dan",
     building: "Qurilmoqda…",
     expected: "Kutilayotgan natija",
-    checkInfo: "«Tekşiriş» tugmasini bosing: dastur ishga tuşadi va uning kadri etalon bilan solistiriladi.",
+    checkInfo: "«Tekşiriş» tugmasini bosing: dastur işga tuşadi va uning kadri etalon bilan soliştiriladi.",
     hint: "Maslahat",
     checking: "Tekşirilyapti…",
     prev: "Oldingi qadam",
     next: "Keyingi qadam",
     toFirstTask: "Birinçi topşiriqqa",
-    toLine: "Shu qatorga oʻtiş "
+    toLine: "Şu qatorga ötiş "
   };
 
   O.header("lab", [
@@ -141,7 +141,7 @@
     function setTab(t) { wrap.setAttribute("data-tab", t); O.$$("button", tabs).forEach(function (b) { b.setAttribute("aria-selected", b.getAttribute("data-tab") === t ? "true" : "false"); }); }
     setTab("task");
 
-    function title(s) { return cap(s.title.replace(/^(Пример|Misol|Задание|Topşiriq)\s*\d*[:.]\s*/i, "")); }
+    function title(s) { return cap(String(LAB.tr(s.title) || "").replace(/^(Пример|Misol|Задание|Topşiriq)\s*\d*\s*[:.—-]?\s*/i, "")); }
     function renderList() {
       list.innerHTML = ""; dots.innerHTML = "";
       steps.forEach(function (s, i) {
@@ -172,7 +172,7 @@
         el("span", { class: "tag " + s.kind }, s.kind === "example" ? L.example : L.task + " " + stepNo(i)),
         el("h2", null, title(s)));
       taskBox.appendChild(head);
-      taskBox.appendChild(el("div", { class: "task-text", html: s.text || "" }));
+      taskBox.appendChild(el("div", { class: "task-text", html: LAB.tr(s.text) || "" }));
       if (s.kind === "task") {
         var c = s.check || { type: "image" };
         var row = el("div", { class: "task-row" });
@@ -182,7 +182,7 @@
           LAB.reference(s).then(function (r) { if (r.pixels) fig.replaceChild(el("img", { src: Runner.toDataURL(r.pixels, 360), alt: L.expected }), fig.firstChild); else fig.firstChild.textContent = "—"; });
         }
         var side = el("div", { class: "task-side" });
-        if (s.hint) side.appendChild(el("details", { class: "hint" }, el("summary", null, L.hint), el("p", { html: s.hint })));
+        if (s.hint) side.appendChild(el("details", { class: "hint" }, el("summary", null, L.hint), el("p", { html: LAB.tr(s.hint) })));
         result = el("div", { class: "result", role: "status" });
         side.appendChild(result);
         side.appendChild(el("p", { class: "muted small" }, L.checkInfo));

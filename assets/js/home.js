@@ -67,7 +67,7 @@
   var chips = el("div", { class: "chips" });
   var CH = lang === "ru"
     ? [["GL_DEPTH_TEST", "глубина"], ["GL_LIGHTING", "освещение"], ["GL_LIGHT0", "LIGHT0"], ["GL_NORMALIZE", "нормализация"], ["GL_BLEND", "смешивание"], ["GL_POLYGON_OFFSET_FILL", "смещение"], ["GL_STENCIL_TEST", "трафарет"], ["GL_TEXTURE_2D", "текстура"]]
-    : [["GL_DEPTH_TEST", "chuqurlik"], ["GL_LIGHTING", "yorugʻlik"], ["GL_LIGHT0", "LIGHT0"], ["GL_NORMALIZE", "normallaştiriş"], ["GL_BLEND", "aralaştiriş"], ["GL_POLYGON_OFFSET_FILL", "surilma"], ["GL_STENCIL_TEST", "trafaret"], ["GL_TEXTURE_2D", "tekstura"]];
+    : [["GL_DEPTH_TEST", "çuqurlik"], ["GL_LIGHTING", "yoruğlik"], ["GL_LIGHT0", "LIGHT0"], ["GL_NORMALIZE", "normallaştiriş"], ["GL_BLEND", "aralaştiriş"], ["GL_POLYGON_OFFSET_FILL", "surilma"], ["GL_STENCIL_TEST", "trafaret"], ["GL_TEXTURE_2D", "tekstura"]];
   var chipEls = CH.map(function (c) { var x = el("span", { class: "chip", title: c[0] }, c[1]); chips.appendChild(x); return x; });
   var fps = el("span", { class: "wm" });
 
@@ -80,7 +80,7 @@
         el("a", { class: "btn run", href: O.tpath("l", 1) }, I.t("home.hero.cta")),
         el("a", { class: "btn ghost", href: O.link("sandbox/") }, I.t("nav.sandbox")),
         el("a", { class: "btn ghost doc-dl", href: O.link(DOC), download: "" }, I.t("footer.doc"))),
-      el("p", { class: "muted small" }, lang === "ru" ? "Над окном — работающая программа на OpenGL. Чипсы под окном обновляются и показывают, какие возможности включены." : "Oynada — ishlab turgan OpenGL dasturi. Oyna tagidagi chiplar har kadrda yangilanadi va qaysi imkoniyatlar yoqilganini koʻrsatadi.")),
+      el("p", { class: "muted small" }, lang === "ru" ? "Над окном — работающая программа на OpenGL. Чипсы под окном обновляются и показывают, какие возможности включены." : "Oynada — işlab turgan OpenGL dasturi. Oyna tagidagi çiplar har kadrda yangilanadi va qaysi imkoniyatlar yoqilganini körsatadi.")),
     el("figure", { class: "hero-w" },
       el("div", { class: "win" }, el("div", { class: "win-bar" }, el("span", { class: "wt" }, "Teapot"), fps), winHost),
       chips,
@@ -124,12 +124,12 @@
        ["Лаборатория", "Второй QR-код открывает пример и задания. Код C++ запускается прямо в браузере и проверяется автоматически."],
        ["Индивидуальное задание", "Вариант назначает преподаватель. Работать можно в мастерской или в Visual Studio 2022 с freeglut."],
        ["Сдача через GitHub", "Кнопка «Сдать работу» заполняет форму. Посещаемость и статусы работ — в «Моём кабинете»."]]
-    : [["Audio izoh", "Har bir mavzuga QR-kod biriktirilgan — oʻzbek va rus tillarida qisqa audio izoh va matn."],
-       ["Amaliy iş", "Ikkinchi QR-kod misol va topşiriqlarni ochadi. C++ kodi brauzerda ishga tushadi va avtomatik tekşiriladi."],
-       ["Individual topşiriq", "Variantni oʻqituvchi tayinlaydi. Ustaxona yoki Visual Studio 2022 + freeglut da işlaş mumkin."],
-       ["GitHub orqali topşiriş", "«Topşiriş» tugmasi formani toʻldiradi. Davomat va holatlar — «Mening kabinetim» da."]];
+    : [["Audio izoh", "Har bir mavzuga QR-kod biriktirilgan — özbek va rus tillarida qisqa audio izoh va matn."],
+       ["Amaliy iş", "Ikkinçi QR-kod misol va topşiriqlarni oçadi. C++ kodi brauzerda işga tuşadi va avtomatik tekşiriladi."],
+       ["Individual topşiriq", "Variantni öqituvçi tayinlaydi. Ustaxona yoki Visual Studio 2022 + freeglut da işlaş mumkin."],
+       ["GitHub orqali topşiriş", "«Topşiriş» tugmasi formani töldiradi. Davomat va holatlar — «Mening kabinetim» da."]];
   main.appendChild(el("section", { class: "how" },
-    el("h2", null, lang === "ru" ? "Как устроено занятие" : "Maşğulot qanday tashkil etilgan"),
+    el("h2", null, lang === "ru" ? "Как устроено занятие" : "Maşğulot qanday taşkil etilgan"),
     el("ol", { class: "flow" },
       how.map(function (x) { return el("li", null, el("b", null, x[0]), el("span", null, x[1])); }))));
 
@@ -146,6 +146,6 @@
         el("img", { src: O.link("assets/img/authors/ibodullayev.jpg"), alt: "S.N. Ibodullayev", loading: "lazy", style: "object-position: 50% 24%" }),
         el("figcaption", null,
           el("b", null, lang === "ru" ? "С.Н. Ибодуллаев" : "S.N. Ibodullayev"),
-          el("span", null, lang === "ru" ? "старший преподаватель" : "katta oʻqituvchi"))))));
+          el("span", null, lang === "ru" ? "старший преподаватель" : "katta öqituvçi"))))));
   O.footer();
 })();

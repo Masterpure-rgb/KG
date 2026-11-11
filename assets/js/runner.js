@@ -160,7 +160,7 @@
       return a;
     }
     L.__lg = function () { // защита от бесконечного цикла
-      if ((++ctx.loops & 0x3FFFF) === 0 && performance.now() - ctx.t0 > 4000) { var e = new Error("loop"); e.__loop = true; throw e; }
+      if ((++ctx.loops & 0x3FFFF) === 0 && performance.now() - ctx.t0 > (ctx.fixed ? 12000 : 4000)) { var e = new Error("loop"); e.__loop = true; throw e; }
       return true;
     };
     L.true = true; L.false = false;

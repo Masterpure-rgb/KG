@@ -20,9 +20,9 @@
              ru: "Методы закраски 3D-объектов: плоская, Гуро, Фонг" },
     { k: 7,  uz: "OpenGL yordamida geometrik obyektlarni çiziş",
              ru: "OpenGL: рисование геометрических объектов" },
-    { k: 8,  uz: "OpenGL yordamida geometrik obyektlarga materiallar va yorugʻlik beriş",
+    { k: 8,  uz: "OpenGL yordamida geometrik obyektlarga materiallar va yoruğlik beriş",
              ru: "OpenGL: материалы и освещение" },
-    { k: 9,  uz: "OpenGL yordamida obyektlarni yaratish usullari va optimallaştiriş",
+    { k: 9,  uz: "OpenGL yordamida obyektlarni yaratiş usullari va optimallaştiriş",
              ru: "OpenGL: оптимизация и организация приложения" },
     { k: 10, uz: "Fraktal grafikasi asosida tasvir şakllarini yaratiş",
              ru: "Фракталы: Мандельброта, Жюлиа, Серпинского" },
@@ -37,12 +37,18 @@
     { k: 15, uz: "Fraktal grafikasi asosida murakkab tasvirlar va L-tizimlari",
              ru: "Сложные фракталы и L-системы" }
   ];
-  // SRS va SRSP (hali ishlanadi)
+  // Mustaqil iş (SRS) bosqiçlari
   var SRSP = [
-    { n: 1, after: 3, uz: "SRS 1 boʻyiça nazorat ishi", ru: "Контрольная работа по СРС 1" },
-    { n: 2, after: 8, uz: "SRS 1 ni qabul va himoya", ru: "Прием и защита СРС 1" },
-    { n: 3, after: 15, uz: "Yakuniy imtihondan oldin konsultatsiya", ru: "Консультация перед итоговым экзаменом" }
+    { n: 1, after: 8, uz: "Mustaqil iş: loyiha mavzusini tanlaş", ru: "Самостоятельная работа: выбор темы проекта" },
+    { n: 2, after: 13, uz: "Mustaqil işni himoya qiliş", ru: "Защита самостоятельной работы" },
+    { n: 3, after: 15, uz: "Yakuniy nazoratdan oldin konsultatsiya", ru: "Консультация перед итоговым контролем" }
   ];
+
+  // Topşiriladigan işlar va darslar röyxati (topşiriş, kabinet va öqituvçi paneli uçun)
+  function lng() { return (global.I && global.I.getLang && global.I.getLang()) === "ru" ? "ru" : "uz"; }
+  var WORKS = TOPICS.map(function (t) { return { id: "SZ" + t.k, label: "A" + t.k + " — " + t[lng()] }; })
+    .concat([{ id: "SRS2", label: lng() === "ru" ? "СРС — Интерактивная трёхмерная сцена" : "Mustaqil iş — Interaktiv uç ölçovli sahna" }]);
+  var SESSIONS = TOPICS.map(function (t) { return { id: "P" + t.k, label: "A" + t.k }; });
 
   var CFG = global.KG_CONFIG || global.OGL_CONFIG || {};
   var REPO = CFG.repo || "Masterpure-rgb/KG";
@@ -100,7 +106,7 @@
         type: "button",
         "aria-pressed": cur === "uz",
         onclick: function () { I.setLang("uz"); }
-      }, "OʻZ"),
+      }, "ÖZ"),
       el("button", {
         class: "lang-btn" + (cur === "ru" ? " on" : ""),
         type: "button",
@@ -133,11 +139,12 @@
     var langNow = I.getLang();
     var cite = langNow === "ru"
       ? "Ф.М. Нуралиев, С.Н. Ибодуллаев. Компьютерная графика: методическое указание к практическим занятиям. Ташкентский университет информационных технологий имени Мухаммада аль-Хорезми, 2026."
-      : "F.M. Nuraliyev, S.N. Ibodullayev. Kompyuter grafika: amaliy maşğulotlarni bajariş uçun uslubiy körsatma. Muhammad al-Xorazmiy nomidagi Toşkent axborot texnologiyalari universiteti, 2026.";
+      : "F.M. Nuraliyev, S.N. Ibodullayev. Kompyuter grafikasi: amaliy maşğulotlarni bajariş uçun uslubiy körsatma. Muhammad al-Xorazmiy nomidagi Toşkent axborot texnologiyalari universiteti, 2026.";
     var f = el("footer", { class: "foot" },
       el("p", null, cite),
       el("p", null,
         el("a", { href: link("metodichka/KG_uslubiy_korsatma_2026.docx"), download: "" }, I.t("footer.doc")),
+        el("a", { href: link("metodichka/KG_uslubiy_korsatma_2026.pdf"), target: "_blank", rel: "noopener" }, I.t("footer.pdf")),
         el("a", { href: link("help/") }, I.t("footer.submit"))));
     document.body.appendChild(f);
   }
@@ -150,7 +157,7 @@
       a("z", tpath("z", k), I.t("home.tasks"), langNow === "ru" ? "варианты, сдача" : "variantlar, topşiriş"));
   }
 
-  global.KG = { BASE: BASE, TOPICS: TOPICS, SRSP: SRSP, REPO: REPO, CFG: CFG, I: I,
+  global.KG = { BASE: BASE, TOPICS: TOPICS, SRSP: SRSP, WORKS: WORKS, SESSIONS: SESSIONS, REPO: REPO, CFG: CFG, I: I,
     el: el, rich: rich, $: $, $$: $$, store: store, topic: topic, topicName: topicName, k: function (k) { return k; }, tpath: tpath, link: link, fetchJSON: fetchJSON, esc: esc, toast: toast, loadScript: loadScript,
     header: header, footer: footer, trio: trio, langToggle: langToggle };
   // Orqaga mos kelish uchun OGL ham mavjud bo'lsin

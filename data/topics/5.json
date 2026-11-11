@@ -1,0 +1,155 @@
+{
+ "n": 5,
+ "uz": {
+  "title": "3 ölçovli obyektlarni tasvirlaşda körinmas çiziq va sirtlarni olib taşlaş",
+  "goal": "körinmas çiziq va sirtlarni aniqlaş algoritmlari: çuqurlik buferi (Z-bufer), orqa yoqlarni taşlaş, rassom algoritmi, Roberts algoritmi.",
+  "skills": "Z-buferdan foydalaniş; yoq normalini kamera yönaliş bilan soliştiriş; şaffof va şaffof bölmagan obyektlarni töğri tartibda çiziş.",
+  "intro": "Variantdagi fazoviy sahnani quring va körsatilgan körinmas sirtlarni taşlaş usulini qöllang. Usul öçirilgan holatdagi natijani ham körsating.",
+  "variants": [
+   {
+    "n": 1,
+    "text": "Turli joylardagi 3 ta kub, Z-bufer"
+   },
+   {
+    "n": 2,
+    "text": "Kub içidan çiqib turgan sfera, Z-bufer"
+   },
+   {
+    "n": 3,
+    "text": "Ikki kesişgan silindr, Z-bufer"
+   },
+   {
+    "n": 4,
+    "text": "Tetraedr: Roberts algoritmi bilan yaşirin qirralar"
+   },
+   {
+    "n": 5,
+    "text": "Çaynik va kub: orqa yoqlarni taşlaş + Z-bufer"
+   },
+   {
+    "n": 6,
+    "text": "5 ta sfera, rassom algoritmi (Z-bufersiz)"
+   },
+   {
+    "n": 7,
+    "text": "Simlik dodekaedr, yaşirin qirralar punktir bilan"
+   },
+   {
+    "n": 8,
+    "text": "Yarim şaffof kub içida qizil sfera"
+   },
+   {
+    "n": 9,
+    "text": "Pol va turli balandlikdagi 4 ta ustun, Z-bufer"
+   },
+   {
+    "n": 10,
+    "text": "Zanjirdek bir-biriga kirgan 3 ta tor, Z-bufer"
+   },
+   {
+    "n": 11,
+    "text": "Simlik çaynik, orqa yoqlar taşlangan"
+   },
+   {
+    "n": 12,
+    "text": "Katta kub ortida kiçik kub: Z-bufersiz va Z-bufer bilan"
+   },
+   {
+    "n": 13,
+    "text": "Beşta Platon jismi qatorda, Z-bufer"
+   },
+   {
+    "n": 14,
+    "text": "Ikki şaffof devor ortidagi şar, töğri çiziş tartibi"
+   },
+   {
+    "n": 15,
+    "text": "glDepthFunc: GL_LESS va GL_GREATER natijalarini soliştiriş"
+   }
+  ],
+  "questions": [
+   "Orqa yoqlarni taşlaş qaçon notöğri natija beradi?",
+   "1920×1080 ekran uçun 24 bitli Z-bufer qança xotira egallaydi?",
+   "Rassom algoritmi qaçon işlamaydi?",
+   "Nima uçun Z-bufer yarim şaffof sirtlar uçun töliq yeçim emas?",
+   "Roberts algoritmi qanday jismlar uçun qöllaniladi?",
+   "glDepthFunc(GL_LESS) va GL_LEQUAL ning farqi nimada?"
+  ]
+ },
+ "ru": {
+  "title": "Удаление невидимых линий и поверхностей",
+  "goal": "алгоритмы удаления невидимых линий и поверхностей: буфер глубины (Z-буфер), отсечение нелицевых граней, алгоритм художника, алгоритм Робертса.",
+  "skills": "использование Z-буфера; сравнение нормали грани с направлением камеры; правильный порядок вывода прозрачных и непрозрачных объектов.",
+  "intro": "Постройте пространственную сцену варианта и примените указанный способ удаления невидимых поверхностей. Покажите и результат с отключённым способом.",
+  "variants": [
+   {
+    "n": 1,
+    "text": "3 куба в разных местах, Z-буфер"
+   },
+   {
+    "n": 2,
+    "text": "Сфера, выступающая из куба, Z-буфер"
+   },
+   {
+    "n": 3,
+    "text": "Два пересекающихся цилиндра, Z-буфер"
+   },
+   {
+    "n": 4,
+    "text": "Тетраэдр: скрытые рёбра алгоритмом Робертса"
+   },
+   {
+    "n": 5,
+    "text": "Чайник и куб: отсечение нелицевых граней + Z-буфер"
+   },
+   {
+    "n": 6,
+    "text": "5 сфер, алгоритм художника (без Z-буфера)"
+   },
+   {
+    "n": 7,
+    "text": "Каркасный додекаэдр, скрытые рёбра пунктиром"
+   },
+   {
+    "n": 8,
+    "text": "Красная сфера внутри полупрозрачного куба"
+   },
+   {
+    "n": 9,
+    "text": "Пол и 4 колонны разной высоты, Z-буфер"
+   },
+   {
+    "n": 10,
+    "text": "3 тора, сцепленные как цепь, Z-буфер"
+   },
+   {
+    "n": 11,
+    "text": "Каркасный чайник с отброшенными нелицевыми гранями"
+   },
+   {
+    "n": 12,
+    "text": "Малый куб за большим: без Z-буфера и с ним"
+   },
+   {
+    "n": 13,
+    "text": "Пять платоновых тел в ряд, Z-буфер"
+   },
+   {
+    "n": 14,
+    "text": "Шар за двумя прозрачными стенами, правильный порядок вывода"
+   },
+   {
+    "n": 15,
+    "text": "glDepthFunc: сравнение результатов GL_LESS и GL_GREATER"
+   }
+  ],
+  "questions": [
+   "Когда отсечение нелицевых граней даёт неверный результат?",
+   "Сколько памяти занимает 24-битный Z-буфер для экрана 1920×1080?",
+   "Когда алгоритм художника не работает?",
+   "Почему Z-буфер — не полное решение для полупрозрачных поверхностей?",
+   "Для каких тел применяется алгоритм Робертса?",
+   "Чем отличаются glDepthFunc(GL_LESS) и GL_LEQUAL?"
+  ]
+ }
+}

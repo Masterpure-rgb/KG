@@ -1,0 +1,155 @@
+{
+ "n": 2,
+ "uz": {
+  "title": "Splayn egri çiziqlardan foydalanib tasvirlar yaratiş va rastr algoritmlari yordamida böyaş",
+  "goal": "parametrik splayn egri çiziqlar (Ermit, Beze, B-splayn) va rastr böyaş algoritmlari (sohani töldiriş).",
+  "skills": "Beze va B-splayn egri çiziqlarini quriş; egri çiziqlar bilan çegaralangan yopiq sohalarni flood fill, scanline va gradient usullarida böyaş.",
+  "intro": "Variantdagi şaklni körsatilgan egri çiziqlardan quring (kontur yopiq bölişi kerak) va uni körsatilgan usulda böyang.",
+  "variants": [
+   {
+    "n": 1,
+    "text": "«Yurak» — 2 ta Beze egri çiziği; flood fill, qizil"
+   },
+   {
+    "n": 2,
+    "text": "«Barg» — 2 ta Beze egri çiziği; vertikal gradient: yaşildan sariqqa"
+   },
+   {
+    "n": 3,
+    "text": "«Tomçi» — 3 ta Beze egri çiziği; scanline, kök"
+   },
+   {
+    "n": 4,
+    "text": "«Bulut» — 4 ta Beze egri çiziği; flood fill, oq"
+   },
+   {
+    "n": 5,
+    "text": "«S» harfi — 2 ta ulangan Beze egri çiziği (C1), qalinligi 4"
+   },
+   {
+    "n": 6,
+    "text": "«Hilol» — 2 ta Beze egri çiziği; gradient: sariqdan oqqa"
+   },
+   {
+    "n": 7,
+    "text": "«Baliq» — 3 ta Beze egri çiziği; flood fill, toq sariq"
+   },
+   {
+    "n": 8,
+    "text": "«Gul» — 5 ta bir xil Beze yaproği (buriş bilan); scanline, puşti"
+   },
+   {
+    "n": 9,
+    "text": "«Tuxum» — 6 ta tayanç nuqtali yopiq B-splayn; flood fill, krem rang"
+   },
+   {
+    "n": 10,
+    "text": "«Qayiq» — korpus 2 ta Beze, yelkan — uçburçak; scanline"
+   },
+   {
+    "n": 11,
+    "text": "«Toğ» siluyeti — 3 ta B-splayn segmenti; gradient: kökdan oqqa"
+   },
+   {
+    "n": 12,
+    "text": "«Kapalak» — 4 ta simmetrik Beze qanot; flood fill, 2 xil rang"
+   },
+   {
+    "n": 13,
+    "text": "«Olma» — 4 ta Beze egri çiziği va band; flood fill, qizil va yaşil"
+   },
+   {
+    "n": 14,
+    "text": "«Tölqin» — 4 ta ulangan Beze (C1), ostidagi soha gradient bilan"
+   },
+   {
+    "n": 15,
+    "text": "«Qalqon» — 3 ta Beze egri çiziği; scanline, kök, çegarasi oltin rang"
+   }
+  ],
+  "questions": [
+   "Beze va Ermit egri çiziqlarining farqi nimada?",
+   "B-splayn egri çiziği tayanç nuqtalardan ötadimi? Nima uçun?",
+   "Ikkita Beze segmentini qanday qilib silliq (C1) ulaş mumkin?",
+   "4-boğliq va 8-boğliq qöşnilik nima bilan farq qiladi va qaçon qaysi biri tanlanadi?",
+   "Rekursiv flood fill katta sohalarda nima uçun xatoga olib keladi va uni qanday tuzatiş mumkin?",
+   "Scanline usuli flood fill dan nima uçun tezroq?"
+  ]
+ },
+ "ru": {
+  "title": "Сплайновые кривые и растровые алгоритмы закрашивания",
+  "goal": "параметрические сплайновые кривые (Эрмита, Безье, B-сплайн) и растровые алгоритмы закрашивания (заливка областей).",
+  "skills": "построение кривых Безье и B-сплайнов; закрашивание замкнутых областей, ограниченных кривыми, методами затравки, сканирующей строки и градиентом.",
+  "intro": "Постройте фигуру варианта из указанных кривых (контур должен быть замкнутым) и закрасьте её указанным способом.",
+  "variants": [
+   {
+    "n": 1,
+    "text": "«Сердце» — 2 кривые Безье; заливка с затравкой, красный"
+   },
+   {
+    "n": 2,
+    "text": "«Лист» — 2 кривые Безье; вертикальный градиент от зелёного к жёлтому"
+   },
+   {
+    "n": 3,
+    "text": "«Капля» — 3 кривые Безье; сканирующая строка, синий"
+   },
+   {
+    "n": 4,
+    "text": "«Облако» — 4 кривые Безье; заливка с затравкой, белый"
+   },
+   {
+    "n": 5,
+    "text": "Буква «S» — 2 соединённые кривые Безье (C1), толщина 4"
+   },
+   {
+    "n": 6,
+    "text": "«Полумесяц» — 2 кривые Безье; градиент от жёлтого к белому"
+   },
+   {
+    "n": 7,
+    "text": "«Рыба» — 3 кривые Безье; заливка с затравкой, оранжевый"
+   },
+   {
+    "n": 8,
+    "text": "«Цветок» — 5 одинаковых лепестков Безье (поворотом); сканирующая строка, розовый"
+   },
+   {
+    "n": 9,
+    "text": "«Яйцо» — замкнутый B-сплайн по 6 опорным точкам; заливка с затравкой, кремовый"
+   },
+   {
+    "n": 10,
+    "text": "«Лодка» — корпус из 2 кривых Безье, парус — треугольник; сканирующая строка"
+   },
+   {
+    "n": 11,
+    "text": "Силуэт «гор» — 3 сегмента B-сплайна; градиент от синего к белому"
+   },
+   {
+    "n": 12,
+    "text": "«Бабочка» — 4 симметричных крыла Безье; заливка с затравкой, 2 цвета"
+   },
+   {
+    "n": 13,
+    "text": "«Яблоко» — 4 кривые Безье и черешок; заливка с затравкой, красный и зелёный"
+   },
+   {
+    "n": 14,
+    "text": "«Волна» — 4 соединённые кривые Безье (C1), область под ней — градиентом"
+   },
+   {
+    "n": 15,
+    "text": "«Щит» — 3 кривые Безье; сканирующая строка, синий, контур золотой"
+   }
+  ],
+  "questions": [
+   "Чем отличаются кривые Безье и Эрмита?",
+   "Проходит ли B-сплайн через опорные точки? Почему?",
+   "Как гладко (C1) соединить два сегмента Безье?",
+   "Чем различаются 4-связность и 8-связность и когда что выбирать?",
+   "Почему рекурсивная заливка ломается на больших областях и как это исправить?",
+   "Почему метод сканирующей строки быстрее заливки с затравкой?"
+  ]
+ }
+}

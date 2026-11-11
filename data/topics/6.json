@@ -1,0 +1,155 @@
+{
+ "n": 6,
+ "uz": {
+  "title": "Böyaş usullaridan foydalanib uç ölçovli obyektlarni böyaş",
+  "goal": "uç ölçovli obyektlarni böyaş usullari: tekis (flat), Guro va Fong; Lambert va Fong yoritiş modellari.",
+  "skills": "Lambert qonuni va Fong modelini tuşuniş; Guro va Fong interpolyatsiyasini farqlaş; OpenGL da böyaş rejimi, material va manbalarni sozlaş.",
+  "intro": "Variantdagi obyektni körsatilgan material, manba va böyaş usuli bilan çizing. Natijani boşqa usul bilan soliştiring.",
+  "variants": [
+   {
+    "n": 1,
+    "text": "Oltin sfera, bitta oq manba, Guro"
+   },
+   {
+    "n": 2,
+    "text": "Kumuş çaynik, bitta oq manba: flat va Guro soliştiriş"
+   },
+   {
+    "n": 3,
+    "text": "Qizil plastik sfera, ikki manba (oq va kök)"
+   },
+   {
+    "n": 4,
+    "text": "Kök plastik çaynik, sariq manba"
+   },
+   {
+    "n": 5,
+    "text": "Yaşil sfera: bölinmalar soni 8, 16, 32, 64"
+   },
+   {
+    "n": 6,
+    "text": "Mis rangli tor, past yaltiroqlik (shininess = 10)"
+   },
+   {
+    "n": 7,
+    "text": "Kub: yoq normallari va örtaçalangan normallar"
+   },
+   {
+    "n": 8,
+    "text": "Metall vint (silindr va konus), bitta oq manba"
+   },
+   {
+    "n": 9,
+    "text": "Uçta sfera: oltin, kumuş, mis"
+   },
+   {
+    "n": 10,
+    "text": "Puşti çaynik, ikki manba: flat va smooth"
+   },
+   {
+    "n": 11,
+    "text": "Interaktiv manba: strelkalar bilan joyi özgaradi"
+   },
+   {
+    "n": 12,
+    "text": "Uçta şar: metall, plastik, rezina"
+   },
+   {
+    "n": 13,
+    "text": "Yoqut rangli kub, yuqori yaltiroqlik (shininess = 120)"
+   },
+   {
+    "n": 14,
+    "text": "Piksel böyiça Fong va Guro sferalari yonma-yon"
+   },
+   {
+    "n": 15,
+    "text": "Tişli ğildirak, flat böyaş"
+   }
+  ],
+  "questions": [
+   "Guro va Fong böyaşining asosiy farqi nimada?",
+   "Lambert qonuni qaysi kattaliklarga böğliq?",
+   "Nima uçun Fong böyaşi Guro ga qaraganda sekinroq?",
+   "Közgu (specular) tarkibiy qism nima qiladi va shininess unga qanday taʼsir qiladi?",
+   "Atrof (ambient) yoruğlik nima va u nima uçun kerak?",
+   "OpenGL 1.x da Fong böyaşini qanday amalga oşiriş mumkin?"
+  ]
+ },
+ "ru": {
+  "title": "Методы закраски трёхмерных объектов",
+  "goal": "методы закраски трёхмерных объектов: плоская (flat), Гуро и Фонг; модели освещения Ламберта и Фонга.",
+  "skills": "понимание закона Ламберта и модели Фонга; различение интерполяции Гуро и Фонга; настройка режима закраски, материалов и источников в OpenGL.",
+  "intro": "Нарисуйте объект варианта с указанными материалом, источником и методом закраски. Сравните результат с другим методом.",
+  "variants": [
+   {
+    "n": 1,
+    "text": "Золотая сфера, один белый источник, Гуро"
+   },
+   {
+    "n": 2,
+    "text": "Серебряный чайник, один белый источник: сравнение flat и Гуро"
+   },
+   {
+    "n": 3,
+    "text": "Красная пластиковая сфера, два источника (белый и синий)"
+   },
+   {
+    "n": 4,
+    "text": "Синий пластиковый чайник, жёлтый источник"
+   },
+   {
+    "n": 5,
+    "text": "Зелёная сфера: число разбиений 8, 16, 32, 64"
+   },
+   {
+    "n": 6,
+    "text": "Медный тор, слабый блеск (shininess = 10)"
+   },
+   {
+    "n": 7,
+    "text": "Куб: нормали граней и усреднённые нормали"
+   },
+   {
+    "n": 8,
+    "text": "Металлический винт (цилиндр и конус), один белый источник"
+   },
+   {
+    "n": 9,
+    "text": "Три сферы: золото, серебро, медь"
+   },
+   {
+    "n": 10,
+    "text": "Розовый чайник, два источника: flat и smooth"
+   },
+   {
+    "n": 11,
+    "text": "Интерактивный источник: позиция меняется стрелками"
+   },
+   {
+    "n": 12,
+    "text": "Три шара: металл, пластик, резина"
+   },
+   {
+    "n": 13,
+    "text": "Рубиновый куб, сильный блеск (shininess = 120)"
+   },
+   {
+    "n": 14,
+    "text": "Сферы с попиксельным Фонгом и Гуро рядом"
+   },
+   {
+    "n": 15,
+    "text": "Шестерня, плоская закраска"
+   }
+  ],
+  "questions": [
+   "В чём основное отличие закраски Гуро от закраски Фонга?",
+   "От каких величин зависит закон Ламберта?",
+   "Почему закраска Фонга медленнее закраски Гуро?",
+   "Что даёт зеркальная (specular) составляющая и как на неё влияет shininess?",
+   "Что такое фоновое (ambient) освещение и зачем оно нужно?",
+   "Как можно реализовать закраску Фонга в OpenGL 1.x?"
+  ]
+ }
+}

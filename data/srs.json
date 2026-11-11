@@ -1,0 +1,658 @@
+{
+ "uz": {
+  "project": {
+   "title": "Mustaqil iş. OpenGL da interaktiv uç ölçovli sahna",
+   "goal": "Amaliy işlarda örganilgan usullarni bitta loyihada mustahkamlaş: C++ tilida OpenGL 1.x, GLU va freeglut yordamida ierarxik model, kamera, yoritiş, materiallar, tekstura, animatsiya, tasvir sifatini oşiriş usuli va optimallaştiriş birlaşgan interaktiv uç ölçovli sahnani mustaqil loyihalaş va yaratiş.",
+   "requirements": [
+    "Kamida uç darajali ierarxik model (masalan, asos – bögin – detal), glPushMatrix/glPopMatrix bilan qurilgan; ota böğinning harakati boladagilarni ham olib yuradi (A7, A11).",
+    "Perspektiv kamera (gluPerspective + gluLookAt) klaviatura bilan boşqariladi: sahna atrofida aylaniş va yaqinlaşiş/uzoqlaşiş; oyna ölçami özgarganda tasvir buzilmaydi (reshape, nol balandlikdan himoya).",
+    "Kamida ikki xil turdagi yoruğlik manbai (masalan, yönaltirilgan va susayişli nuqtaviy yoki projektor GL_SPOT_*); barça obyektlarda normallar berilgan, notekis masştablaşda GL_NORMALIZE yoqilgan (A6, A8).",
+    "Materiallar: kamida uçta obyektda glMaterialfv parametrlari turliça (ambient, diffuse, specular, GL_SHININESS), heç bölmaganda bittasida GL_EMISSION yoki glColorMaterial işlatilgan.",
+    "Kamida bitta tekstura: rasmni yuklaş (stbi_load), takrorlaş va filtrlaş parametrlari, mazmunli tekstura koordinatalari (A13).",
+    "Kurs algoritmlaridan biri bilan protsedura usulida qurilgan obyekt: Beze sirti, aylanma sirt yoki ekstruziya, fraktal yoki L-tizim (A3, A10, A12, A15).",
+    "Kadrlar sonidan mustaqil animatsiya: parametrlar real vaqt böyiça hisoblanadi (glutGet(GLUT_ELAPSED_TIME)); pauza va tezlikni özgartiriş tugmalari bor (A11).",
+    "Tasvir sifatini oşirişning bitta usuli: tekislikka proyeksion soya, şaffof obyektlar (blending, töğri çiziş tartibi bilan) yoki tuman (A5, A13, A14).",
+    "Bitta optimallaştiriş: murakkab qözğalmas obyekt uçun displey röyxati yoki VBO; oynada FPS hisoblağiçi körsatiladi, hisobotda optimallaştirişdan oldingi va keyingi qiymatlar soliştiriladi (A9).",
+    "Toza kod tuzilmasi: init, display, reshape, kiriş işlovçilari va update funksiyalari; «sehrli sonlar» örniga nomlangan özgarmaslar; muhim joylarga özbek yoki rus tilida izohlar; boşqaruv tugmalari röyxati oynada yoki konsolda çiqariladi."
+   ],
+   "deliverables": [
+    "Bitta .cpp manba fayli: Visual Studio 2022 da freeglut bilan özgarişsiz kompilyatsiya qilinadi va saytdagi Ustaxonada işga tuşadi; fayl boşida izoh — ID, guruh, variant raqami, tugmalar röyxati.",
+    "Dastur oynasining ikki-uçta skrinşoti: sahnaning umumiy körinişi, boşqa rakursdan körinişi va sifat usuli körinib turgan kadr.",
+    "Quyidagi tuzilmadagi qisqa hisobot (PDF yoki Word, 3–5 bet).",
+    "Iş GitHub orqali topşiriladi: saytdagi «Işni topşiriş» tugmasi."
+   ],
+   "report": [
+    "Titul varağı: universitet, fan, iş nomi, ID, guruh, variant, sana.",
+    "Masalaning qöyilişi: sahna mavzusi (variant), obyektlar röyxati va nima harakatlanişi; işning maqsadi.",
+    "Sahna va ierarxiya tavsifi: har bir darajadagi almaştirişlar körsatilgan obyektlar ierarxiyasi sxemasi (daraxti).",
+    "Boşqaruv jadvali: tugmalar va ularning vazifasi.",
+    "Talablarning bajarilişi: «talab – işlatilgan OpenGL funksiyalari – koddagi örni (funksiya/qatorlar)» jadvali.",
+    "Yoritiş va materiallar parametrlari: manbalar turi va örni, susayiş va projektor burçaklari, asosiy obyektlar materiallari.",
+    "Natijalar: izohli skrinşotlar; optimallaştirişdan oldin va keyin FPS (oyna ölçami va obyektlar soni körsatilgan holda).",
+    "Qiyinçiliklar: ikki-uçta aniq muammo (masalan, almaştirişlar tartibi, normallar, tekstura körinmasligi) va ular qanday topilib tuzatilgani.",
+    "Xulosa, GitHub dagi iş havolasi va foydalanilgan adabiyotlar."
+   ],
+   "schedule": "Topşiriq semestr boşida beriladi va amaliy işlar davomida bosqiçma-bosqiç bajariladi: A7–A8 — primitivlar, almaştirişlar va yoritiş; A11 — kamera va animatsiya; A12–A13 — modellar, tekstura va soya; A9 — optimallaştiriş. Har bir bosqiçni tayyor bölişi bilan yuklang, oxirgi kunga qoldirmang. Iş öqituvçi belgilagan muddatda himoya qilinadi.",
+   "variants": [
+    {
+     "n": 1,
+     "title": "Quyoş tizimi",
+     "text": "Quyoş (nur soçuvçi sfera, içida nuqtaviy manba) va orbitalari tezligi va qiyaligi turliça bölgan törtta sayyora; Yerning Oyi bor, sayyoralardan birida gluDisk dan halqa. Ierarxiya: Quyoş – sayyora – yöldoş. «+»/«−» vaqt tezligini özgartiradi, probel — pauza, 1–4 raqamlari kamerani tanlangan sayyoraga yönaltiradi; Yerga earth.png teksturasi qöyiladi."
+    },
+    {
+     "n": 2,
+     "title": "Mexanik soat",
+     "text": "Pol soati: korpus, teksturali siferblat, soat, daqiqa va soniya millari, sinus qonuni böyiça tebranadigan mayatnik va toşlar. Millar tezlaştirilgan «vaqt» böyiça aylanadi (köpaytuvçi tugmalar bilan özgaradi), mayatnik — mustaqil davr bilan; manbalar — yönaltirilgan («deraza») va siferblat ustidagi nuqtaviy. Tavsiya etilgan usul: soatning yaltiroq poldagi proyeksion soyasi."
+    },
+    {
+     "n": 3,
+     "title": "Robot-manipulyator qöli",
+     "text": "Stoldagi manipulyator: aylanuvçi asos, yelka, bilak, panja va ikki qisqiç barmoq (tört darajali ierarxiya), yonida — kubik. Q/A, W/S, E/D uçta böğinni boşqaradi, probel qisqiçni qisadi va oçadi; burçaklar ruxsat etilgan çegaralarda. Tavsiya etilgan usul: manipulyatorning stoldagi proyeksion soyasi."
+    },
+    {
+     "n": 4,
+     "title": "Karusel",
+     "text": "Konussimon tomli, markaziy ustunli va ştangalarda oltita ot-figurali aylanuvçi platforma; figuralar aylaniş paytida turli faza siljişi bilan silliq kötarilib-tuşadi. Tom çetida — lampoçkalar qatori (nur soçuvçi şarçalar), markazda — susayişli nuqtaviy manba. ↑/↓ tezlikni özgartiradi, L tugmasi lampoçkalarni yoqadi va öçiradi."
+    },
+    {
+     "n": 5,
+     "title": "Aylanuvçi projektorli mayoq",
+     "text": "Qoyadagi yöl-yöl silindr minora, fonar xonasi, uning ustida — körinadigan nur konusli aylanuvçi projektor (GL_SPOT_CUTOFF, GL_SPOT_EXPONENT), water.png teksturali dengiz va tebranayotgan qayiq. N tugmasi kun va tunni almaştiradi, F — tumanni yoqadi. Ierarxiya: minora – fonar – projektor."
+    },
+    {
+     "n": 6,
+     "title": "Şamol tegirmoni",
+     "text": "Toş asos, konussimon tom, öq va tört panjarasimon parrakli rotor, grass.png teksturali dala, bir neça bulut. Rotor tezligi strelkalar bilan özgaradigan «şamol kuçiga» böğliq, A/D tomni rotor bilan birga şamolga qarşi buradi. Tavsiya etilgan usul: parraklarning yerdagi proyeksion soyasi."
+    },
+    {
+     "n": 7,
+     "title": "Oy moduli",
+     "text": "Korpusga şarnir bilan ulangan törtta tayançli qönuş bosqiçi, ekipaj kabinasi, antenna, stone.png teksturali Oy sirti. Tuşiş erkin tuşiş tezlanişi bilan boradi; probel dvigatelni yoqadi (tortiş kuçi tuşişni sekinlaştiradi), strelkalar modulni qiyalatadi. Manbalar: yönaltirilgan «Quyoş» va qönuş farasi projektori."
+    },
+    {
+     "n": 8,
+     "title": "Şaxmat taxtasi va donalar",
+     "text": "checker.png teksturali va ramkali taxta, kvadrikalar va aylanma sirtlardan yiğilgan oltita dona turi (piyoda, rux, fil, ot, farzin, şoh). Tugmalar donani va katakni tanlaydi, tanlangan dona yoy böylab silliq (vaqt böyiça) suriladi. Tavsiya etilgan usul: yarim şaffof yaltiroq taxta va donalar soyasi."
+    },
+    {
+     "n": 9,
+     "title": "Velosiped",
+     "text": "Rama, vilkali rul, kegaylari va şinasi (glutSolidTorus) bölgan ikki ğildirak, şatunlardagi pedallar, egar. Velosiped aylana yölakda yuradi, ğildiraklar va şatunlar harakat tezligi bilan sinxron aylanadi, burilişda rul qiyalanadi. Ierarxiya: rama – vilka – ğildirak; rama – karetka – şatun – pedal; «+»/«−» tezlikni özgartiradi."
+    },
+    {
+     "n": 10,
+     "title": "Ekskavator",
+     "text": "Gusenitsali platforma, aylanuvçi kabina, strela, dasta va çömiç (tört darajali ierarxiya), yerda — teksturali tuproq uyumi. Q/A, W/S, E/D strela, dasta va çömiçni boşqaradi, ←/→ kabinani buradi, platforma harakatlanganda gusenitsalar aylanadi. Tavsiya etilgan usul: maşinaning proyeksion soyasi."
+    },
+    {
+     "n": 11,
+     "title": "Stol ventilyatori va lampa",
+     "text": "Stol, ventilyator (asos, ustun, motor qopqoği, himoya panjarasidagi parraklar) va abajurli stol lampasi. Parraklar uç rejimdan birida aylanadi (0–3 tugmalari), ventilyator boşi ±45° çegarada tebranadi; manbalar — lampa projektori va «deraza»ning kuçsiz yönaltirilgan nuri. T tugmasi lampani yoqadi va öçiradi."
+    },
+    {
+     "n": 12,
+     "title": "Akvarium",
+     "text": "Şaffof şişa parallelepiped (ranglarni aralaştiriş), stone.png teksturali tub, sinusoida böylab tebranadigan suv ötlari, yuqoriga kötariladigan pufakçalar va yopiq trayektoriyalar böylab suzadigan beşta baliq (sfera, konus-dum, suzgiçlar). Şaffoflik töğri çiqişi uçun obyektlar töğri tartibda çiziladi; probel baliqlarga yem beradi va ular yem tomon suzadi."
+    },
+    {
+     "n": 13,
+     "title": "Minorali kötarma kran",
+     "text": "Panjarali minora, qarşi yukli aylanuvçi strela, strela böylab harakatlanadigan aravaça, ilgakli tros va crate.png teksturali konteyner-yuk. A/D strelani buradi, W/S aravaçani suradi, Q/E ilgakni kötaradi va tuşiradi; joylaşuv mos kelganda yuk ilgakka ilinadi. Tavsiya etilgan usul: kranning maydonçadagi soyasi."
+    },
+    {
+     "n": 14,
+     "title": "Orbital kosmik stansiya",
+     "text": "Markaziy modul, turli tezlikda aylanadigan ikki yaşaş halqasi (glutSolidTorus), Quyoş ortidan silliq buriladigan törtta quyoş paneli va tutaşadigan kema. D tugmasi bilan kema berilgan trayektoriya böylab şlyuzga yaqinlaşadi; manbalar — yönaltirilgan «Quyoş» va modullardagi nuqtaviy çiroqlar. Tavsiya etilgan usul: yarim şaffof quyoş panellari."
+    },
+    {
+     "n": 15,
+     "title": "Temir yöl",
+     "text": "Kötarma yöl ustidagi halqasimon izlar, lokomotiv va uçta vagon, har biri ğildirakli ikki aravaçada (ierarxiya: vagon – aravaça – ğildirak), signali qizildan yaşilga özgaradigan svetofor, tunnel. Poyezd qizil signal oldida sekinlaşadi va yaşilda tezlaşadi; «+»/«−» maksimal tezlikni özgartiradi, S svetoforni qölda almaştiradi."
+    },
+    {
+     "n": 16,
+     "title": "Çarxpalak",
+     "text": "Tayanç ustunlar, ğildirak gardişi va kegaylari, ğildirak aylanganda vertikal holatda qoladigan qilib şarnir bilan osilgan ön ikkita kabina; tungi yoritiş: gardişdagi nur soçuvçi şarçalardan girlyandalar. Ierarxiya: tayanç – ğildirak – kabina – yölovçi. Tugmalar aylaniş tezligi va yönalişini özgartiradi, N projektorli tungi rejimni yoqadi."
+    },
+    {
+     "n": 17,
+     "title": "Gumanoid robot",
+     "text": "Tana, «közlari» projektor bölgan boş, ikki qöl (yelka, tirsak, panja) va ikki oyoq (son, tizza, oyoq panjasi) — kamida tört darajali ierarxiya. W/S qöl va oyoqlari qarama-qarşi fazada harakatlanadigan yuriş siklini boşlaydi va töxtatadi, A/D robotni buradi, kamera uning ortidan yuradi. Tavsiya etilgan usul: robotning poldagi proyeksion soyasi."
+    },
+    {
+     "n": 18,
+     "title": "Tişli uzatma va planetar reduktor",
+     "text": "Yetakçi, oraliq va yetaklanuvçi tişli ğildiraklar (A12 dagi kabi ekstruziya bilan), yonida — planetar mexanizm: quyoş ğildiragi, uçta satellitli vodilo va halqa. Ğildiraklar tişlar soniga teskari proporsional burçak tezligi bilan aylanadi; tugmalar yetakçi ğildirak tezligi va yönalişini özgartiradi, metall materiallarda yaqqol yaltiroq doğ bor. metal.png teksturasi."
+    },
+    {
+     "n": 19,
+     "title": "Kötarma köprikli qalʼa",
+     "text": "stone.png teksturali qalʼa devorlari va minoralari (konussimon tomli silindrlar), suvli xandaq, M tugmasi bilan zanjirlarda silliq kötarilib-tuşadigan köprik, sinusoida böylab hilpiraydigan bayroq. Darvoza yonidagi maşʼal — yorqinligi miltillaydigan va susayadigan nuqtaviy manba; F keçki tumanni yoqadi."
+    },
+    {
+     "n": 20,
+     "title": "Vertolyot",
+     "text": "Korpus, tört parrakli asosiy vint, dum vintli dum balkasi, şassi va qönuş maydonçasi (ierarxiya: korpus – dum balkasi – dum vinti – parrak). Probel vint aylanişlarini silliq oşirib uçiş va qönişni boşlaydi, strelkalar korpusni qiyalatadi va vertolyotni suradi; tubida maydonçani yoritadigan projektor. Tavsiya etilgan usul: vertolyotning maydonçadagi proyeksion soyasi."
+    }
+   ],
+   "variantsTitle": "Loyiha mavzulari"
+  },
+  "defense": {
+   "title": "Mustaqil işni himoya qiliş",
+   "goal": "Talaba işni mustaqil bajarganiga, öz dasturining tuzilişini tuşunişiga va qöllangan OpenGL usullarini tuşuntira olişiga işonç hosil qiliş.",
+   "procedure": [
+    "Talaba iş fayllarini (.cpp kod, skrinşotlar, hisobot) oldindan «Işni topşiriş» tugmasi orqali yuboradi.",
+    "Namoyiş (3–4 daqiqa): dasturni Ustaxonada yoki Visual Studio da işga tuşiriş, barça boşqaruv rejimlari, kamera rakursini almaştiriş, yoruğlik manbalarini yoqib-öçiriş, animatsiya pauzasi va tezligi, sifat usuli va FPS hisoblağiçi.",
+    "Kodni tahlil qiliş (5–7 daqiqa): ierarxiya daraxti va koddagi mos joylar, almaştirişlar tartibi, normallar, yoritiş va materiallar, teksturani yuklaş, animatsiyada vaqt hisobi va optimallaştiriş.",
+    "Öqituvçi savollari (3–5 daqiqa): iş va nazariya böyiça 3–4 savol (taxminiy röyxat quyida).",
+    "Öqituvçi iltimosi bilan dasturga qisqa «jonli» özgariş kiritiş (masalan, yana bitta manba qöşiş, ikki almaştiriş örnini almaştiriş, GL_NORMALIZE ni öçirib natijani tuşuntiriş).",
+    "Natija: iş qabul qilinadi yoki izohlar bilan qayta işlaşga qaytariladi."
+   ],
+   "checklist": [
+    "Dastur özgarişsiz işga tuşadi, xato va ogohlantirişlarsiz; kod GitHub orqali yuborilgani bilan bir xil.",
+    "Sahna variantga mos: barça obyektlar bor, harakat tavsifdagidek.",
+    "Ierarxiya kamida uç darajali, ota böğin harakati boladagilarni olib yuradi.",
+    "Kamera perspektiv, boşqariladi; oyna ölçami özgarganda tasvir buzilmaydi.",
+    "Ikki xil manba, töğri örnatilgan pozitsiya va töğri normallar.",
+    "Materiallar turliça va mazmunli; tekstura töğri ulangan, «oq» yoki buzilgan sirtlar yöq.",
+    "Animatsiya real vaqtga böğlangan; pauza va tezlik boşqaruvi bor.",
+    "Sifat usuli va optimallaştiriş qöllangan, FPS soliştirilgan.",
+    "Kod tuzilgan, izohlangan; hisobot töliq, skrinşotlar aniq.",
+    "Talaba savollarga mustaqil javob beradi."
+   ],
+   "questions": [
+    {
+     "q": "Nega OpenGL da almaştirişlar «teskari tartibda yozilgandek» körinadi?",
+     "a": "Har bir yangi matritsa joriy matritsaga ongdan köpaytiriladi: M' = M·T. Şuning uçun uç avval oxirgi berilgan matritsaga, söngra oldingilariga köpaytiriladi. Oxirgi çaqirilgan glTranslatef/glRotatef obyektga birinçi bölib, uning öz koordinatalar tizimida taʼsir qiladi."
+    },
+    {
+     "q": "Ierarxik modelda glPushMatrix va glPopMatrix nima uçun kerak?",
+     "a": "Push joriy matritsani stekka saqlaydi, Pop uni qaytaradi. Şunda bitta bola obyekt uçun berilgan almaştirişlar qöşnilariga taʼsir qilmaydi, ota almaştirişlari esa barça bolalar uçun amalda qoladi."
+    },
+    {
+     "q": "gluPerspective va gluLookAt qaysi matritsa rejimida va dasturning qayerida beriladi?",
+     "a": "gluPerspective — GL_PROJECTION rejimida, glLoadIdentity dan keyin, odatda reshape da. gluLookAt — GL_MODELVIEW rejimida, display boşida glLoadIdentity dan keyin, obyektlarni çizişdan oldin."
+    },
+    {
+     "q": "Manba pozitsiyasi qanday beriladi va glLightfv(GL_POSITION) qayerda çaqirilişi nega muhim?",
+     "a": "Pozitsiya (x, y, z, w) çaqiriş paytidagi joriy model-körinişi matritsasi bilan almaştiriladi. gluLookAt dan keyin çaqirilsa, manba dunyo koordinatalarida qotadi; undan oldin — kamera bilan birga harakatlanadi. w = 0 — yönaltirilgan manba, w = 1 — nuqtaviy."
+    },
+    {
+     "q": "Nuqtaviy manba projektordan nimasi bilan farq qiladi? Projektor qaysi parametrlar bilan beriladi?",
+     "a": "Nuqtaviy manba har tomonga, projektor — konus içida nur soçadi. Projektor GL_SPOT_DIRECTION yönalişi, GL_SPOT_CUTOFF yarim burçagi (0…90°) va nurning öqqa yiğilişini belgilaydigan GL_SPOT_EXPONENT (0…128) bilan beriladi."
+    },
+    {
+     "q": "Normallar nima uçun kerak va GL_NORMALIZE qaçon zarur?",
+     "a": "Normal nurning sirtga tuşiş burçagini, demak diffuz va közgu qismlarni belgilaydi. OpenGL almaştirişlardan keyin normallarni normallaştirmaydi: masştablaşda (glScalef) ularning uzunligi buziladi, şuning uçun glEnable(GL_NORMALIZE) kerak."
+    },
+    {
+     "q": "Teksturani qanday yukladingiz va qaysi parametrlarni berdingiz?",
+     "a": "Rasm stbi_load bilan öqiladi, glGenTextures bilan raqam olinadi, glBindTexture bilan boğlanadi, glTexImage2D bilan yuklanadi, GL_TEXTURE_MIN_FILTER/MAG_FILTER va takrorlaş rejimi beriladi; çizişdan oldin glEnable(GL_TEXTURE_2D) va har bir uç uçun glTexCoord2f."
+    },
+    {
+     "q": "Kadrlar sonidan mustaqil animatsiya qanday amalga oşirilgan?",
+     "a": "Real vaqt ölçanadi: t = glutGet(GLUT_ELAPSED_TIME) millisekundlarda, dt = (t − tOld)/1000. Burçak va joylar tezlik·dt ga oşiriladi yoki tezlik·t sifatida hisoblanadi. Şunda istalgan FPS da obyekt bir soniyada bir xil yöl bosadi."
+    },
+    {
+     "q": "Tekislikka proyeksion soya qanday quriladi?",
+     "a": "Obyekt ikkinçi marta nur yönalişi böyiça tekislikka proyeksiya matritsasi bilan çiziladi: yoritiş va tekstura öçirilgan, rang töq (kerak bölsa şaffof). Matritsa Push/Pop içida glMultMatrixf bilan köpaytiriladi, «titraş»ning oldini oliş uçun soya tekislikdan biroz yuqoriga suriladi."
+    },
+    {
+     "q": "Şaffof obyektlar nega oxirida va glDepthMask(GL_FALSE) bilan çiziladi?",
+     "a": "Aralaştiriş ekrandagi rang bilan qöşiladi, şuning uçun orqadagi obyektlar avval çizilgan bölişi kerak. Şaffof sirt çuqurlik buferiga yozilsa, undan keyin çiziladigan orqadagi obyektlar taşlab yuboriladi."
+    },
+    {
+     "q": "Displey röyxati va VBO bevosita uçlarni yuborişdan nimasi bilan farq qiladi?",
+     "a": "Displey röyxati buyruqlarni bir marta yozib oladi va glCallList bilan ijro etadi; VBO esa uç maʼlumotlarini videokarta xotirasiga bir marta yuklaydi (glGenBuffers, glBufferData) va glDrawArrays/glDrawElements bilan çiziladi. Ikkalasi ham har kadrda qayta uzatişni yöqotadi; röyxat mazmunini özgartirib bölmaydi."
+    },
+    {
+     "q": "Optimallaştiriş samarasi nimaga böğliq?",
+     "a": "FPS bir xil şaroitda (oyna ölçami, obyektlar soni) soliştiriladi. Yutuq kadrdagi uçlar va çaqiriqlar soni bilan ösadi; oddiy sahnada u deyarli sezilmaydi, çunki kadr vaqtini boşqa omillar çeklaydi."
+    },
+    {
+     "q": "Dasturingizda nimalar fiksirlangan konveyerga xos va zamonaviy OpenGL da ular nima bilan almaştiriladi?",
+     "a": "Uçlardagi yoritiş, matritsalar steki, glBegin/glEnd va displey röyxatlari fiksirlangan konveyerga tegişli; OpenGL 3.1+ core profilida ular şaderlar (uç va fragment), öz matritsalari va bufer obyektlari bilan almaştiriladi."
+    }
+   ]
+  },
+  "exam": {
+   "title": "Yakuniy nazorat uçun savollar",
+   "note": "Har bir amaliy işdan ikkitadan savol; töliq röyxat — mavzularning «Topşiriqlar» sahifalarida.",
+   "groups": [
+    {
+     "n": 1,
+     "questions": [
+      "Poligonal törni saqlaşning qaysi usuli xotirani eng köp tejaydi va nima uçun?",
+      "Köçiriş va buriş tartibini almaştirsak, natija özgaradimi? Misol bilan tuşuntiring."
+     ]
+    },
+    {
+     "n": 2,
+     "questions": [
+      "Beze va Ermit egri çiziqlarining farqi nimada?",
+      "Ikkita Beze segmentini qanday qilib silliq (C1) ulaş mumkin?"
+     ]
+    },
+    {
+     "n": 3,
+     "questions": [
+      "Bikubik sirt uçun nima uçun aynan 16 ta tayanç nuqta kerak?",
+      "Ikki Beze sirti orasida C1 uzluksizlik uçun qanday şart bajarilişi kerak?"
+     ]
+    },
+    {
+     "n": 4,
+     "questions": [
+      "Nima uçun Brezenxeym algoritmi haqiqiy sonlar bilan işlaydigan algoritmdan tezroq?",
+      "Ellips çizişda nima uçun ikki soha alohida qayta işlanadi?"
+     ]
+    },
+    {
+     "n": 5,
+     "questions": [
+      "Orqa yoqlarni taşlaş qaçon notöğri natija beradi?",
+      "Rassom algoritmi qaçon işlamaydi?"
+     ]
+    },
+    {
+     "n": 6,
+     "questions": [
+      "Guro va Fong böyaşining asosiy farqi nimada?",
+      "Nima uçun Fong böyaşi Guro ga qaraganda sekinroq?"
+     ]
+    },
+    {
+     "n": 7,
+     "questions": [
+      "GL_LINE_STRIP va GL_LINES ning farqi nimada?",
+      "Nima uçun OpenGL da almaştirişlar matritsalarni köpaytiriş orqali bajariladi?"
+     ]
+    },
+    {
+     "n": 8,
+     "questions": [
+      "Manba pozitsiyasining oxirgi komponenti w = 0 yoki 1 nimani anglatadi?",
+      "Nima uçun normal har bir uç uçun beriladi?"
+     ]
+    },
+    {
+     "n": 9,
+     "questions": [
+      "Nima uçun darhol rejim (glBegin/glEnd) sekin?",
+      "Frustum culling qanday vazifani bajaradi va uni qanday tez amalga oşiriş mumkin?"
+     ]
+    },
+    {
+     "n": 10,
+     "questions": [
+      "Fraktal nima va u qanday xossalarga ega?",
+      "IFS (xaos öyini) qanday işlaydi va nima uçun tasodifiy tanlov tartibli rasm beradi?"
+     ]
+    },
+    {
+     "n": 11,
+     "questions": [
+      "Nima uçun animatsiya tezligi kadrlar soniga emas, dt ga böğliq bölişi kerak?",
+      "Vertikal sinxronlaş (V-Sync) nima va u FPS ni nima uçun çeklaydi?"
+     ]
+    },
+    {
+     "n": 12,
+     "questions": [
+      "Aylanma ekstruziya qanday işlaydi va u qanday detallar uçun qulay?",
+      "Vint rezbasi qaysi egri çiziq böyiça quriladi?"
+     ]
+    },
+    {
+     "n": 13,
+     "questions": [
+      "Parametrik bino generatorining afzalligi nimada?",
+      "OpenGL da tekstura qaysi funksiyalar yordamida yuklanadi va qöllanadi?"
+     ]
+    },
+    {
+     "n": 14,
+     "questions": [
+      "Balandlik xaritasi nima va balandlik qanday saqlanadi?",
+      "Şaffof suv uçun qaysi OpenGL funksiyalari kerak va ularni qaysi tartibda çaqiriş kerak?"
+     ]
+    },
+    {
+     "n": 15,
+     "questions": [
+      "L-tizim nima va u qanday elementlardan iborat?",
+      "Barnsli paporotnigi qanday matematik asosga tayanadi?"
+     ]
+    }
+   ]
+  }
+ },
+ "ru": {
+  "project": {
+   "title": "Самостоятельная работа. Интерактивная трёхмерная сцена на OpenGL",
+   "goal": "Закрепить в одном проекте приёмы, изученные на практических занятиях: самостоятельно спроектировать и реализовать на C++ с OpenGL 1.x, GLU и freeglut интерактивную трёхмерную сцену, в которой сочетаются иерархическая модель, камера, освещение, материалы, текстура, анимация, приём повышения качества изображения и оптимизация.",
+   "requirements": [
+    "Иерархическая модель не менее чем из трёх уровней (например, основание – звено – деталь), построенная через glPushMatrix/glPopMatrix; движение родительского звена переносит дочерние (A7, A11).",
+    "Перспективная камера (gluPerspective + gluLookAt) с управлением с клавиатуры: вращение вокруг сцены и приближение/удаление; при изменении размеров окна изображение не искажается (reshape, защита от нулевой высоты).",
+    "Не менее двух источников света разных типов (например, направленный и точечный с затуханием или прожектор GL_SPOT_*); у всех объектов заданы нормали, при неравномерном масштабировании включён GL_NORMALIZE (A6, A8).",
+    "Материалы: не менее чем у трёх объектов разные параметры glMaterialfv (ambient, diffuse, specular, GL_SHININESS), хотя бы у одного — GL_EMISSION или glColorMaterial.",
+    "Не менее одной текстуры: загрузка изображения (stbi_load), параметры повторения и фильтрации, осмысленные текстурные координаты (A13).",
+    "Объект, построенный процедурно одним из алгоритмов курса: поверхность Безье, поверхность вращения или экструзия, фрактал или L-система (A3, A10, A12, A15).",
+    "Анимация, не зависящая от частоты кадров: параметры считаются по реальному времени (glutGet(GLUT_ELAPSED_TIME)); есть пауза и изменение скорости (A11).",
+    "Один приём повышения качества изображения: проекционная тень на плоскость, прозрачные объекты (смешивание с правильным порядком рисования) или туман (A5, A13, A14).",
+    "Одна оптимизация: дисплейный список или VBO для сложного неподвижного объекта; в окне показывается счётчик FPS, в отчёте сравниваются значения до и после оптимизации (A9).",
+    "Аккуратная структура кода: функции init, display, reshape, обработчики ввода и update; именованные константы вместо «магических чисел»; комментарии на узбекском или русском языке к ключевым местам; список клавиш выводится в окне или в консоли."
+   ],
+   "deliverables": [
+    "Один исходный файл .cpp: без изменений компилируется в Visual Studio 2022 с freeglut и запускается в Мастерской на сайте; в начале файла комментарий — ID, группа, номер варианта, список клавиш.",
+    "Два-три скриншота окна программы: общий вид сцены, вид с другого ракурса и кадр, на котором виден приём повышения качества.",
+    "Короткий отчёт (PDF или Word, 3–5 страниц) по структуре, приведённой ниже.",
+    "Работа сдаётся через GitHub: кнопка «Сдать работу» на сайте."
+   ],
+   "report": [
+    "Титульный лист: университет, дисциплина, название работы, ID, группа, вариант, дата.",
+    "Постановка задачи: тема сцены (вариант), перечень объектов и того, что движется; цель работы.",
+    "Описание сцены и иерархии: схема (дерево) иерархии объектов с преобразованиями на каждом уровне.",
+    "Таблица управления: клавиши и их действия.",
+    "Реализация требований: таблица «требование – использованные функции OpenGL – место в коде (функция/строки)».",
+    "Параметры освещения и материалов: типы и положения источников, затухание и углы прожектора, материалы основных объектов.",
+    "Результаты: скриншоты с подписями; FPS до и после оптимизации с указанием размера окна и числа объектов.",
+    "Трудности: две-три конкретные проблемы (например, порядок преобразований, нормали, невидимая текстура) и как они были найдены и исправлены.",
+    "Выводы, ссылка на работу на GitHub и список источников."
+   ],
+   "schedule": "Задание выдаётся в начале семестра и выполняется поэтапно параллельно практическим работам: A7–A8 — примитивы, преобразования и освещение; A11 — камера и анимация; A12–A13 — модели, текстура и тень; A9 — оптимизация. Загружайте каждый этап по мере готовности, не откладывая на последний день. Работа защищается в срок, установленный преподавателем.",
+   "variants": [
+    {
+     "n": 1,
+     "title": "Солнечная система",
+     "text": "Солнце (излучающая сфера, внутри — точечный источник) и четыре планеты на орбитах разной скорости и наклона; у Земли есть Луна, у одной из планет — кольцо из gluDisk. Иерархия: Солнце – планета – спутник. «+»/«−» меняют скорость времени, пробел — пауза, цифры 1–4 направляют камеру на выбранную планету; Земля текстурируется earth.png."
+    },
+    {
+     "n": 2,
+     "title": "Механические часы",
+     "text": "Напольные часы: корпус, циферблат с текстурой, часовая, минутная и секундная стрелки, маятник, качающийся по закону синуса, и гири. Стрелки вращаются по ускоренному «времени» (множитель меняется клавишами), маятник — с независимым периодом; источники — направленный («окно») и точечный над циферблатом. Рекомендуемый приём: проекционная тень часов на полу."
+    },
+    {
+     "n": 3,
+     "title": "Рука робота-манипулятора",
+     "text": "Манипулятор на столе: поворотное основание, плечо, предплечье, кисть и два пальца захвата (четыре уровня иерархии), рядом — кубик. Q/A, W/S, E/D управляют тремя суставами, пробел сжимает и разжимает захват; углы ограничены допустимыми пределами. Рекомендуемый приём: проекционная тень манипулятора на столе."
+    },
+    {
+     "n": 4,
+     "title": "Карусель",
+     "text": "Вращающаяся платформа с конической крышей, центральной колонной и шестью фигурами-лошадками на штангах, которые во время вращения плавно поднимаются и опускаются с разным фазовым сдвигом. По краю крыши — ряд лампочек (излучающие шарики), в центре — точечный источник с затуханием. ↑/↓ меняют скорость, клавиша L включает и выключает лампочки."
+    },
+    {
+     "n": 5,
+     "title": "Маяк с вращающимся прожектором",
+     "text": "Полосатая башня-цилиндр на скале, фонарная комната, над ней — вращающийся прожектор (GL_SPOT_CUTOFF, GL_SPOT_EXPONENT) с видимым конусом света, море с текстурой water.png и покачивающаяся лодка. Клавиша N переключает день и ночь, F включает туман. Иерархия: башня – фонарь – прожектор."
+    },
+    {
+     "n": 6,
+     "title": "Ветряная мельница",
+     "text": "Каменное основание, конусная крыша, ось и ротор с четырьмя лопастями-решётками, поле с текстурой grass.png, несколько облаков. Скорость ротора зависит от «силы ветра», которая меняется стрелками, A/D поворачивают крышу вместе с ротором навстречу ветру. Рекомендуемый приём: проекционная тень лопастей на земле."
+    },
+    {
+     "n": 7,
+     "title": "Лунный модуль",
+     "text": "Посадочная ступень с четырьмя опорами, шарнирно связанными с корпусом, кабина экипажа, антенна, поверхность Луны с текстурой stone.png. Спуск идёт с ускорением свободного падения; пробел включает двигатель (тяга замедляет спуск), стрелки наклоняют модуль. Источники: направленное «Солнце» и прожектор посадочной фары."
+    },
+    {
+     "n": 8,
+     "title": "Шахматная доска с фигурами",
+     "text": "Доска с текстурой checker.png и рамкой, шесть типов фигур из квадрик и поверхностей вращения (пешка, ладья, слон, конь, ферзь, король). Клавиши выбирают фигуру и клетку, выбранная фигура плавно (по времени) перемещается по дуге. Рекомендуемый приём: полупрозрачная глянцевая доска и тени фигур."
+    },
+    {
+     "n": 9,
+     "title": "Велосипед",
+     "text": "Рама, руль с вилкой, два колеса со спицами и шиной (glutSolidTorus), педали на шатунах, седло. Велосипед едет по круговой дорожке, колёса и шатуны вращаются синхронно со скоростью движения, руль наклоняется в повороте. Иерархия: рама – вилка – колесо; рама – каретка – шатун – педаль; «+»/«−» меняют скорость."
+    },
+    {
+     "n": 10,
+     "title": "Экскаватор",
+     "text": "Гусеничная платформа, поворотная кабина, стрела, рукоять и ковш (четыре уровня иерархии), на земле — куча грунта с текстурой. Q/A, W/S, E/D управляют стрелой, рукоятью и ковшом, ←/→ поворачивают кабину, гусеницы вращаются при движении платформы. Рекомендуемый приём: проекционная тень машины."
+    },
+    {
+     "n": 11,
+     "title": "Настольный вентилятор и лампа",
+     "text": "Стол, настольный вентилятор (основание, стойка, кожух мотора, лопасти в защитной решётке) и настольная лампа с абажуром. Лопасти вращаются в одном из трёх режимов (клавиши 0–3), голова вентилятора качается в пределах ±45°; источники — прожектор лампы и слабый направленный свет «окна». Клавиша T включает и выключает лампу."
+    },
+    {
+     "n": 12,
+     "title": "Аквариум",
+     "text": "Прозрачный стеклянный параллелепипед (смешивание цветов), дно с текстурой stone.png, водоросли, колышущиеся по синусоиде, поднимающиеся пузырьки и пять рыбок (сфера, конус-хвост, плавники), плывущих по замкнутым траекториям. Объекты рисуются в правильном порядке для корректной прозрачности; пробел «кормит» рыбок, и они плывут к корму."
+    },
+    {
+     "n": 13,
+     "title": "Башенный подъёмный кран",
+     "text": "Решётчатая башня, поворотная стрела с противовесом, тележка, перемещающаяся вдоль стрелы, трос с крюком и груз-контейнер с текстурой crate.png. A/D поворачивают стрелу, W/S двигают тележку, Q/E поднимают и опускают крюк; груз цепляется к крюку при совпадении положения. Рекомендуемый приём: тень крана на площадке."
+    },
+    {
+     "n": 14,
+     "title": "Орбитальная космическая станция",
+     "text": "Центральный модуль, два вращающихся обитаемых кольца (glutSolidTorus) с разными скоростями, четыре солнечные панели, плавно поворачивающиеся вслед за Солнцем, и стыкующийся корабль. По клавише D корабль сближается со шлюзом по заданной траектории; источники — направленное «Солнце» и точечные огни на модулях. Рекомендуемый приём: полупрозрачные солнечные панели."
+    },
+    {
+     "n": 15,
+     "title": "Железная дорога",
+     "text": "Кольцевой путь с насыпью, локомотив и три вагона, каждый на двух тележках с колёсами (иерархия: вагон – тележка – колесо), семафор, сигнал которого меняется с красного на зелёный, туннель. Состав замедляется перед красным сигналом и разгоняется на зелёный; «+»/«−» меняют максимальную скорость, S переключает семафор вручную."
+    },
+    {
+     "n": 16,
+     "title": "Колесо обозрения",
+     "text": "Опорные стойки, обод и спицы колеса, двенадцать кабин, подвешенных шарнирно так, что при вращении колеса они остаются вертикальными; ночное освещение: гирлянды из излучающих шариков на ободе. Иерархия: опора – колесо – кабина – пассажир. Клавиши меняют скорость и направление вращения, N включает ночной режим с прожекторами."
+    },
+    {
+     "n": 17,
+     "title": "Робот-гуманоид",
+     "text": "Туловище, голова с «глазами»-прожекторами, две руки (плечо, локоть, кисть) и две ноги (бедро, колено, стопа) — не менее четырёх уровней иерархии. W/S запускают и останавливают цикл ходьбы с противофазным движением рук и ног, A/D поворачивают робота, камера следует за ним. Рекомендуемый приём: проекционная тень робота на полу."
+    },
+    {
+     "n": 18,
+     "title": "Зубчатая передача и планетарный редуктор",
+     "text": "Ведущая, промежуточная и ведомая шестерни (экструзией, как в A12), рядом — планетарный механизм: солнечная шестерня, водило с тремя сателлитами и кольцо. Шестерни вращаются с угловыми скоростями, обратно пропорциональными числу зубьев; клавиши меняют скорость и направление ведущей шестерни, металлические материалы имеют выраженный блик. Текстура metal.png."
+    },
+    {
+     "n": 19,
+     "title": "Замок с подъёмным мостом",
+     "text": "Крепостные стены и башни (цилиндры с коническими крышами) с текстурой stone.png, ров с водой, подъёмный мост, который клавишей M плавно поднимается и опускается на цепях, флаг, колышущийся по синусоиде. Факел у ворот — точечный источник с мерцающей яркостью и затуханием; F включает вечерний туман."
+    },
+    {
+     "n": 20,
+     "title": "Вертолёт",
+     "text": "Корпус, несущий винт с четырьмя лопастями, хвостовая балка с хвостовым винтом, шасси и посадочная площадка (иерархия: корпус – хвостовая балка – хвостовой винт – лопасть). Пробел запускает взлёт и посадку с плавным набором оборотов винта, стрелки наклоняют корпус и смещают вертолёт; на днище — прожектор, освещающий площадку. Рекомендуемый приём: проекционная тень вертолёта на площадке."
+    }
+   ],
+   "variantsTitle": "Темы проектов"
+  },
+  "defense": {
+   "title": "Защита самостоятельной работы",
+   "goal": "Убедиться, что студент выполнил работу самостоятельно, понимает устройство своей программы и может объяснить применённые приёмы OpenGL.",
+   "procedure": [
+    "Студент заранее отправляет файлы работы (код .cpp, скриншоты, отчёт) кнопкой «Сдать работу».",
+    "Демонстрация (3–4 минуты): запуск в Мастерской или в Visual Studio, все режимы управления, смена ракурса камеры, включение и выключение источников света, пауза и скорость анимации, приём повышения качества и счётчик FPS.",
+    "Разбор кода (5–7 минут): дерево иерархии и соответствующие места кода, порядок преобразований, нормали, освещение и материалы, загрузка текстуры, расчёт времени в анимации и оптимизация.",
+    "Вопросы преподавателя (3–5 минут): 3–4 вопроса по работе и теории (примерный перечень ниже).",
+    "Короткое «живое» изменение программы по просьбе преподавателя (например, добавить источник света, поменять местами два преобразования, отключить GL_NORMALIZE и объяснить результат).",
+    "Итог: работа принимается или возвращается на доработку с перечнем замечаний."
+   ],
+   "checklist": [
+    "Программа запускается без изменений, без ошибок и предупреждений; код совпадает с присланным через GitHub.",
+    "Сцена соответствует варианту: все объекты есть, движение выполняется как описано.",
+    "Иерархия не менее трёх уровней, движение родителя увлекает потомков.",
+    "Камера перспективная, управляется; при изменении размеров окна изображение не искажается.",
+    "Два разных источника, правильно заданные положения и корректные нормали.",
+    "Материалы разные и осмысленные; текстура подключена правильно, нет «белых» или искажённых поверхностей.",
+    "Анимация привязана к реальному времени; есть пауза и регулировка скорости.",
+    "Применены приём качества и оптимизация, FPS сравнён.",
+    "Код структурирован и прокомментирован; отчёт полный, скриншоты читаемы.",
+    "Студент самостоятельно отвечает на вопросы."
+   ],
+   "questions": [
+    {
+     "q": "Почему преобразования в OpenGL выглядят «записанными в обратном порядке»?",
+     "a": "Каждая новая матрица умножается на текущую справа: M' = M·T. Поэтому вершина сначала умножается на последнюю заданную матрицу, затем на предыдущие. Последний вызванный glTranslatef/glRotatef действует на объект первым, в его собственной системе координат."
+    },
+    {
+     "q": "Зачем в иерархической модели нужны glPushMatrix и glPopMatrix?",
+     "a": "Push сохраняет текущую матрицу в стеке, Pop возвращает её. Так преобразования одного потомка не влияют на соседей, а преобразования родителя действуют на всех его потомков."
+    },
+    {
+     "q": "В каком режиме матриц и в каком месте программы задают gluPerspective и gluLookAt?",
+     "a": "gluPerspective — в режиме GL_PROJECTION после glLoadIdentity, обычно в reshape. gluLookAt — в режиме GL_MODELVIEW в начале display после glLoadIdentity, до рисования объектов."
+    },
+    {
+     "q": "Как задаётся положение источника и почему важно, где вызывается glLightfv с GL_POSITION?",
+     "a": "Положение (x, y, z, w) преобразуется текущей модельно-видовой матрицей в момент вызова. После gluLookAt источник закреплён в мировых координатах; до него — движется вместе с камерой. w = 0 задаёт направленный источник, w = 1 — точечный."
+    },
+    {
+     "q": "Чем точечный источник отличается от прожектора? Какие параметры задают прожектор?",
+     "a": "Точечный излучает во все стороны, прожектор — внутри конуса. Прожектор задают направлением GL_SPOT_DIRECTION, половинным углом GL_SPOT_CUTOFF (0…90°) и показателем GL_SPOT_EXPONENT (0…128), определяющим концентрацию света к оси."
+    },
+    {
+     "q": "Зачем нужны нормали и когда необходим GL_NORMALIZE?",
+     "a": "Нормаль определяет угол падения света на поверхность, а значит, диффузную и зеркальную составляющие. OpenGL не нормирует нормали после преобразований: при масштабировании (glScalef) их длина искажается, поэтому нужен glEnable(GL_NORMALIZE)."
+    },
+    {
+     "q": "Как вы загружали текстуру и какие параметры задали?",
+     "a": "Изображение читается stbi_load, номер создаётся glGenTextures, привязывается glBindTexture, загружается glTexImage2D, задаются GL_TEXTURE_MIN_FILTER/MAG_FILTER и режим повторения; перед рисованием — glEnable(GL_TEXTURE_2D) и glTexCoord2f для каждой вершины."
+    },
+    {
+     "q": "Как реализована анимация, не зависящая от частоты кадров?",
+     "a": "Измеряется реальное время: t = glutGet(GLUT_ELAPSED_TIME) в мс, dt = (t − tOld)/1000. Углы и положения увеличиваются на скорость·dt или вычисляются как скорость·t. Тогда за секунду объект проходит одинаковый путь при любом FPS."
+    },
+    {
+     "q": "Как строится проекционная тень на плоскость?",
+     "a": "Объект рисуется второй раз с матрицей проекции на плоскость вдоль направления света: освещение и текстура выключены, цвет тёмный (при необходимости полупрозрачный). Матрица умножается glMultMatrixf внутри Push/Pop, тень слегка приподнимают над плоскостью, чтобы избежать мерцания."
+    },
+    {
+     "q": "Почему прозрачные объекты рисуют в конце и с glDepthMask(GL_FALSE)?",
+     "a": "Смешивание складывается с цветом на экране, поэтому объекты позади должны быть нарисованы раньше. Если прозрачная поверхность запишется в буфер глубины, нарисованные после неё объекты позади будут отброшены."
+    },
+    {
+     "q": "Чем дисплейный список и VBO отличаются от прямой отправки вершин?",
+     "a": "Дисплейный список один раз записывает команды и воспроизводит их glCallList; VBO один раз загружает данные вершин в память видеокарты (glGenBuffers, glBufferData) и рисуется glDrawArrays/glDrawElements. Оба убирают повторную передачу в каждом кадре; содержимое списка изменить нельзя."
+    },
+    {
+     "q": "От чего зависит эффект оптимизации?",
+     "a": "FPS сравнивается при одинаковых условиях (размер окна, число объектов). Выигрыш растёт с числом вершин и вызовов за кадр; в простой сцене он почти незаметен, так как время кадра ограничено другими причинами."
+    },
+    {
+     "q": "Что в вашей программе относится к фиксированному конвейеру и чем это заменяют в современном OpenGL?",
+     "a": "Освещение по вершинам, стек матриц, glBegin/glEnd и дисплейные списки относятся к фиксированному конвейеру; в профиле core OpenGL 3.1+ их заменяют шейдеры (вершинные и фрагментные), собственные матрицы и буферные объекты."
+    }
+   ]
+  },
+  "exam": {
+   "title": "Вопросы к итоговому контролю",
+   "note": "По два вопроса из каждой практической работы; полный перечень — на страницах «Задания» тем.",
+   "groups": [
+    {
+     "n": 1,
+     "questions": [
+      "Какой способ хранения полигональной сетки наиболее экономен по памяти и почему?",
+      "Изменится ли результат, если поменять порядок переноса и поворота? Поясните на примере."
+     ]
+    },
+    {
+     "n": 2,
+     "questions": [
+      "Чем отличаются кривые Безье и Эрмита?",
+      "Как гладко (C1) соединить два сегмента Безье?"
+     ]
+    },
+    {
+     "n": 3,
+     "questions": [
+      "Почему для бикубической поверхности нужно ровно 16 опорных точек?",
+      "Какое условие обеспечивает непрерывность C1 между двумя поверхностями Безье?"
+     ]
+    },
+    {
+     "n": 4,
+     "questions": [
+      "Почему алгоритм Брезенхема быстрее алгоритма на вещественных числах?",
+      "Почему при построении эллипса две области обрабатываются отдельно?"
+     ]
+    },
+    {
+     "n": 5,
+     "questions": [
+      "Когда отсечение нелицевых граней даёт неверный результат?",
+      "Когда алгоритм художника не работает?"
+     ]
+    },
+    {
+     "n": 6,
+     "questions": [
+      "В чём основное отличие закраски Гуро от закраски Фонга?",
+      "Почему закраска Фонга медленнее закраски Гуро?"
+     ]
+    },
+    {
+     "n": 7,
+     "questions": [
+      "Чем отличаются GL_LINE_STRIP и GL_LINES?",
+      "Почему в OpenGL преобразования выполняются умножением матриц?"
+     ]
+    },
+    {
+     "n": 8,
+     "questions": [
+      "Что означает последняя компонента позиции источника w = 0 или 1?",
+      "Почему нормаль задаётся для каждой вершины?"
+     ]
+    },
+    {
+     "n": 9,
+     "questions": [
+      "Почему немедленный режим (glBegin/glEnd) медленный?",
+      "Какую задачу решает отсечение по пирамиде видимости и как его сделать быстрым?"
+     ]
+    },
+    {
+     "n": 10,
+     "questions": [
+      "Что такое фрактал и какими свойствами он обладает?",
+      "Как работает IFS («игра хаоса») и почему случайный выбор даёт упорядоченную картину?"
+     ]
+    },
+    {
+     "n": 11,
+     "questions": [
+      "Почему скорость анимации должна зависеть от dt, а не от числа кадров?",
+      "Что такое вертикальная синхронизация (V-Sync) и почему она ограничивает FPS?"
+     ]
+    },
+    {
+     "n": 12,
+     "questions": [
+      "Как работает экструзия вращением и для каких деталей она удобна?",
+      "По какой кривой строится резьба винта?"
+     ]
+    },
+    {
+     "n": 13,
+     "questions": [
+      "В чём преимущество параметрического генератора зданий?",
+      "Какими функциями OpenGL загружается и накладывается текстура?"
+     ]
+    },
+    {
+     "n": 14,
+     "questions": [
+      "Что такое карта высот и как в ней хранится высота?",
+      "Какие функции OpenGL нужны для прозрачной воды и в каком порядке их вызывать?"
+     ]
+    },
+    {
+     "n": 15,
+     "questions": [
+      "Что такое L-система и из каких элементов она состоит?",
+      "На какой математической основе построен папоротник Барнсли?"
+     ]
+    }
+   ]
+  }
+ }
+}

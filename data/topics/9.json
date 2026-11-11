@@ -1,0 +1,155 @@
+{
+ "n": 9,
+ "uz": {
+  "title": "OpenGL yordamida geometrik obyektlarni yaratiş usullari va dasturni optimallaştiriş",
+  "goal": "OpenGL da samarali dastur yoziş: displey röyxatlari, uç massivlari, VBO, indeksli çiqariş, culling, LOD, holat özgarişlarini kamaytiriş.",
+  "skills": "katta sahnalarni tez çiziş; FPS va kadr vaqtini ölçaş; glBegin/glEnd dan massivlar va buferlarga ötiş; natijalarni jadvalda soliştiriş.",
+  "intro": "Variantdagi katta sahnani ikki usulda quring: oddiy (darhol rejim) va optimallaştirilgan (körsatilgan usul). Ikkala holatda FPS ni ölçab, jadvalga yozing.",
+  "variants": [
+   {
+    "n": 1,
+    "text": "1000 ta çaynik: darhol rejim va displey röyxati"
+   },
+   {
+    "n": 2,
+    "text": "500 ta aylanuvçi kub: darhol rejim va VBO"
+   },
+   {
+    "n": 3,
+    "text": "2000 ta sferadan «galaktika»: frustum culling"
+   },
+   {
+    "n": 4,
+    "text": "Pol, 20 bino va 180 daraxt: displey röyxatlari"
+   },
+   {
+    "n": 5,
+    "text": "1500 ta tetraedr: masofaga qarab LOD"
+   },
+   {
+    "n": 6,
+    "text": "1000 ta rangli kub: material böyiça guruhlaş"
+   },
+   {
+    "n": 7,
+    "text": "3000 nuqtali zarraçalar tizimi: VBO"
+   },
+   {
+    "n": 8,
+    "text": "Dengiz sathi (100×100 tör): indeksli çiqariş"
+   },
+   {
+    "n": 9,
+    "text": "1000 ta sfera: glDrawElements bilan"
+   },
+   {
+    "n": 10,
+    "text": "800 ta tişli ğildirak: bitta geometriya, turli matritsalar"
+   },
+   {
+    "n": 11,
+    "text": "500 ta tor: VBO va material böyiça guruhlaş"
+   },
+   {
+    "n": 12,
+    "text": "2000 ta silindr: displey röyxati va VBO soliştiriş"
+   },
+   {
+    "n": 13,
+    "text": "300 bino: holat özgarişlarini kamaytiriş"
+   },
+   {
+    "n": 14,
+    "text": "1500 daraxtli örmon: LOD va culling"
+   },
+   {
+    "n": 15,
+    "text": "500 ta Platon jismi: VBO va glDrawElements"
+   }
+  ],
+  "questions": [
+   "Nima uçun darhol rejim (glBegin/glEnd) sekin?",
+   "Displey röyxati va VBO ning asosiy farqi nimada?",
+   "Frustum culling qanday vazifani bajaradi va uni qanday tez amalga oşiriş mumkin?",
+   "GL_STATIC_DRAW va GL_DYNAMIC_DRAW qaçon tanlanadi?",
+   "Nima uçun glGet* funksiyalarini har kadrda çaqirmaslik kerak?",
+   "LOD xotira va tezlikka qanday taʼsir qiladi?"
+  ]
+ },
+ "ru": {
+  "title": "Способы построения геометрии и оптимизация программ OpenGL",
+  "goal": "эффективные программы на OpenGL: дисплейные списки, массивы вершин, VBO, индексный вывод, отсечение, LOD, сокращение смен состояния.",
+  "skills": "быстрый вывод больших сцен; измерение FPS и времени кадра; переход от glBegin/glEnd к массивам и буферам; сравнение результатов в таблице.",
+  "intro": "Постройте большую сцену варианта двумя способами: обычным (немедленный режим) и оптимизированным (указанный способ). Измерьте FPS в обоих случаях и занесите в таблицу.",
+  "variants": [
+   {
+    "n": 1,
+    "text": "1000 чайников: немедленный режим и дисплейный список"
+   },
+   {
+    "n": 2,
+    "text": "500 вращающихся кубов: немедленный режим и VBO"
+   },
+   {
+    "n": 3,
+    "text": "«Галактика» из 2000 сфер: отсечение по пирамиде видимости"
+   },
+   {
+    "n": 4,
+    "text": "Пол, 20 зданий и 180 деревьев: дисплейные списки"
+   },
+   {
+    "n": 5,
+    "text": "1500 тетраэдров: LOD по расстоянию"
+   },
+   {
+    "n": 6,
+    "text": "1000 цветных кубов: группировка по материалу"
+   },
+   {
+    "n": 7,
+    "text": "Система частиц из 3000 точек: VBO"
+   },
+   {
+    "n": 8,
+    "text": "Поверхность моря (сетка 100×100): индексный вывод"
+   },
+   {
+    "n": 9,
+    "text": "1000 сфер: через glDrawElements"
+   },
+   {
+    "n": 10,
+    "text": "800 шестерён: одна геометрия, разные матрицы"
+   },
+   {
+    "n": 11,
+    "text": "500 торов: VBO и группировка по материалу"
+   },
+   {
+    "n": 12,
+    "text": "2000 цилиндров: сравнение дисплейного списка и VBO"
+   },
+   {
+    "n": 13,
+    "text": "300 зданий: сокращение смен состояния"
+   },
+   {
+    "n": 14,
+    "text": "Лес из 1500 деревьев: LOD и отсечение"
+   },
+   {
+    "n": 15,
+    "text": "500 платоновых тел: VBO и glDrawElements"
+   }
+  ],
+  "questions": [
+   "Почему немедленный режим (glBegin/glEnd) медленный?",
+   "В чём основное отличие дисплейного списка от VBO?",
+   "Какую задачу решает отсечение по пирамиде видимости и как его сделать быстрым?",
+   "Когда выбирают GL_STATIC_DRAW и GL_DYNAMIC_DRAW?",
+   "Почему не стоит вызывать функции glGet* в каждом кадре?",
+   "Как LOD влияет на память и скорость?"
+  ]
+ }
+}

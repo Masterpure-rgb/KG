@@ -1,0 +1,29 @@
+{
+ "topic": 3,
+ "lang": "uz",
+ "title": "Splayn sirtlar",
+ "file": "audio/3.uz.mp3",
+ "duration": 96.05,
+ "paragraphs": [
+  {
+   "text": "Uçinçi iş — splayn sirtlar. Egri çiziq bitta parametrga boğliq bölsa, sirt ikkita parametr — s va t ga boğliq. Bikubik Beze sirti törtga tört, yaʼni 16 ta tayanç nuqta töri bilan beriladi.",
+   "start": 0.0
+  },
+  {
+   "text": "Sirt nuqtasi Bernşteyn köphadlarining köpaytmasi orqali hisoblanadi. Natijada sirt faqat burçakdagi tört nuqtadan ötadi, içki nuqtalar esa uni özlariga tortib, şaklini belgilaydi.",
+   "start": 19.5
+  },
+  {
+   "text": "Murakkab obyektlar bir neça sirt bölagidan yiğiladi. Ikki bölak orasida tirqiş bölmasligi uçun umumiy çegaradagi nuqtalar bir xil bölişi kerak — bu C0 uzluksizlik. Ulaniş joyida qirra körinmasligi uçun esa çegaraning ikki tomonidagi nuqtalar bir töğri çiziqda yotişi kerak — bu C1 silliqlik.",
+   "start": 35.95
+  },
+  {
+   "text": "B-splayn sirti xuddi şu törda quriladi, lekin u tayanç nuqtalarga yopişmaydi va ancha silliq böladi. Sirtni ekranga çiqariş uçun u N ga N törtburçakka bölinadi: N qança katta bölsa, sirt şunça silliq, lekin çiziş sekinroq.",
+   "start": 59.84
+  },
+  {
+   "text": "Laboratoriyada siz egar va tepalik şakllarini yasaysiz, ikki bölakni silliq ulaysiz, aylanma sirt bilan qopqoq qurasiz va tayanç nuqtalarni klaviatura bilan boşqarasiz.",
+   "start": 80.26
+  }
+ ]
+}

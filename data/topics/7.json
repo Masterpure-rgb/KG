@@ -1,0 +1,155 @@
+{
+ "n": 7,
+ "uz": {
+  "title": "OpenGL yordamida geometrik obyektlarni çiziş",
+  "goal": "OpenGL kutubxonasi asoslari: dastur tuzilişi, primitivlar, uçlar, çiziş rejimlari va almaştirişlar.",
+  "skills": "GLUT oynasini yaratiş; kesma, uçburçak va köpburçaklarni çiziş; glTranslate/glRotate/glScale va matritsa stekidan foydalaniş; oddiy animatsiya.",
+  "intro": "Variantdagi rasmni OpenGL primitivlari va almaştirişlari yordamida çizing. Takrorlanadigan qismlarni funksiya qilib, almaştirişlar bilan joylaştiring.",
+  "variants": [
+   {
+    "n": 1,
+    "text": "Şaxmat taxtasi 8×8 (GL_QUADS)"
+   },
+   {
+    "n": 2,
+    "text": "Özbekiston bayroği: 3 tasma, 2 ingiçka qizil çiziq, hilol va 12 yulduz"
+   },
+   {
+    "n": 3,
+    "text": "Avtomobilning old körinişi: kuzov, ğildiraklar, oyna"
+   },
+   {
+    "n": 4,
+    "text": "Uy: devor, uçburçak tom, eşik, deraza"
+   },
+   {
+    "n": 5,
+    "text": "Olimpiya halqalari (GL_LINE_LOOP)"
+   },
+   {
+    "n": 6,
+    "text": "Robot yuzi: közlar, burun, oğiz"
+   },
+   {
+    "n": 7,
+    "text": "Aylanuvçi uç qanotli parrak (animatsiya)"
+   },
+   {
+    "n": 8,
+    "text": "Şahar siluyeti: binolar va derazalar"
+   },
+   {
+    "n": 9,
+    "text": "Kompyuter belgisi: monitor, tagi, klaviatura"
+   },
+   {
+    "n": 10,
+    "text": "Kamalak: 7 ta yarim halqa (GL_QUAD_STRIP)"
+   },
+   {
+    "n": 11,
+    "text": "Yurak şakli (GL_TRIANGLE_FAN)"
+   },
+   {
+    "n": 12,
+    "text": "Daraxt: tana va uç qavatli uçburçak şox"
+   },
+   {
+    "n": 13,
+    "text": "Ustunli diagramma: 5 ta ustun va ölçovli öq"
+   },
+   {
+    "n": 14,
+    "text": "Doiraviy diagramma: 4 ta sektor (GL_TRIANGLE_FAN)"
+   },
+   {
+    "n": 15,
+    "text": "Öz logotipingiz (kamida 3 xil primitiv)"
+   }
+  ],
+  "questions": [
+   "GL_LINE_STRIP va GL_LINES ning farqi nimada?",
+   "glPushMatrix va glPopMatrix nima uçun kerak va qaçon işlatiladi?",
+   "Nima uçun OpenGL da almaştirişlar matritsalarni köpaytiriş orqali bajariladi?",
+   "Perspektiv va ortografik proyeksiyaning farqi nimada va qaysi biri qaçon işlatiladi?",
+   "GL_POLYGON botiq köpburçakni töğri çizadimi?",
+   "Nima uçun animatsiya burçagini kadrlar soniga emas, vaqtga böğlaş kerak?"
+  ]
+ },
+ "ru": {
+  "title": "Рисование геометрических объектов средствами OpenGL",
+  "goal": "основы библиотеки OpenGL: структура программы, примитивы, вершины, режимы рисования и преобразования.",
+  "skills": "создание окна GLUT; рисование отрезков, треугольников и многоугольников; использование glTranslate/glRotate/glScale и стека матриц; простая анимация.",
+  "intro": "Нарисуйте изображение варианта примитивами и преобразованиями OpenGL. Повторяющиеся части оформите функциями и размещайте преобразованиями.",
+  "variants": [
+   {
+    "n": 1,
+    "text": "Шахматная доска 8×8 (GL_QUADS)"
+   },
+   {
+    "n": 2,
+    "text": "Флаг Узбекистана: 3 полосы, 2 тонкие красные линии, полумесяц и 12 звёзд"
+   },
+   {
+    "n": 3,
+    "text": "Автомобиль спереди: кузов, колёса, стекло"
+   },
+   {
+    "n": 4,
+    "text": "Дом: стена, треугольная крыша, дверь, окно"
+   },
+   {
+    "n": 5,
+    "text": "Олимпийские кольца (GL_LINE_LOOP)"
+   },
+   {
+    "n": 6,
+    "text": "Лицо робота: глаза, нос, рот"
+   },
+   {
+    "n": 7,
+    "text": "Вращающийся трёхлопастный пропеллер (анимация)"
+   },
+   {
+    "n": 8,
+    "text": "Силуэт города: здания и окна"
+   },
+   {
+    "n": 9,
+    "text": "Значок компьютера: монитор, подставка, клавиатура"
+   },
+   {
+    "n": 10,
+    "text": "Радуга: 7 полуколец (GL_QUAD_STRIP)"
+   },
+   {
+    "n": 11,
+    "text": "Сердце (GL_TRIANGLE_FAN)"
+   },
+   {
+    "n": 12,
+    "text": "Дерево: ствол и трёхъярусная крона из треугольников"
+   },
+   {
+    "n": 13,
+    "text": "Столбчатая диаграмма: 5 столбцов и ось со шкалой"
+   },
+   {
+    "n": 14,
+    "text": "Круговая диаграмма: 4 сектора (GL_TRIANGLE_FAN)"
+   },
+   {
+    "n": 15,
+    "text": "Собственный логотип (не меньше 3 разных примитивов)"
+   }
+  ],
+  "questions": [
+   "Чем отличаются GL_LINE_STRIP и GL_LINES?",
+   "Зачем нужны glPushMatrix и glPopMatrix и когда их используют?",
+   "Почему в OpenGL преобразования выполняются умножением матриц?",
+   "Чем отличаются перспективная и ортографическая проекции и когда какую использовать?",
+   "Правильно ли GL_POLYGON рисует невыпуклый многоугольник?",
+   "Почему угол анимации нужно привязывать ко времени, а не к числу кадров?"
+  ]
+ }
+}
