@@ -48,7 +48,7 @@
       "«Create» tugmasini bosing. Iş kursning murojaatlar (Issues) röyxatida paydo böladi."],
     s3: "3. Tekşiriş va holatlar",
     st: [["Yuborildi", "Iş tekşirişni kutmoqda."], ["Qabul qilindi", "Öqituvçi işni qabul qildi. GitHub dagi murojaat yopiladi."], ["Qayta işlaşga", "Izohda nimani tuzatiş kerakligi yozilgan. Kodni tuzating va işni yana yuboring (yangi murojaat bilan) yoki öşa murojaatda javob yozing."]],
-    s3p: ["Davomat va barça işlaringiz holati — ", "«Mening kabinetim»", " böllimida: öqituvçi bergan ID va kiriş kodi bilan kiring."],
+    s3p: ["Davomat va barça işlaringiz holati — ", "«Mening kabinetim»", " bölimida: öqituvçi bergan ID va kiriş kodi bilan kiring."],
     s4: "4. Öz kompyuteringizda işlaş",
     s4p: "Laboratoriya va Ustaxonadagi kod — freeglut bilan oddiy C++ dasturi. Uni kompyuterda yiğiş uçun:",
     s4l: [["Visual Studio 2022 Community ni «C++ bilan klassik ilovalar yaratiş» (Desktop development with C++) yuklamasi bilan örnating."],
