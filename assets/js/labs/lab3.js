@@ -195,7 +195,7 @@ void display() {
 `, TWO_POST + MAIN("A3: C0", "    build();\n"));
   var t4 = S(HEAD + CORE + TWO + `    for (int j = 0; j < 4; j++) B[0][j] = A[3][j];      // C0
 `, `    // ${C("TODO: C1 — B[1][j] nuqtasi A[2][j] ning B[0][j] ga nisbatan simmetrigi bölsin: B[1] = 2·A[3] − A[2]", "TODO: C1 — точка B[1][j] симметрична A[2][j] относительно B[0][j]: B[1] = 2·A[3] − A[2]")}
-`, `    // ${C("Ulaniş çizig'i atrofidagi tayanç nuqtalar bir töğri çiziqda va teng masofada", "Опорные точки по обе стороны стыка — на одной прямой и на равных расстояниях")}
+`, `    // ${C("Ulaniş çiziği atrofidagi tayanç nuqtalar bir töğri çiziqda va teng masofada", "Опорные точки по обе стороны стыка — на одной прямой и на равных расстояниях")}
     for (int j = 0; j < 4; j++) {
         B[1][j].x = 2 * A[3][j].x - A[2][j].x;
         B[1][j].y = 2 * A[3][j].y - A[2][j].y;
@@ -208,7 +208,7 @@ void display() {
 ` + VIEW(1.5) + `    drawNet(P);
 `, `    // ${C("TODO: Beze sirti örniga xuddi şu tör böyiça B-splayn sirtini çizing (drawSurface ning 3-parametri)", "TODO: вместо поверхности Безье нарисуйте B-сплайновую поверхность по той же сетке (3-й параметр drawSurface)")}
     drawSurface(P, 16, 0);
-`, `    drawSurface(P, 16, 1);        // ${C("B-splayn: tayanç nuqtalardan ötmaydi, ancha «yumşoq»", "B-сплайн: не проходит через опорные точки, «мягче»")}
+`, `    drawSurface(P, 16, 1);        // ${C("B-splayn: tayanç nuqtalardan ötmaydi, ança «yumşoq»", "B-сплайн: не проходит через опорные точки, «мягче»")}
 `, `    glutSwapBuffers();
 }
 
@@ -337,7 +337,7 @@ void init() { N = 32; }
         hint: { uz: "x, y, z uçun alohida: B[1][j].x = 2·A[3][j].x − A[2][j].x va h.k.", ru: "Отдельно для x, y, z: B[1][j].x = 2·A[3][j].x − A[2][j].x и т. д." },
         check: { type: "image" }, starter: t4.starter, solution: t4.solution },
       { id: "s5", kind: "task", title: { uz: "Topşiriq 5. B-splayn sirti", ru: "Задание 5. B-сплайновая поверхность" },
-        text: { uz: "<p>Xuddi şu 16 nuqta böyiça <b>B-splayn sirtini</b> çizing (<code>drawSurface</code> ning uçinçi parametri 1). Misoldagi Beze sirti bilan soliştiring: B-splayn sirti tayanç törga «yopişmaydi», ancha tekis va past.</p>",
+        text: { uz: "<p>Xuddi şu 16 nuqta böyiça <b>B-splayn sirtini</b> çizing (<code>drawSurface</code> ning uçinçi parametri 1). Misoldagi Beze sirti bilan soliştiring: B-splayn sirti tayanç törga «yopişmaydi», ança tekis va past.</p>",
                 ru: "<p>Нарисуйте <b>B-сплайновую поверхность</b> по тем же 16 точкам (третий параметр <code>drawSurface</code> равен 1). Сравните с поверхностью Безье из примера: B-сплайн не «прилипает» к опорной сетке, он более плоский и низкий.</p>" },
         hint: { uz: "drawSurface(P, 16, 1);", ru: "drawSurface(P, 16, 1);" },
         check: { type: "image" }, starter: t5.starter, solution: t5.solution },

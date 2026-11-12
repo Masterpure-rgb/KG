@@ -3,7 +3,7 @@
  "uz": {
   "title": "OpenGL yordamida geometrik obyektlarga materiallar va yoruğlik beriş",
   "goal": "OpenGL ning yoritiş va material tizimi: uç tarkibiy qismli yoritiş modeli, manba turlari, normallar.",
-  "skills": "GL_LIGHT0…GL_LIGHT7 manbalarini sozlaş (nuqtaviy, yönaltirilgan, spot); material xossalarini berish; normallarni töğri belgilaş; susayişni sozlaş.",
+  "skills": "GL_LIGHT0…GL_LIGHT7 manbalarini sozlaş (nuqtaviy, yönaltirilgan, spot); material xossalarini beriş; normallarni töğri belgilaş; susayişni sozlaş.",
   "intro": "Variantdagi sahnani quring va körsatilgan manbalar bilan yoriting. Materiallarni obyektlarga mos tanlang.",
   "variants": [
    {

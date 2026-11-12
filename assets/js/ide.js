@@ -1,4 +1,4 @@
-/* IDE — muharrir + OpenGL oynasi + konsol + holat paneli. Laboratoriya va Ustaxonada ishlatiladi. UZ/RU. */
+/* IDE — muharrir + OpenGL oynasi + konsol + holat paneli. Laboratoriya va Ustaxonada işlatiladi. UZ/RU. */
 (function (global) {
   "use strict";
   var O = global.OGL || global.KG, el = O.el, K = GL1.K;

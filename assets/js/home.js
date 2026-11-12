@@ -1,4 +1,4 @@
-/* HOME — asosiy sahifa: jonli OpenGL oyna, 15 ta mavzu röyxati, qanday ishlaydi, mualliflar. UZ/RU. */
+/* HOME — asosiy sahifa: jonli OpenGL oyna, 15 ta mavzu röyxati, qanday işlaydi, mualliflar. UZ/RU. */
 (function () {
   "use strict";
   var O = window.KG, el = O.el, I = O.I, K = GL1.K;
@@ -118,7 +118,7 @@
   });
   main.appendChild(list);
 
-  // Qanday ishlaydi
+  // Qanday işlaydi
   var how = lang === "ru"
     ? [["Объяснение", "У каждой темы — QR-код с аудио-объяснением на русском и узбекском языках и текстом."],
        ["Лаборатория", "Второй QR-код открывает пример и задания. Код C++ запускается прямо в браузере и проверяется автоматически."],

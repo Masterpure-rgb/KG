@@ -33,7 +33,7 @@ void show() {
     glRasterPos2i(0, 0);
     glDrawPixels(W, H, GL_RGB, GL_UNSIGNED_BYTE, img);
 }
-// ${C("Palitra: iteratsiyalar soni n → rang (to'plam içi — qora)", "Палитра: число итераций n → цвет (внутри множества — чёрный)")}
+// ${C("Palitra: iteratsiyalar soni n → rang (töplam içi — qora)", "Палитра: число итераций n → цвет (внутри множества — чёрный)")}
 void palette(int n, int maxIt, int c[3]) {
     if (n >= maxIt) { c[0] = c[1] = c[2] = 0; return; }
     double t = (double)n / maxIt;
@@ -174,13 +174,13 @@ void special(int key, int x, int y) { }
   /* ---------- 5. Zoom ---------- */
   var t5 = S(MAND_PRE + MAND_BODY + `}
 
-// ${C("Körinish: markaz (cx, cy) va masştab zoom (1 — töliq to'plam)", "Вид: центр (cx, cy) и масштаб zoom (1 — всё множество)")}
+// ${C("Köriniş: markaz (cx, cy) va masştab zoom (1 — töliq töplam)", "Вид: центр (cx, cy) и масштаб zoom (1 — всё множество)")}
 double cx = -0.7453, cy = 0.1127, zoom = 100;
 
 void display() {
     glClear(GL_COLOR_BUFFER_BIT);
     int c[3];
-`, `    // ${C("TODO: körinish kengligi span = 3 / zoom; piksel → c: cr = cx + span·(px/W − 0,5), ci = cy + span·(py/H − 0,5)", "TODO: ширина вида span = 3 / zoom; пиксель → c: cr = cx + span·(px/W − 0,5), ci = cy + span·(py/H − 0,5)")}
+`, `    // ${C("TODO: köriniş kengligi span = 3 / zoom; piksel → c: cr = cx + span·(px/W − 0,5), ci = cy + span·(py/H − 0,5)", "TODO: ширина вида span = 3 / zoom; пиксель → c: cr = cx + span·(px/W − 0,5), ci = cy + span·(py/H − 0,5)")}
     // ${C("iteratsiyalar zoom bilan oşsin: maxIt = 100 + 50·log2(zoom)", "итерации растут с zoom: maxIt = 100 + 50·log2(zoom)")}
     double span = 3;
     int maxIt = 100;
@@ -198,7 +198,7 @@ void display() {
     glutSwapBuffers();
 }
 
-// ${C("'+' / '-' — zoom ×2 / ÷2, strelkalar — markazni suriş (körinish kengligining 10%)", "'+' / '-' — zoom ×2 / ÷2, стрелки — сдвиг центра (10% ширины вида)")}
+// ${C("'+' / '-' — zoom ×2 / ÷2, strelkalar — markazni suriş (köriniş kengligining 10%)", "'+' / '-' — zoom ×2 / ÷2, стрелки — сдвиг центра (10% ширины вида)")}
 void keyboard(unsigned char key, int x, int y) {
     if (key == '+') zoom *= 2;
     if (key == '-' && zoom > 1) zoom /= 2;
@@ -348,23 +348,23 @@ void display() {
                 ru: "<p>Напишите цикл игры хаоса сами: 50 000 точек коричневого цвета. Благодаря <code>srand(1)</code> последовательность случайных чисел каждый раз одинакова — результат точно совпадёт с эталоном. Первые ~20 точек не рисуйте: они ещё не попали на аттрактор.</p>" },
         hint: { uz: "for (i < 50000) { k = rand() % 3; x = (x + VX[k]) / 2; y = (y + VY[k]) / 2; if (i > 20) glVertex2f(x, y); }", ru: "for (i < 50000) { k = rand() % 3; x = (x + VX[k]) / 2; y = (y + VY[k]) / 2; if (i > 20) glVertex2f(x, y); }" },
         check: { type: "image", maxDiff: 0.004 }, starter: t1.starter, solution: t1.solution },
-      { id: "s2", kind: "task", title: { uz: "Topşiriq 2. Mandelbrot to'plami", ru: "Задание 2. Множество Мандельброта" },
-        text: { uz: "<p>Har bir piksel kompleks son c ga mos keladi. z₀ = 0 dan boşlab zₖ₊₁ = zₖ² + c ni takrorlang: agar |z| > 2 bölsa — nuqta qoçib ketadi, takrorlar soni n rangni belgilaydi; 200 takrordan keyin ham qoçmasa — nuqta to'plamga tegişli (qora).</p>",
+      { id: "s2", kind: "task", title: { uz: "Topşiriq 2. Mandelbrot töplami", ru: "Задание 2. Множество Мандельброта" },
+        text: { uz: "<p>Har bir piksel kompleks son c ga mos keladi. z₀ = 0 dan boşlab zₖ₊₁ = zₖ² + c ni takrorlang: agar |z| > 2 bölsa — nuqta qoçib ketadi, takrorlar soni n rangni belgilaydi; 200 takrordan keyin ham qoçmasa — nuqta töplamga tegişli (qora).</p>",
                 ru: "<p>Каждому пикселю соответствует комплексное число c. Повторяйте zₖ₊₁ = zₖ² + c, начиная с z₀ = 0: если |z| > 2 — точка убегает, число итераций n задаёт цвет; если и после 200 итераций не убежала — точка принадлежит множеству (чёрная).</p>" },
         hint: { uz: "while (n < maxIt && zr² + zi² < 4) { t = zr² − zi² + cr; zi = 2·zr·zi + ci; zr = t; n++; }", ru: "while (n < maxIt && zr² + zi² < 4) { t = zr² − zi² + cr; zi = 2·zr·zi + ci; zr = t; n++; }" },
         check: { type: "both", calls: { "glDrawPixels": ">=1" } }, starter: t2.starter, solution: t2.solution },
-      { id: "s3", kind: "task", title: { uz: "Topşiriq 3. Julia to'plami", ru: "Задание 3. Множество Жюлиа" },
-        text: { uz: "<p>Julia to'plami Mandelbrotga «teskari»: c = −0,7 + 0,27i — özgarmas, z ning boşlanğiç qiymati esa piksel koordinatasi. Formulasi xuddi şu: zₖ₊₁ = zₖ² + c. Har bir c uçun öz Julia to'plami bor.</p>",
+      { id: "s3", kind: "task", title: { uz: "Topşiriq 3. Julia töplami", ru: "Задание 3. Множество Жюлиа" },
+        text: { uz: "<p>Julia töplami Mandelbrotga «teskari»: c = −0,7 + 0,27i — özgarmas, z ning boşlanğiç qiymati esa piksel koordinatasi. Formulasi xuddi şu: zₖ₊₁ = zₖ² + c. Har bir c uçun öz Julia töplami bor.</p>",
                 ru: "<p>Множество Жюлиа «обратно» Мандельброту: c = −0,7 + 0,27i — константа, а начальное z — координата пикселя. Формула та же: zₖ₊₁ = zₖ² + c. Для каждого c — своё множество Жюлиа.</p>" },
         hint: { uz: "Sikl: t = zr² − zi² + CR; zi = 2·zr·zi + CI; zr = t; n++;", ru: "Цикл: t = zr² − zi² + CR; zi = 2·zr·zi + CI; zr = t; n++;" },
         check: { type: "image" }, starter: t3.starter, solution: t3.solution },
       { id: "s4", kind: "task", title: { uz: "Topşiriq 4. Dinamik Julia", ru: "Задание 4. Динамическое множество Жюлиа" },
-        text: { uz: "<p>c ni strelkalar bilan özgartiring: ←/→ — haqiqiy qism, ↑/↓ — mavhum qism (qadam 0,02). Julia şakli jonli özgaradi: c Mandelbrot to'plami içida bölsa — Julia «yaxlit», taşqarida bölsa — «çang»ga aylanadi. Joriy c ni konsolga çiqaring.</p>",
+        text: { uz: "<p>c ni strelkalar bilan özgartiring: ←/→ — haqiqiy qism, ↑/↓ — mavhum qism (qadam 0,02). Julia şakli jonli özgaradi: c Mandelbrot töplami içida bölsa — Julia «yaxlit», taşqarida bölsa — «çang»ga aylanadi. Joriy c ni konsolga çiqaring.</p>",
                 ru: "<p>Меняйте c стрелками: ←/→ — вещественная часть, ↑/↓ — мнимая (шаг 0,02). Форма Жюлиа меняется вживую: если c внутри множества Мандельброта — Жюлиа «связное», снаружи — рассыпается в «пыль». Выводите текущее c в консоль.</p>" },
         hint: { uz: "if (key == GLUT_KEY_LEFT) CR −= 0.02; … printf(\"c = %.2f %+.2fi\\n\", CR, CI); glutPostRedisplay();", ru: "if (key == GLUT_KEY_LEFT) CR −= 0.02; … printf(\"c = %.2f %+.2fi\\n\", CR, CI); glutPostRedisplay();" },
         check: { type: "calls", source: [{ re: "glutSpecialFunc\\s*\\(\\s*\\w+\\s*\\)", msg: { uz: "glutSpecialFunc(special) ni qayd qiling", ru: "Зарегистрируйте glutSpecialFunc(special)" } }, { re: "CR\\s*[-+]=", msg: { uz: "Strelkalar CR ni özgartirsin", ru: "Стрелки должны менять CR" } }, { re: "CI\\s*[-+]=", msg: { uz: "Strelkalar CI ni özgartirsin", ru: "Стрелки должны менять CI" } }] }, starter: t4.starter, solution: t4.solution },
       { id: "s5", kind: "task", title: { uz: "Topşiriq 5. Zoom", ru: "Задание 5. Масштабирование" },
-        text: { uz: "<p>Mandelbrot tasvirini kattalaştiring: körinish markazi (cx, cy) = (−0,7453; 0,1127) («dengiz otlari vodiysi»), masştab zoom = 100. Körinish kengligi 3/zoom. Kattalaştirişda detallar köpayadi, şuning uçun iteratsiyalar soni ham oşişi kerak: maxIt = 100 + 50·log₂(zoom). '+'/'−' va strelkalar bilan tekşiring.</p>",
+        text: { uz: "<p>Mandelbrot tasvirini kattalaştiring: köriniş markazi (cx, cy) = (−0,7453; 0,1127) («dengiz otlari vodiysi»), masştab zoom = 100. Köriniş kengligi 3/zoom. Kattalaştirişda detallar köpayadi, şuning uçun iteratsiyalar soni ham oşişi kerak: maxIt = 100 + 50·log₂(zoom). '+'/'−' va strelkalar bilan tekşiring.</p>",
                 ru: "<p>Увеличьте изображение Мандельброта: центр вида (cx, cy) = (−0,7453; 0,1127) («долина морских коньков»), масштаб zoom = 100. Ширина вида 3/zoom. При увеличении деталей становится больше, поэтому должно расти и число итераций: maxIt = 100 + 50·log₂(zoom). Проверьте клавишами '+'/'−' и стрелками.</p>" },
         hint: { uz: "span = 3.0 / zoom; maxIt = 100 + (int)(50·log(zoom)/log(2)); x0 = cx; y0 = cy;", ru: "span = 3.0 / zoom; maxIt = 100 + (int)(50·log(zoom)/log(2)); x0 = cx; y0 = cy;" },
         check: { type: "image" }, starter: t5.starter, solution: t5.solution },
@@ -374,12 +374,12 @@ void display() {
         hint: { uz: "i = 0: (v,t,p); 1: (q,v,p); 2: (p,v,t); 3: (p,q,v); 4: (t,p,v); 5: (v,p,q).", ru: "i = 0: (v,t,p); 1: (q,v,p); 2: (p,v,t); 3: (p,q,v); 4: (t,p,v); 5: (v,p,q)." },
         check: { type: "image" }, starter: t6.starter, solution: t6.solution },
       { id: "s7", kind: "task", title: { uz: "Topşiriq 7. Kox qor parçasi", ru: "Задание 7. Снежинка Коха" },
-        text: { uz: "<p>Rekursiv <code>koch</code> funksiyasini yozing: kesma 3 ga bölinadi, örta uçdan biri örniga teng tomonli uçburçakning ikki tomoni qöyiladi. 4 iteratsiyadan keyin uçburçakning har bir tomoni 4⁴ = 256 ta kesmaga aylanadi — Kox qor parçasi. Uning perimetri cheksizga intiladi, yuzi esa çekli.</p>",
+        text: { uz: "<p>Rekursiv <code>koch</code> funksiyasini yozing: kesma 3 ga bölinadi, örta uçdan biri örniga teng tomonli uçburçakning ikki tomoni qöyiladi. 4 iteratsiyadan keyin uçburçakning har bir tomoni 4⁴ = 256 ta kesmaga aylanadi — Kox qor parçasi. Uning perimetri çeksizga intiladi, yuzi esa çekli.</p>",
                 ru: "<p>Напишите рекурсивную функцию <code>koch</code>: отрезок делится на 3 части, средняя заменяется двумя сторонами равностороннего треугольника. После 4 итераций каждая сторона превращается в 4⁴ = 256 отрезков — снежинка Коха. Её периметр стремится к бесконечности, а площадь конечна.</p>" },
         hint: { uz: "tx = ax + dx·cos(−60°) − dy·sin(−60°); ty = ay + dx·sin(−60°) + dy·cos(−60°); keyin 4 ta koch(..., depth − 1).", ru: "tx = ax + dx·cos(−60°) − dy·sin(−60°); ty = ay + dx·sin(−60°) + dy·cos(−60°); затем 4 вызова koch(..., depth − 1)." },
         check: { type: "both", maxDiff: 0.003, calls: { "glVertex2d": ">=1536" } }, starter: t7.starter, solution: t7.solution },
       { id: "s8", kind: "task", title: { uz: "Topşiriq 8. Boşqa formula: z³ + c", ru: "Задание 8. Другая формула: z³ + c" },
-        text: { uz: "<p>zₖ₊₁ = zₖ³ + c formulasi uçun fraktalni (<b>multibrot</b>) çizing. Kompleks sonning kubi: z³ = (x³ − 3xy²) + (3x²y − y³)i. Mandelbrot dan farqi: to'plam 2 tomonlama simmetriyaga ega va ikkita katta «yuraksimon» qismdan iborat. Hisobotda tuşuntiring.</p>",
+        text: { uz: "<p>zₖ₊₁ = zₖ³ + c formulasi uçun fraktalni (<b>multibrot</b>) çizing. Kompleks sonning kubi: z³ = (x³ − 3xy²) + (3x²y − y³)i. Mandelbrot dan farqi: töplam 2 tomonlama simmetriyaga ega va ikkita katta «yuraksimon» qismdan iborat. Hisobotda tuşuntiring.</p>",
                 ru: "<p>Нарисуйте фрактал для формулы zₖ₊₁ = zₖ³ + c (<b>мультиброт</b>). Куб комплексного числа: z³ = (x³ − 3xy²) + (3x²y − y³)i. Отличие от Мандельброта: множество имеет двукратную симметрию и состоит из двух больших «кардиоидных» частей. Объясните в отчёте.</p>" },
         hint: { uz: "t = zr³ − 3·zr·zi² + cr; zi = 3·zr²·zi − zi³ + ci; zr = t;", ru: "t = zr³ − 3·zr·zi² + cr; zi = 3·zr²·zi − zi³ + ci; zr = t;" },
         check: { type: "image" }, starter: t8.starter, solution: t8.solution }

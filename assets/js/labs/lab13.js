@@ -142,7 +142,7 @@ void ground(float s) {
   /* ---------- 1. Oddiy uy ---------- */
   var t1 = S(HEAD + LIGHT + BOX + GROUND + `void display() {
 ` + CAM(5, 3, 8, 0, 1.2, 0) + `    ground(20);
-`, `    // ${C("TODO: devorlar — box(−2, 2, 0, 2,5, −1,5, 1,5, 0) och sariq; tekis tom — box(−2,2; 2,2; 2,5; 2,7; −1,7; 1,7, 0) kulrang;", "TODO: стены — box(−2, 2, 0, 2,5, −1,5, 1,5, 0) светло-жёлтые; плоская крыша — box(−2,2; 2,2; 2,5; 2,7; −1,7; 1,7, 0) серая;")}
+`, `    // ${C("TODO: devorlar — box(−2, 2, 0, 2,5, −1,5, 1,5, 0) oç sariq; tekis tom — box(−2,2; 2,2; 2,5; 2,7; −1,7; 1,7, 0) kulrang;", "TODO: стены — box(−2, 2, 0, 2,5, −1,5, 1,5, 0) светло-жёлтые; плоская крыша — box(−2,2; 2,2; 2,5; 2,7; −1,7; 1,7, 0) серая;")}
     // ${C("eşik panel(−0,4; 0,4; 0; 1,6; 1,5) jigarrang; ikki deraza panel(−1,6; −0,8; 1,1; 1,9; 1,5) va panel(0,8; 1,6; 1,1; 1,9; 1,5) havorang", "дверь panel(−0,4; 0,4; 0; 1,6; 1,5) коричневая; два окна panel(−1,6; −0,8; 1,1; 1,9; 1,5) и panel(0,8; 1,6; 1,1; 1,9; 1,5) голубые")}
 `, HOUSE + `    glColor3f(0.5f, 0.5f, 0.55f);   box(-2.2f, 2.2f, 2.5f, 2.7f, -1.7f, 1.7f, 0); // ${C("tekis tom", "плоская крыша")}
 `, `    glutSwapBuffers();
@@ -286,14 +286,14 @@ void display() {
     glutSwapBuffers();
 }
 
-` + RESHAPE + MAIN("A13: shahar", "    makeWindowTexture();\n    makeCity();\n"));
+` + RESHAPE + MAIN("A13: şahar", "    makeWindowTexture();\n    makeCity();\n"));
 
   /* ---------- 6. Yer teksturasi ---------- */
   var t6 = S(HEAD + LIGHT + BOX + WINTEX + LOADTEX + CITY + CITY_DRAW + `GLuint grassTex;
 
 // ${C("Katta yer tekisligi: tekstura 60 marta takrorlanadi", "Большая плоскость земли: текстура повторяется 60 раз")}
 void ground(float s) {
-`, `    // ${C("TODO: GL_TEXTURE_2D ni yoqing, grassTex ni bog'lang, oq rang; GL_QUADS uçlariga tekstura koordinatalari 0 va 60", "TODO: включите GL_TEXTURE_2D, привяжите grassTex, белый цвет; вершинам GL_QUADS дайте текстурные координаты 0 и 60")}
+`, `    // ${C("TODO: GL_TEXTURE_2D ni yoqing, grassTex ni boğlang, oq rang; GL_QUADS uçlariga tekstura koordinatalari 0 va 60", "TODO: включите GL_TEXTURE_2D, привяжите grassTex, белый цвет; вершинам GL_QUADS дайте текстурные координаты 0 и 60")}
     glColor3f(0.35f, 0.55f, 0.3f);
     glNormal3f(0, 1, 0);
     glBegin(GL_QUADS);
@@ -321,7 +321,7 @@ void display() {
 ` + RESHAPE + MAIN("A13: yer", "    makeWindowTexture();\n    makeCity();\n    grassTex = loadTexture(\"grass.png\");\n"));
 
   /* ---------- 7. Soyalar ---------- */
-  var t7 = S(HEAD + LIGHT + BOX + GROUND + WINTEX + CITY + CITY_DRAW + `// ${C("Tekis proyeksion soya: nuqta yorug'lik yönalişi L böyiça y = 0 tekisligiga «bosiladi»", "Плоская проекционная тень: точка «придавливается» к плоскости y = 0 вдоль направления света L")}
+  var t7 = S(HEAD + LIGHT + BOX + GROUND + WINTEX + CITY + CITY_DRAW + `// ${C("Tekis proyeksion soya: nuqta yoruğlik yönalişi L böyiça y = 0 tekisligiga «bosiladi»", "Плоская проекционная тень: точка «придавливается» к плоскости y = 0 вдоль направления света L")}
 void shadowMatrix(float M[16]) {
     float lx = SUN[0], ly = SUN[1], lz = SUN[2];
     for (int i = 0; i < 16; i++) M[i] = 0;
@@ -410,7 +410,7 @@ void special(int key, int x, int y) {
         hint: { uz: "for f < 5: for w < 4: panel(−2,2 + 1,15w, −1,4 + 1,15w, 0,5 + 1,8f, 1,4 + 1,8f, 2);", ru: "for f < 5: for w < 4: panel(−2,2 + 1,15w, −1,4 + 1,15w, 0,5 + 1,8f, 1,4 + 1,8f, 2);" },
         check: { type: "both", calls: { "glBegin": ">=22" } }, starter: t3.starter, solution: t3.solution },
       { id: "s4", kind: "task", title: { uz: "Topşiriq 4. Deraza teksturasi", ru: "Задание 4. Текстура окон" },
-        text: { uz: "<p>Har bir derazani alohida çizmasdan, uni <b>tekstura</b> qilib qöyamiz. 64×64 protsedura teksturasini yarating: 32×32 katakça — beton ramka va oyna; qöşni oynalar navbat bilan yorug' va qorong'i. <code>GL_REPEAT</code> tufayli tekstura butun devor böylab takrorlanadi — 4 ta yoq bitta <code>box</code> çaqirig'i bilan.</p>",
+        text: { uz: "<p>Har bir derazani alohida çizmasdan, uni <b>tekstura</b> qilib qöyamiz. 64×64 protsedura teksturasini yarating: 32×32 katakça — beton ramka va oyna; qöşni oynalar navbat bilan yorug' va qoronği. <code>GL_REPEAT</code> tufayli tekstura butun devor böylab takrorlanadi — 4 ta yoq bitta <code>box</code> çaqiriği bilan.</p>",
                 ru: "<p>Вместо того чтобы рисовать каждое окно отдельно, наложим их <b>текстурой</b>. Создайте процедурную текстуру 64×64: ячейка 32×32 — бетонная рама и стекло; соседние окна поочерёдно светлые и тёмные. Благодаря <code>GL_REPEAT</code> текстура повторяется по всей стене — 4 грани одним вызовом <code>box</code>.</p>" },
         hint: { uz: "glass = cx ≥ 6 && cx < 26 && cy ≥ 8 && cy < 28; lit = ((x/32) + (y/32)) % 2;", ru: "glass = cx ≥ 6 && cx < 26 && cy ≥ 8 && cy < 28; lit = ((x/32) + (y/32)) % 2;" },
         check: { type: "image" }, starter: t4.starter, solution: t4.solution },
@@ -430,7 +430,7 @@ void special(int key, int x, int y) {
         hint: { uz: "M[0] = 1; M[4] = −lx/ly; M[6] = −lz/ly; M[10] = 1; M[15] = 1; qolganlari 0 (M[5] = 0!).", ru: "M[0] = 1; M[4] = −lx/ly; M[6] = −lz/ly; M[10] = 1; M[15] = 1; остальные 0 (M[5] = 0!)." },
         check: { type: "image" }, starter: t7.starter, solution: t7.solution },
       { id: "s8", kind: "task", title: { uz: "Topşiriq 8. Yurgan kamera", ru: "Задание 8. Камера-пешеход" },
-        text: { uz: "<p>Şaharda «piyoda» bölib yuring: köz balandligi 1,7 m, <b>W/S</b> — oldinga/orqaga, <b>A/D</b> — yon tomonga, <b>←/→</b> — burilish. Qadam 0,5 m. Oyna ustiga bosing va köçalarni aylanib çiqing.</p>",
+        text: { uz: "<p>Şaharda «piyoda» bölib yuring: köz balandligi 1,7 m, <b>W/S</b> — oldinga/orqaga, <b>A/D</b> — yon tomonga, <b>←/→</b> — buriliş. Qadam 0,5 m. Oyna ustiga bosing va köçalarni aylanib çiqing.</p>",
                 ru: "<p>Пройдитесь по городу «пешком»: высота глаз 1,7 м, <b>W/S</b> — вперёд/назад, <b>A/D</b> — вбок, <b>←/→</b> — поворот. Шаг 0,5 м. Щёлкните по окну и обойдите улицы.</p>" },
         hint: { uz: "if (key == 'w') { cx += 0.5·sin(yaw); cz −= 0.5·cos(yaw); } …", ru: "if (key == 'w') { cx += 0.5·sin(yaw); cz −= 0.5·cos(yaw); } …" },
         check: { type: "both", source: [{ re: "glutKeyboardFunc\\s*\\(\\s*\\w+\\s*\\)", msg: { uz: "glutKeyboardFunc(keyboard) ni qayd qiling", ru: "Зарегистрируйте glutKeyboardFunc(keyboard)" } }, { re: "'w'", msg: { uz: "W tugmasini qayta işlang", ru: "Обработайте клавишу W" } }, { re: "yaw\\s*[-+]=", msg: { uz: "Strelkalar yaw ni özgartirsin", ru: "Стрелки должны менять yaw" } }] }, starter: t8.starter, solution: t8.solution }

@@ -179,7 +179,7 @@ void buildVBO() {
 void display() {
 ` + VIEW + `    glColor3f(0.35f, 0.6f, 1.0f);
     glScalef(1.6f, 1.6f, 1.6f);
-    // ${C("TODO: bufferlarni bog'lang (glBindBuffer), glVertexPointer/glNormalPointer ga (void*)0 siljiş bering, glDrawArrays", "TODO: привяжите буферы (glBindBuffer), в glVertexPointer/glNormalPointer передайте смещение (void*)0, glDrawArrays")}
+    // ${C("TODO: bufferlarni boğlang (glBindBuffer), glVertexPointer/glNormalPointer ga (void*)0 siljiş bering, glDrawArrays", "TODO: привяжите буферы (glBindBuffer), в glVertexPointer/glNormalPointer передайте смещение (void*)0, glDrawArrays")}
 `, `    glGenBuffers(2, vbo);
     glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
     glBufferData(GL_ARRAY_BUFFER, sizeof(va), va, GL_STATIC_DRAW);    // ${C("bir marta — videoxotiraga", "один раз — в видеопамять")}
@@ -194,7 +194,7 @@ void display() {
     glEnableClientState(GL_VERTEX_ARRAY);
     glEnableClientState(GL_NORMAL_ARRAY);
     glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
-    glVertexPointer(3, GL_FLOAT, 0, (void*)0);    // ${C("ko'rsatkiç emas — bufer içidagi siljiş", "не указатель — смещение внутри буфера")}
+    glVertexPointer(3, GL_FLOAT, 0, (void*)0);    // ${C("körsatkiç emas — bufer içidagi siljiş", "не указатель — смещение внутри буфера")}
     glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
     glNormalPointer(GL_FLOAT, 0, (void*)0);
     glDrawArrays(GL_TRIANGLES, 0, NV);
@@ -283,7 +283,7 @@ void placeCubes() {
     glEnableClientState(GL_NORMAL_ARRAY);
     glVertexPointer(3, GL_FLOAT, 0, cv);
     glNormalPointer(GL_FLOAT, 0, cn);
-    // ${C("Bitta geometriya — 1000 nusxa («instansing» g'oyasi): faqat matritsa va rang özgaradi", "Одна геометрия — 1000 копий (идея «инстансинга»): меняются только матрица и цвет")}
+    // ${C("Bitta geometriya — 1000 nusxa («instansing» ğoyasi): faqat matritsa va rang özgaradi", "Одна геометрия — 1000 копий (идея «инстансинга»): меняются только матрица и цвет")}
     for (int i = 0; i < 1000; i++) {
         glPushMatrix();
         glTranslatef(px[i], py[i], pz[i]);
@@ -316,7 +316,7 @@ void build() {
     glEndList();
 }
 
-// ${C("Sfera körinişda bölişi mumkinmi? Kamera (0, 2, 0) dan −z ga qaragan; körinish burçagi ±35° (radiusni hisobga olib)", "Может ли сфера попасть в кадр? Камера в (0, 2, 0) смотрит вдоль −z; угол обзора ±35° (с учётом радиуса)")}
+// ${C("Sfera körinişda bölişi mumkinmi? Kamera (0, 2, 0) dan −z ga qaragan; köriniş burçagi ±35° (radiusni hisobga olib)", "Может ли сфера попасть в кадр? Камера в (0, 2, 0) смотрит вдоль −z; угол обзора ±35° (с учётом радиуса)")}
 int visible(float x, float z) {
 `, `    // ${C("TODO: d = −z (oldinga masofa); agar d < −0,6 yoki d > 100 — körinmaydi;", "TODO: d = −z (расстояние вперёд); если d < −0,6 или d > 100 — не видна;")}
     // ${C("agar |x| > d·tan(35°) + 0,6·1,3 — körinmaydi; aks holda — körinadi", "если |x| > d·tan(35°) + 0,6·1,3 — не видна; иначе — видна")}
@@ -460,12 +460,12 @@ void display() {
         hint: { uz: "glEnableClientState(GL_VERTEX_ARRAY); glEnableClientState(GL_NORMAL_ARRAY); glVertexPointer(3, GL_FLOAT, 0, va); glNormalPointer(GL_FLOAT, 0, na); glDrawArrays(GL_TRIANGLES, 0, NV);", ru: "glEnableClientState(GL_VERTEX_ARRAY); glEnableClientState(GL_NORMAL_ARRAY); glVertexPointer(3, GL_FLOAT, 0, va); glNormalPointer(GL_FLOAT, 0, na); glDrawArrays(GL_TRIANGLES, 0, NV);" },
         check: { type: "both", calls: { "glBegin": 0, "glDrawArrays": ">=1" } }, starter: t1.starter, solution: t1.solution },
       { id: "s2", kind: "task", title: { uz: "Topşiriq 2. Displey röyxati", ru: "Задание 2. Дисплейный список" },
-        text: { uz: "<p>5 ta sfera va 5 ta kubdan iborat sahnani <b>displey röyxati</b>ga yozing: <code>glNewList(list, GL_COMPILE)</code> … <code>glEndList()</code> — bir marta, ishga tuşganda. Har kadrda faqat <code>glCallList(list)</code> çaqiriladi. FPS ni oddiy usul bilan soliştiring va hisobotga yozing.</p>",
+        text: { uz: "<p>5 ta sfera va 5 ta kubdan iborat sahnani <b>displey röyxati</b>ga yozing: <code>glNewList(list, GL_COMPILE)</code> … <code>glEndList()</code> — bir marta, işga tuşganda. Har kadrda faqat <code>glCallList(list)</code> çaqiriladi. FPS ni oddiy usul bilan soliştiring va hisobotga yozing.</p>",
                 ru: "<p>Запишите сцену из 5 сфер и 5 кубов в <b>дисплейный список</b>: <code>glNewList(list, GL_COMPILE)</code> … <code>glEndList()</code> — один раз при запуске. В каждом кадре вызывается только <code>glCallList(list)</code>. Сравните FPS с обычным способом и запишите в отчёт.</p>" },
         hint: { uz: "build(): list = glGenLists(1); glNewList(list, GL_COMPILE); scene(); glEndList(); display(): glCallList(list);", ru: "build(): list = glGenLists(1); glNewList(list, GL_COMPILE); scene(); glEndList(); display(): glCallList(list);" },
         check: { type: "both", calls: { "glCallList": ">=1" } }, starter: t2.starter, solution: t2.solution },
       { id: "s3", kind: "task", title: { uz: "Topşiriq 3. Bufer obyektlari (VBO)", ru: "Задание 3. Буферные объекты (VBO)" },
-        text: { uz: "<p>Massivlarni videokarta xotirasiga — <b>VBO</b> ga bir marta yuklang (<code>glGenBuffers</code>, <code>glBufferData</code>). Çizişda buferni <code>glBindBuffer</code> bilan bog'lang; şunda <code>glVertexPointer</code> ning oxirgi argumenti — ko'rsatkiç emas, bufer içidagi bayt siljişi <code>(void*)0</code>. Uç variantni (darhol rejim, displey röyxati, VBO) FPS böyiça soliştiring.</p>",
+        text: { uz: "<p>Massivlarni videokarta xotirasiga — <b>VBO</b> ga bir marta yuklang (<code>glGenBuffers</code>, <code>glBufferData</code>). Çizişda buferni <code>glBindBuffer</code> bilan boğlang; şunda <code>glVertexPointer</code> ning oxirgi argumenti — körsatkiç emas, bufer içidagi bayt siljişi <code>(void*)0</code>. Uç variantni (darhol rejim, displey röyxati, VBO) FPS böyiça soliştiring.</p>",
                 ru: "<p>Загрузите массивы в память видеокарты — в <b>VBO</b> — один раз (<code>glGenBuffers</code>, <code>glBufferData</code>). При рисовании привяжите буфер <code>glBindBuffer</code>; тогда последний аргумент <code>glVertexPointer</code> — не указатель, а смещение в байтах внутри буфера <code>(void*)0</code>. Сравните три варианта (немедленный режим, дисплейный список, VBO) по FPS.</p>" },
         hint: { uz: "glBindBuffer(GL_ARRAY_BUFFER, vbo[0]); glVertexPointer(3, GL_FLOAT, 0, (void*)0); glBindBuffer(GL_ARRAY_BUFFER, vbo[1]); glNormalPointer(GL_FLOAT, 0, (void*)0);", ru: "glBindBuffer(GL_ARRAY_BUFFER, vbo[0]); glVertexPointer(3, GL_FLOAT, 0, (void*)0); glBindBuffer(GL_ARRAY_BUFFER, vbo[1]); glNormalPointer(GL_FLOAT, 0, (void*)0);" },
         check: { type: "both", calls: { "glBegin": 0, "glBindBuffer": ">=2", "glDrawArrays": ">=1" }, source: [{ re: "glBufferData", msg: { uz: "Ma'lumotlarni glBufferData bilan yuklang", ru: "Загрузите данные через glBufferData" } }] }, starter: t3.starter, solution: t3.solution },
@@ -475,17 +475,17 @@ void display() {
         hint: { uz: "idx[n++] = a; idx[n++] = b; idx[n++] = c; idx[n++] = a; idx[n++] = c; idx[n++] = d;", ru: "idx[n++] = a; idx[n++] = b; idx[n++] = c; idx[n++] = a; idx[n++] = c; idx[n++] = d;" },
         check: { type: "both", calls: { "glBegin": 0, "glDrawElements": ">=1" } }, starter: t4.starter, solution: t4.solution },
       { id: "s5", kind: "task", title: { uz: "Topşiriq 5. 1000 ta obyekt («instansing»)", ru: "Задание 5. 1000 объектов («инстансинг»)" },
-        text: { uz: "<p>1000 ta kiçik kubdan iborat sahna: joylari tasodifiy (lekin <code>srand(7)</code> tufayli har gal bir xil). Kub geometriyasi massivlarda bir marta — uni 1000 marta turli matritsa va rang bilan çizing. Bu — <b>instansing</b> g'oyasi: zamonaviy OpenGL da u bitta <code>glDrawArraysInstanced</code> bilan bajariladi.</p>",
+        text: { uz: "<p>1000 ta kiçik kubdan iborat sahna: joylari tasodifiy (lekin <code>srand(7)</code> tufayli har gal bir xil). Kub geometriyasi massivlarda bir marta — uni 1000 marta turli matritsa va rang bilan çizing. Bu — <b>instansing</b> ğoyasi: zamonaviy OpenGL da u bitta <code>glDrawArraysInstanced</code> bilan bajariladi.</p>",
                 ru: "<p>Сцена из 1000 маленьких кубов: позиции случайные (но благодаря <code>srand(7)</code> каждый раз одинаковые). Геометрия куба в массивах одна — нарисуйте её 1000 раз с разными матрицей и цветом. Это идея <b>инстансинга</b>: в современном OpenGL она выполняется одним вызовом <code>glDrawArraysInstanced</code>.</p>" },
         hint: { uz: "Massivlarni sikldan oldin bir marta ulang; sikl içida faqat glPushMatrix/glTranslatef/glScalef/glColor3f/glDrawArrays/glPopMatrix.", ru: "Подключите массивы один раз до цикла; в цикле только glPushMatrix/glTranslatef/glScalef/glColor3f/glDrawArrays/glPopMatrix." },
         check: { type: "both", calls: { "glBegin": 0, "glDrawArrays": ">=1000" } }, starter: t5.starter, solution: t5.solution },
       { id: "s6", kind: "task", title: { uz: "Topşiriq 6. Frustum culling", ru: "Задание 6. Отсечение по пирамиде видимости" },
-        text: { uz: "<p>Sahnada 3000 ta sfera, lekin kamera ularning kiçik qismini köradi. Kameraga tuşmaydigan obyektlarni umuman çizmang: sfera kamera ortida, juda uzoqda yoki yon tomonda körinish burçagidan taşqarida bölsa (radiusni hisobga olib) — taşlab yuboring. Tasvir özgarmaydi, çizilgan obyektlar soni (konsolda) keskin kamayadi.</p>",
+        text: { uz: "<p>Sahnada 3000 ta sfera, lekin kamera ularning kiçik qismini köradi. Kameraga tuşmaydigan obyektlarni umuman çizmang: sfera kamera ortida, juda uzoqda yoki yon tomonda köriniş burçagidan taşqarida bölsa (radiusni hisobga olib) — taşlab yuboring. Tasvir özgarmaydi, çizilgan obyektlar soni (konsolda) keskin kamayadi.</p>",
                 ru: "<p>В сцене 3000 сфер, но камера видит лишь малую их часть. Не рисуйте объекты, которые не попадают в кадр: если сфера за камерой, слишком далеко или сбоку за пределами угла обзора (с учётом радиуса) — пропускайте её. Изображение не меняется, а число нарисованных объектов (в консоли) резко падает.</p>" },
         hint: { uz: "d = −z; if (d < −0,6 || d > 100) return 0; if (fabs(x) > d·tan(35°) + 0,78) return 0; return 1;", ru: "d = −z; if (d < −0,6 || d > 100) return 0; if (fabs(x) > d·tan(35°) + 0,78) return 0; return 1;" },
         check: { type: "both", calls: { "glCallList": "<=1500" } }, starter: t6.starter, solution: t6.solution },
       { id: "s7", kind: "task", title: { uz: "Topşiriq 7. Detallik darajalari (LOD)", ru: "Задание 7. Уровни детализации (LOD)" },
-        text: { uz: "<p>Bir xil sfera uçun 3 ta detallik darajasi tayyorlangan: 32, 16 va 8 segment. Kameradan uzoqlaşgan sari soddaroq variantni tanlang: d < 8 → 32, d < 16 → 16, aks holda 8. Çap ustun — har doim töliq detal, ong ustun — LOD. Uzoqdagi sharlar deyarli farq qilmaydi, uçburçaklar esa ancha kam.</p>",
+        text: { uz: "<p>Bir xil sfera uçun 3 ta detallik darajasi tayyorlangan: 32, 16 va 8 segment. Kameradan uzoqlaşgan sari soddaroq variantni tanlang: d < 8 → 32, d < 16 → 16, aks holda 8. Çap ustun — har doim töliq detal, ong ustun — LOD. Uzoqdagi şarlar deyarli farq qilmaydi, uçburçaklar esa ança kam.</p>",
                 ru: "<p>Для одной сферы подготовлены 3 уровня детализации: 32, 16 и 8 сегментов. Чем дальше от камеры, тем проще вариант: d < 8 → 32, d < 16 → 16, иначе 8. Левый столбец — всегда полная детализация, правый — LOD. Дальние шары почти не отличаются, а треугольников намного меньше.</p>" },
         hint: { uz: "if (d < 8) return 0; if (d < 16) return 1; return 2;", ru: "if (d < 8) return 0; if (d < 16) return 1; return 2;" },
         check: { type: "image", maxDiff: 0.0005 }, starter: t7.starter, solution: t7.solution },

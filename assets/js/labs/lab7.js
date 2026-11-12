@@ -60,7 +60,7 @@ void tri() {
     glutSwapBuffers();
 }
 
-` + RESHAPE + MAIN("A7: uchburchak");
+` + RESHAPE + MAIN("A7: uçburçak");
 
   /* ---------- 1. Tört çiziq ---------- */
   var t1 = S(HEAD + `void display() {
@@ -77,7 +77,7 @@ void tri() {
 `, `    glutSwapBuffers();
 }
 
-` + RESHAPE + MAIN("A7: 4 chiziq"));
+` + RESHAPE + MAIN("A7: 4 çiziq"));
 
   /* ---------- 2. Olti burçak ---------- */
   var t2 = S(HEAD + `void display() {
@@ -94,7 +94,7 @@ void tri() {
 `, `    glutSwapBuffers();
 }
 
-` + RESHAPE + MAIN("A7: oltiburchak"));
+` + RESHAPE + MAIN("A7: oltiburçak"));
 
   /* ---------- 3. ngon ---------- */
   var t3 = S(HEAD + `// ${C("Muntazam n-burçak: markaz (cx, cy), radius r; birinçi uç tepada (burçak π/2)", "Правильный n-угольник: центр (cx, cy), радиус r; первая вершина сверху (угол π/2)")}
@@ -351,7 +351,7 @@ void display() {
         hint: { uz: "for k: glPushMatrix(); glRotatef(60·k, 0, 0, 1); tri(); glPopMatrix();", ru: "for k: glPushMatrix(); glRotatef(60·k, 0, 0, 1); tri(); glPopMatrix();" },
         check: { type: "both", calls: { "glPushMatrix": ">=6", "glRotatef": ">=6" } }, starter: t5.starter, solution: t5.solution },
       { id: "s6", kind: "task", title: { uz: "Topşiriq 6. Animatsiya", ru: "Задание 6. Анимация" },
-        text: { uz: "<p>Yulduzni sekundiga 30° tezlikda aylantiring. Burçak vaqtga böğliq: angle = 30·t, bu yerda t = <code>glutGet(GLUT_ELAPSED_TIME)</code>/1000. Shunda tezlik kompyuter quvvatiga böğliq bölmaydi. <code>idle</code> da <code>glutPostRedisplay()</code> qayta çiziş uçun kerak.</p>",
+        text: { uz: "<p>Yulduzni sekundiga 30° tezlikda aylantiring. Burçak vaqtga böğliq: angle = 30·t, bu yerda t = <code>glutGet(GLUT_ELAPSED_TIME)</code>/1000. Şunda tezlik kompyuter quvvatiga böğliq bölmaydi. <code>idle</code> da <code>glutPostRedisplay()</code> qayta çiziş uçun kerak.</p>",
                 ru: "<p>Вращайте звезду со скоростью 30° в секунду. Угол зависит от времени: angle = 30·t, где t = <code>glutGet(GLUT_ELAPSED_TIME)</code>/1000. Тогда скорость не зависит от мощности компьютера. В <code>idle</code> нужен <code>glutPostRedisplay()</code> для перерисовки.</p>" },
         hint: { uz: "display: glRotatef(angle, 0, 0, 1); idle: angle = 30.0f·glutGet(GLUT_ELAPSED_TIME)/1000.0f; glutPostRedisplay();", ru: "display: glRotatef(angle, 0, 0, 1); idle: angle = 30.0f·glutGet(GLUT_ELAPSED_TIME)/1000.0f; glutPostRedisplay();" },
         frames: 2, check: { type: "both", source: [{ re: "glutPostRedisplay", msg: { uz: "idle() da glutPostRedisplay() ni çaqiring", ru: "Вызывайте glutPostRedisplay() в idle()" } }] }, starter: t6.starter, solution: t6.solution },
@@ -361,7 +361,7 @@ void display() {
         hint: { uz: "kind[next] = k; ox[next] = x; oy[next] = y; next = (next + 1) % 10; if (count < 10) count++;", ru: "kind[next] = k; ox[next] = x; oy[next] = y; next = (next + 1) % 10; if (count < 10) count++;" },
         check: { type: "both", maxDiff: 0.003, source: keysSrc }, starter: t7.starter, solution: t7.solution },
       { id: "s8", kind: "task", title: { uz: "Topşiriq 8. Primitivlarni soliştiriş", ru: "Задание 8. Сравнение примитивов" },
-        text: { uz: "<p>Bir xil 5 ta nuqtani 6 xil rejimda çizing: <code>GL_LINES</code>, <code>GL_LINE_STRIP</code>, <code>GL_LINE_LOOP</code>, <code>GL_TRIANGLES</code>, <code>GL_TRIANGLE_STRIP</code>, <code>GL_TRIANGLE_FAN</code> va har birining tagiga nomini yozing. Juft bölmagan uç (GL_LINES da 5-uç) va to'liq bölmagan uçburçak taşlab yuboriladi.</p>",
+        text: { uz: "<p>Bir xil 5 ta nuqtani 6 xil rejimda çizing: <code>GL_LINES</code>, <code>GL_LINE_STRIP</code>, <code>GL_LINE_LOOP</code>, <code>GL_TRIANGLES</code>, <code>GL_TRIANGLE_STRIP</code>, <code>GL_TRIANGLE_FAN</code> va har birining tagiga nomini yozing. Juft bölmagan uç (GL_LINES da 5-uç) va töliq bölmagan uçburçak taşlab yuboriladi.</p>",
                 ru: "<p>Нарисуйте одни и те же 5 точек в 6 режимах: <code>GL_LINES</code>, <code>GL_LINE_STRIP</code>, <code>GL_LINE_LOOP</code>, <code>GL_TRIANGLES</code>, <code>GL_TRIANGLE_STRIP</code>, <code>GL_TRIANGLE_FAN</code> и подпишите каждый. Непарная вершина (5-я в GL_LINES) и неполный треугольник отбрасываются.</p>" },
         hint: { uz: "Massivlar mode[] va name[] ni bir xil tartibda töldiring.", ru: "Заполните массивы mode[] и name[] в одном порядке." },
         check: { type: "image", maxDiff: 0.004 }, starter: t8.starter, solution: t8.solution }

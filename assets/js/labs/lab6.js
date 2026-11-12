@@ -2,7 +2,7 @@
 (function () {
   var C = LAB.C;
   var HEAD = "#include <GL/glut.h>\n#include <cmath>\n#include <cstdio>\n\n";
-  var LIGHT = `// ${C("Oq nuqtaviy manba (5, 5, 5): diffuz va ko'zgu tarkibiy qismlari", "Белый точечный источник (5, 5, 5): диффузная и зеркальная составляющие")}
+  var LIGHT = `// ${C("Oq nuqtaviy manba (5, 5, 5): diffuz va közgu tarkibiy qismlari", "Белый точечный источник (5, 5, 5): диффузная и зеркальная составляющие")}
 void setupLight() {
     GLfloat pos[] = { 5, 5, 5, 1 };
     GLfloat col[] = { 1, 1, 1, 1 };
@@ -390,7 +390,7 @@ void reshape(int w, int h) { }
         hint: { uz: "double I = lambert(n[0], n[1], n[2]); glColor3f(0.3·I, 0.55·I, 1.0·I); glVertex3dv(n);", ru: "double I = lambert(n[0], n[1], n[2]); glColor3f(0.3·I, 0.55·I, 1.0·I); glVertex3dv(n);" },
         check: { type: "image" }, starter: t2.starter, solution: t2.solution },
       { id: "s3", kind: "task", title: { uz: "Topşiriq 3. Sferaning bölinmalari", ru: "Задание 3. Разбиение сферы" },
-        text: { uz: "<p>Bir qatorda 4 ta sfera çizing: bölinmalar soni 8, 16, 32, 64. Guro usuli yirik törda yaltiroq dog'ni «burçakli» qilib qöyadi; bölinmalar köpaygan sari natija piksel böyiça Fong böyaşiga yaqinlaşadi. Qaysi bölinişdan boşlab farq sezilmay qoladi — hisobotda yozing.</p>",
+        text: { uz: "<p>Bir qatorda 4 ta sfera çizing: bölinmalar soni 8, 16, 32, 64. Guro usuli yirik törda yaltiroq doğni «burçakli» qilib qöyadi; bölinmalar köpaygan sari natija piksel böyiça Fong böyaşiga yaqinlaşadi. Qaysi bölinişdan boşlab farq sezilmay qoladi — hisobotda yozing.</p>",
                 ru: "<p>Нарисуйте в ряд 4 сферы с числом разбиений 8, 16, 32, 64. На крупной сетке Гуро делает блик «угловатым»; с ростом разбиения результат приближается к попиксельной закраске Фонга. С какого разбиения разница перестаёт быть заметной — запишите в отчёт.</p>" },
         hint: { uz: "int n[4] = {8, 16, 32, 64}; for k: glTranslatef(−2,4 + 1,6·k, 0, 0); glRotatef(−90, 1, 0, 0); glutSolidSphere(0.7, n[k], n[k]);", ru: "int n[4] = {8, 16, 32, 64}; for k: glTranslatef(−2,4 + 1,6·k, 0, 0); glRotatef(−90, 1, 0, 0); glutSolidSphere(0.7, n[k], n[k]);" },
         check: { type: "image" }, starter: t3.starter, solution: t3.solution },

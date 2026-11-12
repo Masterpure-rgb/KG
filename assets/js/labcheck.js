@@ -43,7 +43,7 @@
   function opts(step) { return { time: step.time || 1000, frames: step.frames || 0 }; }
   function reference(step) {
     var src = step.solution || step.code || "", h = 5381;
-    for (var i = 0; i < src.length; i++) h = ((h * 33) ^ src.charCodeAt(i)) >>> 0;   // to'liq kod böyiça kalit (turli işlar aralaşmasin)
+    for (var i = 0; i < src.length; i++) h = ((h * 33) ^ src.charCodeAt(i)) >>> 0;   // töliq kod böyiça kalit (turli işlar aralaşmasin)
     var key = (LAB.data && LAB.data.n) + ":" + step.id + ":" + src.length + ":" + h + ":" + (step.time || 1000) + ":" + (step.frames || 0);
     if (!refCache[key]) refCache[key] = Runner.render(step.solution || step.code, opts(step));
     return refCache[key];

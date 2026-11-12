@@ -68,7 +68,7 @@
     var dead = new Array(N).fill(false);
     function R(k, v) { rep[sig[k]] = v; dead[sig[k]] = false; }
     function X(k) { rep[sig[k]] = ""; dead[sig[k]] = true; }
-    // bloklar tuzilişi: o'zgaruvçi turlari ko'rinish sohasi bo'yiça aniqlanadi (int w va float w — turli funksiyalarda)
+    // bloklar tuzilişi: özgaruvçi turlari köriniş sohasi böyiça aniqlanadi (int w va float w — turli funksiyalarda)
     var blockOf = new Array(sig.length), blockAt = Object.create(null), blockParent = [-1];
     (function () { var st = [0]; for (var q = 0; q < sig.length; q++) { var vq = T[sig[q]].v; blockOf[q] = st[st.length - 1];
       if (vq === "{") { var id = blockParent.length; blockParent.push(st[st.length - 1]); blockAt[q] = id; st.push(id); }

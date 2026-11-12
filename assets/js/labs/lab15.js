@@ -53,7 +53,7 @@ void turtle(double x0, double y0, double a0, double step, double delta, int draw
     }
     if (draw) glEnd();
 }
-// ${C("Rasmni oynaga sig'diriş: avval ölçab, keyin masştab bilan çiziş", "Вписать рисунок в окно: сначала измерить, затем нарисовать с масштабом")}
+// ${C("Rasmni oynaga siğdiriş: avval ölçab, keyin masştab bilan çiziş", "Вписать рисунок в окно: сначала измерить, затем нарисовать с масштабом")}
 void fitAndDraw(double a0, double delta) {
     turtle(0, 0, a0, 1, delta, 0);
     double s = fmin((W - 40) / fmax(maxX - minX, 1e-6), (H - 40) / fmax(maxY - minY, 1e-6));
@@ -156,7 +156,7 @@ void display() {
     for (int it = 0; it < 5; it++) expand("F+F--F+F");
     glColor3f(0.5f, 0.85f, 1.0f);
     glLineWidth(1.5f);
-    fitAndDraw(0, 60);                           // ${C("burilish burçagi δ = 60°", "угол поворота δ = 60°")}
+    fitAndDraw(0, 60);                           // ${C("buriliş burçagi δ = 60°", "угол поворота δ = 60°")}
     printf("${C("satr uzunligi", "длина строки")}: %d\\n", (int)strlen(cur));
     glutSwapBuffers();
 }
@@ -268,7 +268,7 @@ void display() {
     glutSwapBuffers();
 }
 
-` + RESHAPE + MAIN("A15: naqsh"));
+` + RESHAPE + MAIN("A15: naqş"));
 
   /* ---------- 8. 3D fraktal daraxt ---------- */
   var t8 = S(HEAD + `GLUquadric* q;
@@ -342,7 +342,7 @@ int main(int argc, char** argv) {
                 ru: "<p>Дерево — <b>рекурсивная</b> структура: из конца ветки растут две меньшие, из каждой — ещё по две и т. д. Функция вызывает саму себя; <code>depth</code> уменьшается на каждом шаге, при 0 рекурсия останавливается. Толщина и цвет ветки зависят от глубины.</p>" },
         code: ex },
       { id: "s1", kind: "task", title: { uz: "Topşiriq 1. Rekursiv daraxt (8 daraja)", ru: "Задание 1. Рекурсивное дерево (8 уровней)" },
-        text: { uz: "<p>Rekursiv daraxtni 8 darajali qiling: har bir şoxdan çapga va öngga 20° ga oğgan ikki şox, uzunlik koeffitsiyenti 0,7. Jami 2⁹ − 1 = 511 ta şox. Rekursiya tagi (<code>depth == 0</code>) bölmasa, dastur hech qaçon tugamaydi.</p>",
+        text: { uz: "<p>Rekursiv daraxtni 8 darajali qiling: har bir şoxdan çapga va öngga 20° ga oğgan ikki şox, uzunlik koeffitsiyenti 0,7. Jami 2⁹ − 1 = 511 ta şox. Rekursiya tagi (<code>depth == 0</code>) bölmasa, dastur heç qaçon tugamaydi.</p>",
                 ru: "<p>Сделайте рекурсивное дерево с 8 уровнями: из каждой ветки — две, отклонённые влево и вправо на 20°, коэффициент длины 0,7. Всего 2⁹ − 1 = 511 веток. Без дна рекурсии (<code>depth == 0</code>) программа никогда не завершится.</p>" },
         hint: { uz: "if (depth == 0) return; branch(nx, ny, a + 20, len·0.7, depth − 1); branch(nx, ny, a − 20, len·0.7, depth − 1);", ru: "if (depth == 0) return; branch(nx, ny, a + 20, len·0.7, depth − 1); branch(nx, ny, a − 20, len·0.7, depth − 1);" },
         check: { type: "both", calls: { "glBegin": ">=511" } }, starter: t1.starter, solution: t1.solution },

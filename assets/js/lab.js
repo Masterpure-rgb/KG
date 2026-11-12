@@ -1,5 +1,5 @@
-/* LAB — laboratoriya sahifasi: o'z lab{n}.js bo'lsa — to'liq to'rtta step rejim;
-   bo'lmasa — default minimal muhit (nazariya + starter kod + oyna), bu ham ishlaydi. UZ/RU. */
+/* LAB — laboratoriya sahifasi: öz lab{n}.js bölsa — töliq törtta step rejim;
+   bölmasa — default minimal muhit (nazariya + starter kod + oyna), bu ham işlaydi. UZ/RU. */
 (function () {
   "use strict";
   var O = window.KG || window.OGL, el = O.el, I = O.I || { t: function (k) { return k; }, getLang: function () { return "uz"; } };
@@ -73,7 +73,7 @@
     el("h1", null, topicName),
     O.trio(n, "l")));
 
-  // lab{n}.js ni yuklaş, muvaffaqiyatsiz bo'lsa — default demo
+  // lab{n}.js ni yuklaş, muvaffaqiyatsiz bölsa — default demo
   O.loadScript("assets/js/labs/lab" + n + ".js?v=" + (O.CFG.v || 1)).then(start, startDemo);
 
   // ---------- DEFAULT DEMO ----------
@@ -107,7 +107,7 @@
     ide.run();
   }
 
-  // ---------- TO'LIQ LAB (lab{n}.js bor bo'lsa) ----------
+  // ---------- TO'LIQ LAB (lab{n}.js bor bölsa) ----------
   function cap(t) { return t ? t.charAt(0).toUpperCase() + t.slice(1) : t; }
   function start() {
     var D = LAB.data, steps = D.steps, key = "lab" + n;
@@ -332,7 +332,7 @@
       "}"
     ].join("\n")
   };
-  // Boshqalarini standart teapot bilan to'ldiramiz
+  // Boşqalarini standart teapot bilan töldiramiz
   for (var i = 1; i <= 15; i++) if (!DEMOS[i]) DEMOS[i] = DEMOS[0];
 
   O.footer();

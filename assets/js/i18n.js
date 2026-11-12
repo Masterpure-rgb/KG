@@ -1,5 +1,5 @@
-/* i18n — OʻZ (asosiy) va RUS tiliga tarjimalar + til tanlash.
-   Foydalanish: window.I.t("home.title") natija joriy tilda qaytadi.
+/* i18n — OʻZ (asosiy) va RUS tiliga tarjimalar + til tanlaş.
+   Foydalaniş: window.I.t("home.title") natija joriy tilda qaytadi.
    localStorage da saqlanadi "kg:lang" kaliti ostida ("uz" yoki "ru"). */
 (function (global) {
   "use strict";
@@ -143,7 +143,7 @@
     try { localStorage.setItem(LANG_KEY, lang); } catch (e) {}
     document.documentElement.lang = lang;
     document.dispatchEvent(new CustomEvent("kg:lang", { detail: { lang: lang } }));
-    // Sahifa qayta yuklash — eng oddiy va aniq
+    // Sahifa qayta yuklaş — eng oddiy va aniq
     location.reload();
   }
 
@@ -151,7 +151,7 @@
 
   function toggle() { setLang(current === "uz" ? "ru" : "uz"); }
 
-  // Sahifa yuklanishida HTML lang atributini yangilash
+  // Sahifa yuklanişida HTML lang atributini yangilaş
   document.documentElement.lang = current;
 
   global.I = { t: t, setLang: setLang, getLang: getLang, toggle: toggle };

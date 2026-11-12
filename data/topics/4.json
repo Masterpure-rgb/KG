@@ -3,7 +3,7 @@
  "uz": {
   "title": "Kesma, aylana va ellipsni Brezenxeym algoritmi yordamida hosil qiliş",
   "goal": "rastr algoritmlari: Brezenxeym algoritmlari bilan kesma, aylana va ellips çiziş.",
-  "skills": "butun sonli arifmetikaga asoslangan tez çiziş algoritmlarini yoziş; simmetriyadan foydalaniş; silliqlaş (antialyasing) g'oyasini tuşuniş.",
+  "skills": "butun sonli arifmetikaga asoslangan tez çiziş algoritmlarini yoziş; simmetriyadan foydalaniş; silliqlaş (antialyasing) ğoyasini tuşuniş.",
   "intro": "Variantdagi rasmni faqat özingiz yozgan Brezenxeym algoritmlari (kesma, aylana, ellips) bilan çizing. OpenGL ning GL_LINES va boşqa tayyor çiziş primitivlari işlatilmasin — faqat nuqtalar (GL_POINTS).",
   "variants": [
    {

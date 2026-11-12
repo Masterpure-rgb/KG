@@ -84,7 +84,7 @@ P3 V[8] = { {-1,-1,-1}, {1,-1,-1}, {1,1,-1}, {-1,1,-1}, {-1,-1,1}, {1,-1,1}, {1,
 int F[6][4] = { {4,5,6,7}, {1,0,3,2}, {5,1,2,6}, {0,4,7,3}, {7,6,2,3}, {0,1,5,4} };
 P3 R[8];
 
-// ${C("Kubni Oy atrofida 35°, Ox atrofida 25° buriş, so'ng 1,6 marta kattalaştiriş", "Поворот куба: 35° вокруг Oy, 25° вокруг Ox, затем масштаб 1,6")}
+// ${C("Kubni Oy atrofida 35°, Ox atrofida 25° buriş, söng 1,6 marta kattalaştiriş", "Поворот куба: 35° вокруг Oy, 25° вокруг Ox, затем масштаб 1,6")}
 void rotateAll() {
     double a = 35 * 3.14159265 / 180, b = 25 * 3.14159265 / 180;
     for (int i = 0; i < 8; i++) {
@@ -237,7 +237,7 @@ void display() {
 `, `    glutSwapBuffers();
 }
 
-` + RESHAPE + MAIN("A5: shaffof", "    initLight();\n"));
+` + RESHAPE + MAIN("A5: şaffof", "    initLight();\n"));
 
   /* ---------- 6. Back-face culling ---------- */
   var t6 = S(HEAD + `void display() {

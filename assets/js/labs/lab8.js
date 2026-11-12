@@ -76,7 +76,7 @@ void floor_(float y) {
     glutSwapBuffers();
 }
 
-` + RESHAPE + MAIN("A8: yoritilgan shar");
+` + RESHAPE + MAIN("A8: yoritilgan şar");
 
   /* ---------- 1. Oddiy yoruğlik ---------- */
   var t1 = S(HEAD + `void display() {
@@ -92,7 +92,7 @@ void floor_(float y) {
     glutSwapBuffers();
 }
 
-` + RESHAPE + MAIN("A8: oddiy yorug'lik"));
+` + RESHAPE + MAIN("A8: oddiy yoruğlik"));
 
   /* ---------- 2. Rangli material ---------- */
   var t2 = S(HEAD + LIGHT0 + `void display() {
@@ -122,7 +122,7 @@ void floor_(float y) {
     // ${C("GL_POSITION ga manbaga qaragan vektor beriladi: (1, 1, 1, 0) — oxirgi komponent 0", "в GL_POSITION задаётся вектор на источник: (1, 1, 1, 0) — последняя компонента 0")}
     GLfloat pos[] = { 0, 0, 5, 1 };
     glLightfv(GL_LIGHT0, GL_POSITION, pos);
-`, `    GLfloat dir[] = { 1, 1, 1, 0 };          // ${C("w = 0: cheksiz uzoqdagi manba, nurlar parallel", "w = 0: бесконечно удалённый источник, лучи параллельны")}
+`, `    GLfloat dir[] = { 1, 1, 1, 0 };          // ${C("w = 0: çeksiz uzoqdagi manba, nurlar parallel", "w = 0: бесконечно удалённый источник, лучи параллельны")}
     glLightfv(GL_LIGHT0, GL_POSITION, dir);
 `, MATGRAY + `    for (int k = -1; k <= 1; k++) {
         glPushMatrix();
@@ -133,7 +133,7 @@ void floor_(float y) {
     glutSwapBuffers();
 }
 
-` + RESHAPE + MAIN("A8: quyosh"));
+` + RESHAPE + MAIN("A8: quyoş"));
 
   /* ---------- 4. Spot ---------- */
   var t4 = S(HEAD + FLOOR + `void display() {
@@ -246,7 +246,7 @@ void keyboard(unsigned char key, int x, int y) { }
     glutPostRedisplay();
 }
 `, `
-` + RESHAPE + MAIN("A8: porlash", "    glutKeyboardFunc(keyboard);\n"));
+` + RESHAPE + MAIN("A8: porlaş", "    glutKeyboardFunc(keyboard);\n"));
 
   /* ---------- 8. Masofa — susayiş ---------- */
   var t8 = S(HEAD + `void display() {
@@ -280,7 +280,7 @@ void keyboard(unsigned char key, int x, int y) { }
     glutSwapBuffers();
 }
 
-` + RESHAPE + MAIN("A8: susayish"));
+` + RESHAPE + MAIN("A8: susayiş"));
 
   LAB.define({
     n: 8,
@@ -301,7 +301,7 @@ void keyboard(unsigned char key, int x, int y) { }
         hint: { uz: "Uçta glMaterialfv (GL_AMBIENT, GL_DIFFUSE, GL_SPECULAR) va glMaterialf(GL_FRONT, GL_SHININESS, 50).", ru: "Три вызова glMaterialfv (GL_AMBIENT, GL_DIFFUSE, GL_SPECULAR) и glMaterialf(GL_FRONT, GL_SHININESS, 50)." },
         check: { type: "both", calls: { "glMaterialfv": ">=3" } }, starter: t2.starter, solution: t2.solution },
       { id: "s3", kind: "task", title: { uz: "Topşiriq 3. Yönaltirilgan manba (quyoş)", ru: "Задание 3. Направленный источник (солнце)" },
-        text: { uz: "<p>Quyoş — cheksiz uzoqdagi manba: uning nurlari parallel. Nurlar (−1, −1, −1) yönalişda tuşsin. OpenGL da <code>GL_POSITION</code> ga <b>manbaga qaragan</b> vektor va w = 0 beriladi: (1, 1, 1, 0). Uçta sfera bir xil yoritiladi — nuqtaviy manbadagidek farq yöq.</p>",
+        text: { uz: "<p>Quyoş — çeksiz uzoqdagi manba: uning nurlari parallel. Nurlar (−1, −1, −1) yönalişda tuşsin. OpenGL da <code>GL_POSITION</code> ga <b>manbaga qaragan</b> vektor va w = 0 beriladi: (1, 1, 1, 0). Uçta sfera bir xil yoritiladi — nuqtaviy manbadagidek farq yöq.</p>",
                 ru: "<p>Солнце — бесконечно удалённый источник: его лучи параллельны. Пусть лучи идут в направлении (−1, −1, −1). В OpenGL в <code>GL_POSITION</code> задаётся вектор <b>на источник</b> и w = 0: (1, 1, 1, 0). Три сферы освещены одинаково — в отличие от точечного источника.</p>" },
         hint: { uz: "GLfloat dir[] = {1, 1, 1, 0}; glLightfv(GL_LIGHT0, GL_POSITION, dir);", ru: "GLfloat dir[] = {1, 1, 1, 0}; glLightfv(GL_LIGHT0, GL_POSITION, dir);" },
         check: { type: "image" }, starter: t3.starter, solution: t3.solution },
@@ -316,7 +316,7 @@ void keyboard(unsigned char key, int x, int y) { }
         hint: { uz: "Har bir manba uçun: glEnable(GL_LIGHTi); GL_POSITION; GL_DIFFUSE; GL_SPECULAR.", ru: "Для каждого источника: glEnable(GL_LIGHTi); GL_POSITION; GL_DIFFUSE; GL_SPECULAR." },
         check: { type: "both", source: [{ re: "GL_LIGHT1", msg: { uz: "Ikkinçi manba GL_LIGHT1 kerak", ru: "Нужен второй источник GL_LIGHT1" } }] }, starter: t5.starter, solution: t5.solution },
       { id: "s6", kind: "task", title: { uz: "Topşiriq 6. Kub normallari", ru: "Задание 6. Нормали куба" },
-        text: { uz: "<p>Kub qölda <code>GL_QUADS</code> bilan çizilgan, lekin normallarsiz — barça yoqlar bir xil yoritiladi va kub tekis dog'ga aylanadi. Har bir yoq oldidan uning taşqi normalini <code>glNormal3f</code> bilan bering: +Z, −Z, +X, −X, +Y, −Y. Endi uçta körinadigan yoq turli yorqinlikda.</p>",
+        text: { uz: "<p>Kub qölda <code>GL_QUADS</code> bilan çizilgan, lekin normallarsiz — barça yoqlar bir xil yoritiladi va kub tekis doğga aylanadi. Har bir yoq oldidan uning taşqi normalini <code>glNormal3f</code> bilan bering: +Z, −Z, +X, −X, +Y, −Y. Endi uçta körinadigan yoq turli yorqinlikda.</p>",
                 ru: "<p>Куб нарисован вручную <code>GL_QUADS</code>, но без нормалей — все грани освещены одинаково, и куб превращается в плоское пятно. Перед каждой гранью задайте её внешнюю нормаль <code>glNormal3f</code>: +Z, −Z, +X, −X, +Y, −Y. Теперь три видимые грани разной яркости.</p>" },
         hint: { uz: "Yoqlar tartibi kodda: +Z, −Z, +X, −X, +Y, −Y.", ru: "Порядок граней в коде: +Z, −Z, +X, −X, +Y, −Y." },
         check: { type: "both", calls: { "glNormal3f": ">=6" } }, starter: t6.starter, solution: t6.solution },

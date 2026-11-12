@@ -71,7 +71,7 @@ void grid(float y, int n) {
     glutSwapBuffers();
 }
 
-` + RESHAPE + MAIN("A11: aylanuvchi kub");
+` + RESHAPE + MAIN("A11: aylanuvçi kub");
 
   /* ---------- 1. Aylanuvçi kub + FPS ---------- */
   var t1 = S(HEAD + LIGHT + `int frames = 0, t0 = 0;
@@ -199,7 +199,7 @@ void display() {
     glEnable(GL_LIGHTING);
     for (int i = 0; i < 3; i++) {
 `, `        // ${C("TODO: glPushMatrix; Oy atrofida PH[i] + W[i]·t ga buriş; R[i] ga siljiş; sayyora (COL[i], SZ[i]);", "TODO: glPushMatrix; поворот вокруг Oy на PH[i] + W[i]·t; сдвиг на R[i]; планета (COL[i], SZ[i]);")}
-        // ${C("uning içida: yana Push; Oy atrofida 180·t; 0,8 ga siljiş; kulrang yöldoş (0,12); Pop; tashqi Pop", "внутри: ещё Push; поворот вокруг Oy на 180·t; сдвиг на 0,8; серый спутник (0,12); Pop; внешний Pop")}
+        // ${C("uning içida: yana Push; Oy atrofida 180·t; 0,8 ga siljiş; kulrang yöldoş (0,12); Pop; taşqi Pop", "внутри: ещё Push; поворот вокруг Oy на 180·t; сдвиг на 0,8; серый спутник (0,12); Pop; внешний Pop")}
 `, `        glPushMatrix();
         glRotatef(PH[i] + W[i] * t, 0, 1, 0);    // ${C("sayyora orbita böylab", "планета по орбите")}
         glTranslatef(R[i], 0, 0);
@@ -216,7 +216,7 @@ void display() {
     glutSwapBuffers();
 }
 
-` + RESHAPE + MAIN("A11: quyosh tizimi"));
+` + RESHAPE + MAIN("A11: quyoş tizimi"));
 
   /* ---------- 5. Sakraydigan şar ---------- */
   var t5 = S(HEAD + LIGHT + GRID + `// ${C("Fizika: tezlik va joy 5 ms li qadamlar bilan hisoblanadi (natija kadr tezligiga böğliq emas)", "Физика: скорость и позиция считаются шагами по 5 мс (результат не зависит от частоты кадров)")}
@@ -255,7 +255,7 @@ void display() {
     glutSwapBuffers();
 }
 
-` + RESHAPE + MAIN("A11: sakrash"));
+` + RESHAPE + MAIN("A11: sakraş"));
 
   /* ---------- 6. Kalit kadrlar ---------- */
   var t6 = S(HEAD + LIGHT + GRID + `// ${C("5 ta kalit kadr: markaz → öng → past → çap → yuqori → (qaytiş) markaz; har oraliq 1 s", "5 ключевых кадров: центр → право → низ → лево → верх → (возврат) центр; каждый интервал 1 с")}
@@ -264,7 +264,7 @@ float K[6][3] = { {0, 1, 0}, {3, 1, 0}, {0, 1, 3}, {-3, 1, 0}, {0, 1, -3}, {0, 1
 void interp(float t, float p[3]) {
     t = fmod(t, 5.0f);
     int i = (int)t;          // ${C("joriy oraliq", "текущий интервал")}
-    float u = t - i;         // ${C("oraliq içidagi ulush, 0..1", "доля внутри интервала, 0..1")}
+    float u = t - i;         // ${C("oraliq içidagi uluş, 0..1", "доля внутри интервала, 0..1")}
 `, `    // ${C("TODO: çiziqli interpolyatsiya: p = K[i] + u·(K[i+1] − K[i])", "TODO: линейная интерполяция: p = K[i] + u·(K[i+1] − K[i])")}
     p[0] = K[i][0]; p[1] = K[i][1]; p[2] = K[i][2];
 `, `    for (int k = 0; k < 3; k++)
@@ -329,7 +329,7 @@ void display() {
     glutSwapBuffers();
 }
 
-` + RESHAPE + MAIN("A11: zarrachalar", "    initParticles();\n"));
+` + RESHAPE + MAIN("A11: zarraçalar", "    initParticles();\n"));
 
   /* ---------- 8. FPS statistika ---------- */
   var t8 = S(HEAD + LIGHT + `float hist[60];        // ${C("oxirgi 60 kadr vaqti, ms", "время последних 60 кадров, мс")}
@@ -382,7 +382,7 @@ void display() {
     title: { uz: "Fazoda harakatlarni vizuallaştiriş", ru: "Визуализация движения в пространстве" },
     steps: [
       { id: "s0", kind: "example", title: { uz: "Misol: aylanuvçi kub", ru: "Пример: вращающийся куб" },
-        text: { uz: "<p>Animatsiyaning asosiy qoidasi: holat <b>vaqtga</b> böğliq bölsin, kadrlar soniga emas. Burçak = tezlik × vaqt, vaqt — <code>glutGet(GLUT_ELAPSED_TIME)</code>. <code>idle</code> funksiyasi har bösh vaqtda <code>glutPostRedisplay()</code> ni çaqirib, yangi kadr çizdiradi.</p>",
+        text: { uz: "<p>Animatsiyaning asosiy qoidasi: holat <b>vaqtga</b> böğliq bölsin, kadrlar soniga emas. Burçak = tezlik × vaqt, vaqt — <code>glutGet(GLUT_ELAPSED_TIME)</code>. <code>idle</code> funksiyasi har böş vaqtda <code>glutPostRedisplay()</code> ni çaqirib, yangi kadr çizdiradi.</p>",
                 ru: "<p>Главное правило анимации: состояние зависит от <b>времени</b>, а не от числа кадров. Угол = скорость × время, время — <code>glutGet(GLUT_ELAPSED_TIME)</code>. Функция <code>idle</code> в свободное время вызывает <code>glutPostRedisplay()</code> и запускает новый кадр.</p>" },
         code: ex },
       { id: "s1", kind: "task", title: { uz: "Topşiriq 1. Aylanuvçi kub va FPS", ru: "Задание 1. Вращающийся куб и FPS" },
@@ -411,7 +411,7 @@ void display() {
         hint: { uz: "if (y < RAD) { y = RAD; vy = −vy·0.8f; }", ru: "if (y < RAD) { y = RAD; vy = −vy·0.8f; }" },
         time: 1500, check: { type: "image", maxDiff: 0.003 }, starter: t5.starter, solution: t5.solution },
       { id: "s6", kind: "task", title: { uz: "Topşiriq 6. Kalit kadrlar bilan interpolyatsiya", ru: "Задание 6. Интерполяция по ключевым кадрам" },
-        text: { uz: "<p>Kub 5 ta kalit kadr (sariq nuqtalar) orasida harakatlanadi: markaz → öng → past → çap → yuqori → markaz, har oraliq 1 sekund. Joriy oraliq i = ⌊t⌋, ulush u = t − i; holat çiziqli interpolyatsiya bilan: p = Kᵢ + u·(Kᵢ₊₁ − Kᵢ).</p>",
+        text: { uz: "<p>Kub 5 ta kalit kadr (sariq nuqtalar) orasida harakatlanadi: markaz → öng → past → çap → yuqori → markaz, har oraliq 1 sekund. Joriy oraliq i = ⌊t⌋, uluş u = t − i; holat çiziqli interpolyatsiya bilan: p = Kᵢ + u·(Kᵢ₊₁ − Kᵢ).</p>",
                 ru: "<p>Куб движется между 5 ключевыми кадрами (жёлтые точки): центр → право → низ → лево → верх → центр, каждый интервал 1 секунда. Текущий интервал i = ⌊t⌋, доля u = t − i; положение — линейная интерполяция: p = Kᵢ + u·(Kᵢ₊₁ − Kᵢ).</p>" },
         hint: { uz: "for k: p[k] = K[i][k] + u·(K[i+1][k] − K[i][k]);", ru: "for k: p[k] = K[i][k] + u·(K[i+1][k] − K[i][k]);" },
         time: 1500, check: { type: "image" }, starter: t6.starter, solution: t6.solution },

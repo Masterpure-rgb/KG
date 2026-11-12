@@ -4,7 +4,7 @@
   var src = document.currentScript && document.currentScript.src || "";
   var BASE = src.replace(/assets\/js\/core\.js.*$/, "");
 
-  // 15 ta amaliy ish — UZ va RU sarlavhalari
+  // 15 ta amaliy iş — UZ va RU sarlavhalari
   var TOPICS = [
     { k: 1,  uz: "Poligonal törlardan foydalanib 3 ölçovli obyekt yaratiş va almaştirişlarni amalga oşiriş",
              ru: "Полигональные сетки, геометрические преобразования в пространстве" },
@@ -97,7 +97,7 @@
   }
   function loadScript(path) { return new Promise(function (res, rej) { var s = document.createElement("script"); s.src = BASE + path; s.onload = res; s.onerror = rej; document.head.appendChild(s); }); }
 
-  // Til almaştirgich — har sahifada körinadi
+  // Til almaştirgiç — har sahifada körinadi
   function langToggle() {
     var cur = I.getLang();
     return el("div", { class: "lang-switch", role: "group", "aria-label": I.t("lang.switch") },
@@ -160,6 +160,6 @@
   global.KG = { BASE: BASE, TOPICS: TOPICS, SRSP: SRSP, WORKS: WORKS, SESSIONS: SESSIONS, REPO: REPO, CFG: CFG, I: I,
     el: el, rich: rich, $: $, $$: $$, store: store, topic: topic, topicName: topicName, k: function (k) { return k; }, tpath: tpath, link: link, fetchJSON: fetchJSON, esc: esc, toast: toast, loadScript: loadScript,
     header: header, footer: footer, trio: trio, langToggle: langToggle };
-  // Orqaga mos kelish uchun OGL ham mavjud bo'lsin
+  // Orqaga mos keliş uçun OGL ham mavjud bölsin
   global.OGL = global.KG;
 })(window);

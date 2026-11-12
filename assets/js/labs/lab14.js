@@ -16,7 +16,7 @@ void setSun() { GLfloat d[] = { -0.4f, 1.0f, 0.5f, 0 }; glLightfv(GL_LIGHT0, GL_
 float now() { return glutGet(GLUT_ELAPSED_TIME) / 1000.0f; }
 
 `;
-  var HF = `// ${C("Balandlik formulasi: sinusoidalar yiğindisi (tepalik, vodiy, ko'l)", "Формула высоты: сумма синусоид (холмы, долины, озеро)")}
+  var HF = `// ${C("Balandlik formulasi: sinusoidalar yiğindisi (tepalik, vodiy, köl)", "Формула высоты: сумма синусоид (холмы, долины, озеро)")}
 float height(float x, float z) {
     return 2.6f * sin(0.22f * x) * cos(0.18f * z) + 1.3f * sin(0.5f * x + 0.35f * z) + 0.6f * cos(0.9f * z) + 1.2f;
 }
@@ -37,7 +37,7 @@ void normalAt(int i, int j) {
     glNormal3f(-dx, 1, -dz);
 }
 `;
-  var COLOR = `// ${C("Rang balandlik böyiça: qum, ot, tosh, qor", "Цвет по высоте: песок, трава, камень, снег")}
+  var COLOR = `// ${C("Rang balandlik böyiça: qum, öt, toş, qor", "Цвет по высоте: песок, трава, камень, снег")}
 void colorByHeight(float h) {
     if (h < 0.4f)      glColor3f(0.85f, 0.78f, 0.55f);
     else if (h < 3.0f) glColor3f(0.3f + 0.05f * h, 0.6f - 0.04f * h, 0.25f);
@@ -189,12 +189,12 @@ ${extra || ""}    glutDisplayFunc(display);
   /* ---------- 2. Rangli landşaft ---------- */
   var t2 = S(BASE + `// ${C("Rang balandlik böyiça", "Цвет по высоте")}
 void colorByHeight(float h) {
-`, `    // ${C("TODO: h < 0,4 — qum (0,85; 0,78; 0,55); h < 3 — ot (0,3 + 0,05h; 0,6 − 0,04h; 0,25);", "TODO: h < 0,4 — песок (0,85; 0,78; 0,55); h < 3 — трава (0,3 + 0,05h; 0,6 − 0,04h; 0,25);")}
-    // ${C("h < 4,6 — tosh (0,5; 0,42; 0,35); aks holda — qor (0,95; 0,96; 1)", "h < 4,6 — камень (0,5; 0,42; 0,35); иначе — снег (0,95; 0,96; 1)")}
+`, `    // ${C("TODO: h < 0,4 — qum (0,85; 0,78; 0,55); h < 3 — öt (0,3 + 0,05h; 0,6 − 0,04h; 0,25);", "TODO: h < 0,4 — песок (0,85; 0,78; 0,55); h < 3 — трава (0,3 + 0,05h; 0,6 − 0,04h; 0,25);")}
+    // ${C("h < 4,6 — toş (0,5; 0,42; 0,35); aks holda — qor (0,95; 0,96; 1)", "h < 4,6 — камень (0,5; 0,42; 0,35); иначе — снег (0,95; 0,96; 1)")}
     glColor3f(0.45f, 0.6f, 0.35f);
 `, `    if (h < 0.4f)      glColor3f(0.85f, 0.78f, 0.55f);                       // ${C("qum", "песок")}
-    else if (h < 3.0f) glColor3f(0.3f + 0.05f * h, 0.6f - 0.04f * h, 0.25f); // ${C("ot", "трава")}
-    else if (h < 4.6f) glColor3f(0.5f, 0.42f, 0.35f);                        // ${C("tosh", "камень")}
+    else if (h < 3.0f) glColor3f(0.3f + 0.05f * h, 0.6f - 0.04f * h, 0.25f); // ${C("öt", "трава")}
+    else if (h < 4.6f) glColor3f(0.5f, 0.42f, 0.35f);                        // ${C("toş", "камень")}
     else               glColor3f(0.95f, 0.96f, 1.0f);                        // ${C("qor", "снег")}
 `, `}
 ` + DRAWT + `void display() {
@@ -312,7 +312,7 @@ void display() {
     glutSwapBuffers();
 }
 
-` + RESHAPE + MAIN("A14: shamol", "    quad = gluNewQuadric();\n    placeTrees();\n"));
+` + RESHAPE + MAIN("A14: şamol", "    quad = gluNewQuadric();\n    placeTrees();\n"));
 
   /* ---------- 7. Tölqinlar ---------- */
   var t7 = S(BASE + COLOR + DRAWT + SKY + TREES + `// ${C("Tölqinli suv: 40×40 tör, sathi sinusoidalar bilan tebranadi", "Волнующаяся вода: сетка 40×40, уровень колеблется по синусоидам")}
@@ -361,7 +361,7 @@ void display() {
     glutSwapBuffers();
 }
 
-` + RESHAPE + MAIN("A14: to'lqinlar", "    quad = gluNewQuadric();\n    placeTrees();\n"));
+` + RESHAPE + MAIN("A14: tölqinlar", "    quad = gluNewQuadric();\n    placeTrees();\n"));
 
   /* ---------- 8. Parvoz ---------- */
   var t8 = S(BASE + COLOR + DRAWT + WATER + SKY + TREES + `// ${C("Parvoz kamerasi: joy (px, py, pz), yaw — gorizontal buriliş, pitch — pastga/yuqoriga qaraş", "Камера полёта: позиция (px, py, pz), yaw — поворот по горизонтали, pitch — наклон взгляда")}
@@ -417,9 +417,9 @@ void special(int key, int x, int y) {
         hint: { uz: "for i ≤ N: for j ≤ N: H[i][j] = height(X0(i), X0(j));", ru: "for i ≤ N: for j ≤ N: H[i][j] = height(X0(i), X0(j));" },
         check: { type: "image" }, starter: t1.starter, solution: t1.solution },
       { id: "s2", kind: "task", title: { uz: "Topşiriq 2. Rangli landşaft", ru: "Задание 2. Цветной ландшафт" },
-        text: { uz: "<p>Rangni balandlikka qarab bering: qirğoq bölmalari — qum, past joylar — ot (balandlaşgan sari to'qroq), yuqori — tosh, töpalar — qor. Rang har bir uçda beriladi, OpenGL uni yoqlar böylab silliq aralaştiradi.</p>",
+        text: { uz: "<p>Rangni balandlikka qarab bering: qirğoq bölmalari — qum, past joylar — öt (balandlaşgan sari töqroq), yuqori — toş, töpalar — qor. Rang har bir uçda beriladi, OpenGL uni yoqlar böylab silliq aralaştiradi.</p>",
                 ru: "<p>Задайте цвет по высоте: прибрежные участки — песок, низины — трава (с высотой темнее), выше — камень, вершины — снег. Цвет задаётся в каждой вершине, OpenGL плавно смешивает его по граням.</p>" },
-        hint: { uz: "if (h < 0.4) qum; else if (h < 3) ot; else if (h < 4.6) tosh; else qor;", ru: "if (h < 0.4) песок; else if (h < 3) трава; else if (h < 4.6) камень; else снег;" },
+        hint: { uz: "if (h < 0.4) qum; else if (h < 3) öt; else if (h < 4.6) toş; else qor;", ru: "if (h < 0.4) песок; else if (h < 3) трава; else if (h < 4.6) камень; else снег;" },
         check: { type: "image" }, starter: t2.starter, solution: t2.solution },
       { id: "s3", kind: "task", title: { uz: "Topşiriq 3. Suv", ru: "Задание 3. Вода" },
         text: { uz: "<p>y = 0 sathida yarim şaffof suv qöşing (α = 0,55). Suv landşaftdan <b>keyin</b> çiziladi va çuqurlik buferiga yozilmaydi; suv tagidagi qum va ot unga «botib» körinadi. Şaffof obyektlar doimo oxirida çiziladi.</p>",

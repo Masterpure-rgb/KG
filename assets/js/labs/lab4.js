@@ -306,7 +306,7 @@ void display() {
     title: { uz: "Kesma, aylana va ellipsni Brezenxeym algoritmi yordamida hosil qiliş", ru: "Построение отрезка, окружности и эллипса алгоритмами Брезенхема" },
     steps: [
       { id: "s0", kind: "example", title: { uz: "Misol: Brezenxeym kesmasi", ru: "Пример: отрезок Брезенхема" },
-        text: { uz: "<p>Ekran — piksellar to'ri. Bu yerda har bir mantiqiy piksel 3×3 ekran pikseli bilan körsatilgan, şuning uçun rastrlaş «zinapoyasi» yaxşi körinadi. Brezenxeym algoritmi faqat butun sonlar bilan işlaydi: qaror parametri <i>d</i> keyingi piksel töğri (x+1, y) mi yoki diagonal (x+1, y+1) mi ekanligini aniqlaydi.</p>",
+        text: { uz: "<p>Ekran — piksellar töri. Bu yerda har bir mantiqiy piksel 3×3 ekran pikseli bilan körsatilgan, şuning uçun rastrlaş «zinapoyasi» yaxşi körinadi. Brezenxeym algoritmi faqat butun sonlar bilan işlaydi: qaror parametri <i>d</i> keyingi piksel töğri (x+1, y) mi yoki diagonal (x+1, y+1) mi ekanligini aniqlaydi.</p>",
                 ru: "<p>Экран — сетка пикселей. Здесь каждый логический пиксель показан квадратом 3×3, поэтому «лесенка» растеризации хорошо видна. Алгоритм Брезенхема работает только с целыми числами: параметр решения <i>d</i> определяет, будет ли следующий пиксель прямо (x+1, y) или по диагонали (x+1, y+1).</p>" },
         code: ex },
       { id: "s1", kind: "task", title: { uz: "Topşiriq 1. Çiziq — barça yönalişlar", ru: "Задание 1. Отрезок в любом направлении" },

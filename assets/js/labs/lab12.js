@@ -235,7 +235,7 @@ void display() {
     glutSwapBuffers();
 }
 
-` + RESHAPE + MAIN("A12: chashka"));
+` + RESHAPE + MAIN("A12: çaşka"));
 
   /* ---------- 4. Tişli ğildirak ---------- */
   var t4 = S(HEAD + LIGHT + `void gear(int n, float r0, float r1, float w) {
@@ -278,7 +278,7 @@ void display() {
     glutSwapBuffers();
 }
 
-` + RESHAPE + MAIN("A12: tishli g'ildirak"));
+` + RESHAPE + MAIN("A12: tişli ğildirak"));
 
   /* ---------- 5. Ikki tişli ---------- */
   var t5 = S(HEAD + LIGHT + GEAR + `void display() {
@@ -289,7 +289,7 @@ void display() {
 `, `    // ${C("TODO: ikkinçi ğildirak tezligi n1·ω1 = n2·ω2 dan, teskari yönalişda: w2 = −w1·n1/n2;", "TODO: скорость второго колеса из n1·ω1 = n2·ω2, в обратную сторону: w2 = −w1·n1/n2;")}
     // ${C("tişlar bir-biriga kirişi uçun ikkinçisini yarim tişga (180/n2 °) burib qöying", "чтобы зубья вошли друг в друга, поверните второе на ползуба (180/n2 °)")}
     float w2 = w1, phase = 0;
-`, `    float w2 = -w1 * n1 / n2;                 // ${C("chiziqli tezliklar ilaşiş nuqtasida teng", "линейные скорости в точке зацепления равны")}
+`, `    float w2 = -w1 * n1 / n2;                 // ${C("çiziqli tezliklar ilaşiş nuqtasida teng", "линейные скорости в точке зацепления равны")}
     float phase = 180.0f / n2;
 `, `    glPushMatrix();
     glTranslatef(-r1 - 0.05f, 0, 0);
@@ -306,7 +306,7 @@ void display() {
     glutSwapBuffers();
 }
 
-` + RESHAPE + MAIN("A12: ikki tishli"));
+` + RESHAPE + MAIN("A12: ikki tişli"));
 
   /* ---------- 6. Vint ---------- */
   var t6 = S(HEAD + LIGHT + PRISM + CYL + `void display() {
@@ -396,14 +396,14 @@ void display() {
 `, `    glutSwapBuffers();
 }
 
-` + RESHAPE + MAIN("A12: podshipnik"));
+` + RESHAPE + MAIN("A12: podşipnik"));
 
   LAB.define({
     n: 12,
     title: { uz: "Maşina detallari dizaynini yaratiş", ru: "Моделирование деталей машин" },
     steps: [
       { id: "s0", kind: "example", title: { uz: "Misol: ekstruziya — oltiburçakli prizma", ru: "Пример: экструзия — шестигранная призма" },
-        text: { uz: "<p>Ko'p maşina detallari ikki usulda quriladi: <b>ekstruziya</b> (tekis konturni balandlik böylab «çöziş») va <b>aylanma sirt</b> (profilni öq atrofida aylantiriş). Misolda oltiburçak kontur ekstruziya qilingan: yon yoqlar <code>GL_QUADS</code>, asoslar <code>GL_TRIANGLE_FAN</code>; har bir yoqning öz normali bor.</p>",
+        text: { uz: "<p>Köp maşina detallari ikki usulda quriladi: <b>ekstruziya</b> (tekis konturni balandlik böylab «çöziş») va <b>aylanma sirt</b> (profilni öq atrofida aylantiriş). Misolda oltiburçak kontur ekstruziya qilingan: yon yoqlar <code>GL_QUADS</code>, asoslar <code>GL_TRIANGLE_FAN</code>; har bir yoqning öz normali bor.</p>",
                 ru: "<p>Многие детали машин строятся двумя способами: <b>экструзией</b> (вытягиванием плоского контура в высоту) и <b>поверхностью вращения</b> (вращением профиля вокруг оси). В примере шестиугольный контур вытянут: боковые грани — <code>GL_QUADS</code>, основания — <code>GL_TRIANGLE_FAN</code>; у каждой грани своя нормаль.</p>" },
         code: ex },
       { id: "s1", kind: "task", title: { uz: "Topşiriq 1. Oddiy silindr", ru: "Задание 1. Простой цилиндр" },
@@ -432,7 +432,7 @@ void display() {
         hint: { uz: "w2 = −w1·n1/n2 = −30 °/s; phase = 180/n2 = 7,5°.", ru: "w2 = −w1·n1/n2 = −30 °/с; phase = 180/n2 = 7,5°." },
         time: 1500, check: { type: "image" }, starter: t5.starter, solution: t5.solution },
       { id: "s6", kind: "task", title: { uz: "Topşiriq 6. Vint", ru: "Задание 6. Болт" },
-        text: { uz: "<p>Vintni tayyor «gʻişt»lardan yiğing: oltiburçakli kallak (<code>prism</code>), silindrsimon özak (<code>cylinder</code>) va rezba — özak böylab har 0,22 da joylaşgan 10 ta ingiçka halqa (<code>glutSolidTorus</code>). Murakkab detal — oddiy primitivlar va almaştirişlar kombinatsiyasi.</p>",
+        text: { uz: "<p>Vintni tayyor «ğişt»lardan yiğing: oltiburçakli kallak (<code>prism</code>), silindrsimon özak (<code>cylinder</code>) va rezba — özak böylab har 0,22 da joylaşgan 10 ta ingiçka halqa (<code>glutSolidTorus</code>). Murakkab detal — oddiy primitivlar va almaştirişlar kombinatsiyasi.</p>",
                 ru: "<p>Соберите болт из готовых «кирпичиков»: шестигранная головка (<code>prism</code>), цилиндрический стержень (<code>cylinder</code>) и резьба — 10 тонких колец (<code>glutSolidTorus</code>) через каждые 0,22 вдоль стержня. Сложная деталь — комбинация простых примитивов и преобразований.</p>" },
         hint: { uz: "Push; Translate(0, 2,4, 0); prism(6, 0,8, 0,6); Pop; cylinder(0,4, 2,4, 32); for k: Push; Translate(0, 0,15 + 0,22k, 0); Rotate(90, 1, 0, 0); Torus; Pop.", ru: "Push; Translate(0, 2,4, 0); prism(6, 0,8, 0,6); Pop; cylinder(0,4, 2,4, 32); for k: Push; Translate(0, 0,15 + 0,22k, 0); Rotate(90, 1, 0, 0); Torus; Pop." },
         check: { type: "both", calls: { "glutSolidTorus": ">=10" } }, starter: t6.starter, solution: t6.solution },
