@@ -2,8 +2,8 @@
  "topic": 14,
  "lang": "uz",
  "title": "Landşaft va harakatlanuvçi obyektlar",
- "file": "audio/14.uz.mp3",
- "duration": 88.75,
+ "file": "audio/14.uz.mp3?v=gemini1",
+ "duration": 75.4,
  "paragraphs": [
   {
    "text": "Ön törtinçi iş — landşaft. Landşaft balandlik xaritasi bilan beriladi: tekis törning har bir tugunida yer balandligi saqlanadi. Balandlik formula, Perlin şovqini yoki kulrang rasm faylidan olinişi mumkin.",
@@ -11,19 +11,20 @@
   },
   {
    "text": "Törni yoritiş uçun har bir uçda normal kerak; u qöşni balandliklar farqidan hisoblanadi. Rang ham balandlikka boğliq: past joylar — qum, keyin öt, toş va çöqqilarda qor.",
-   "start": 19.23
+   "start": 15.78
   },
   {
    "text": "Suv — yarim şaffof sirt, u landşaftdan keyin va çuqurlik buferiga yozmasdan çiziladi. Osmon — sahnani örab turgan katta yarim sfera, ufqda oçiq, zenitda töq. Tölqinlar uçun suv törining balandligi vaqtga boğliq sinusoidalar bilan tebranadi.",
-   "start": 36.56
+   "start": 30.16
   },
   {
    "text": "Daraxtlar tasodifiy, lekin mos balandlikdagi joylarga qöyiladi: mos kelmagan nuqta taşlanadi va yangisi tanlanadi. Şamolda tebraniş uçun har bir daraxtga öz fazasi beriladi.",
-   "start": 60.62
+   "start": 49.54
   },
   {
    "text": "Laboratoriyada siz balandlik xaritasidan sirt, rangli landşaft, suv, osmon, daraxtlar, şamol, tölqinlar va landşaft ustidan uçadigan kamerani yasaysiz.",
-   "start": 76.19
+   "start": 63.71
   }
- ]
+ ],
+ "voice": "Google Gemini TTS (Charon)"
 }

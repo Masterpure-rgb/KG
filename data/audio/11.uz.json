@@ -2,8 +2,8 @@
  "topic": 11,
  "lang": "uz",
  "title": "Fazoda harakatni vizuallaştiriş",
- "file": "audio/11.uz.mp3",
- "duration": 85.0,
+ "file": "audio/11.uz.mp3?v=gemini1",
+ "duration": 78.28,
  "paragraphs": [
   {
    "text": "Ön birinçi iş — animatsiya. Animatsiyaning asosiy qoidasi: obyekt holati vaqtga boğliq bölişi kerak, kadrlar soniga emas. Aks holda tez kompyuterda hamma narsa tez, sekin kompyuterda sekin harakatlanadi.",
@@ -11,19 +11,20 @@
   },
   {
    "text": "Vaqt glutGet funksiyasi bilan millisekundlarda olinadi. Burçak — burçak tezligi köpaytiriş vaqt; trayektoriya böylab harakatda esa vaqt egri çiziq parametriga aylanadi, masalan, Beze egri çiziği uçun.",
-   "start": 18.47
+   "start": 17.45
   },
   {
    "text": "Murakkab harakatlar ierarxik almaştirişlar bilan quriladi. Quyoş tizimida sayyora Quyoş atrofida aylanadi, yöldoş esa sayyoraning allaqaçon burilgan koordinatalar tizimida. Kalit kadrlar orasida obyekt holati interpolyatsiya qilinadi.",
-   "start": 34.83
+   "start": 33.49
   },
   {
    "text": "Fizik harakatda tezlik va joy kiçik qadamlar bilan hisoblanadi: tezlanişga qarab tezlik, tezlikka qarab joy özgaradi; töqnaşuvda tezlik teskari böladi. Zarraçalar tizimida esa har bir zarraçaning öz tezligi va yoşi bor.",
-   "start": 53.99
+   "start": 44.9
   },
   {
    "text": "Laboratoriyada siz trayektoriya, öyin kamerasi, quyoş tizimi, sakraydigan şar, kalit kadrlar va uçqunlar favvorasini yasaysiz hamda FPS statistikasini çiqarasiz.",
-   "start": 71.63
+   "start": 64.47
   }
- ]
+ ],
+ "voice": "Google Gemini TTS (Charon)"
 }

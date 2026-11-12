@@ -2,8 +2,8 @@
  "topic": 10,
  "lang": "uz",
  "title": "Fraktal grafika",
- "file": "audio/10.uz.mp3",
- "duration": 95.3,
+ "file": "audio/10.uz.mp3?v=gemini1",
+ "duration": 81.72,
  "paragraphs": [
   {
    "text": "Öninçi iş — fraktallar. Fraktal — özining kiçik qismlariga öxşaş şakl: uni kattalaştirsangiz, yana va yana xuddi şunday detallar paydo böladi. Tabiatda daraxtlar, bulutlar va qirğoq çiziqlari ham fraktal xususiyatga ega.",
@@ -11,19 +11,20 @@
   },
   {
    "text": "Eng oddiy usul — xaos öyini. Nuqta har qadamda uçburçakning tasodifiy uçiga qarab yarim yöl yuradi, va minglab qadamdan keyin Serpinskiy uçburçagi hosil böladi. Tasodifiy jarayon tartibli şakl beradi.",
-   "start": 19.62
+   "start": 17.54
   },
   {
    "text": "Mandelbrot töplami kompleks sonlar bilan quriladi: har bir piksel uçun z kvadrat qöşuv c formulasi takrorlanadi. Agar z ning moduli ikkidan oşsa, nuqta qoçib ketadi, takrorlar soni esa rangni belgilaydi. Julia töplamida esa c özgarmas, z ning boşlanğiç qiymati — piksel.",
-   "start": 38.08
+   "start": 33.16
   },
   {
    "text": "Geometrik fraktallar rekursiya bilan quriladi. Kox qor parçasida kesmaning örta qismi örniga tepalik qöyiladi; har iteratsiyada perimetr uçdan tört marta kattalaşadi va cheksizga intiladi, yuzi esa çekli qoladi.",
-   "start": 61.55
+   "start": 54.64
   },
   {
    "text": "Laboratoriyada siz Mandelbrot va Julia töplamlarini çizasiz, ularni kattalaştirasiz, palitralarni almaştirasiz va Kox qor parçasini rekursiv funksiya bilan qurasiz.",
-   "start": 78.71
+   "start": 70.88
   }
- ]
+ ],
+ "voice": "Google Gemini TTS (Charon)"
 }

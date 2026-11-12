@@ -2,8 +2,8 @@
  "topic": 7,
  "lang": "uz",
  "title": "OpenGL: geometrik obyektlarni çiziş",
- "file": "audio/7.uz.mp3",
- "duration": 97.25,
+ "file": "audio/7.uz.mp3?v=gemini1",
+ "duration": 85.4,
  "paragraphs": [
   {
    "text": "Yettinçi iş — OpenGL kutubxonasi asoslari. OpenGL — videokartaga ikki va uç ölçovli tasvirlarni çiziş buyruqlarini beradigan standart interfeys. Oyna va klaviatura bilan işlaş uçun esa GLUT kutubxonasi işlatiladi.",
@@ -11,19 +11,20 @@
   },
   {
    "text": "Har bir GLUT dasturi bir xil tuzilgan: kutubxonani işga tuşiriş, oyna yaratiş, hodisa funksiyalarini qayd qiliş va glutMainLoop bilan hodisalar siklini boşlaş. Barça çiziş display funksiyasida bajariladi.",
-   "start": 19.12
+   "start": 16.9
   },
   {
    "text": "OpenGL — holat maşinasi. Rang, çiziq qalinligi va boşqa xossalar bir marta beriladi va keyingi barça obyektlarga taʼsir qiladi. Obyektlar primitivlardan quriladi: nuqtalar, kesmalar, uçburçaklar va köpburçaklar; ularning uçlari glBegin va glEnd orasida sanab beriladi.",
-   "start": 36.19
+   "start": 32.48
   },
   {
    "text": "Almaştirişlar — glTranslatef, glRotatef va glScalef — joriy matritsani özgartiradi. Ularni glPushMatrix va glPopMatrix orasida bajarsangiz, almaştiriş faqat şu bölakka taʼsir qiladi. Animatsiyada burçak vaqtga boğlanadi, kadrlar soniga emas.",
-   "start": 60.53
+   "start": 53.63
   },
   {
    "text": "Laboratoriyada siz çiziqlar va köpburçaklar çizasiz, universal n-burçak funksiyasini yozasiz, uçburçaklardan yulduz yasab, uni aylantirasiz va barça primitiv turlarini yonma-yon soliştirasiz.",
-   "start": 80.02
+   "start": 70.5
   }
- ]
+ ],
+ "voice": "Google Gemini TTS (Charon)"
 }

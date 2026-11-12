@@ -2,8 +2,8 @@
  "topic": 4,
  "lang": "uz",
  "title": "Brezenxeym algoritmlari",
- "file": "audio/4.uz.mp3",
- "duration": 85.2,
+ "file": "audio/4.uz.mp3?v=gemini1",
+ "duration": 84.52,
  "paragraphs": [
   {
    "text": "Törtinçi iş — rastr algoritmlari. Ekran — piksellar töri, şuning uçun har qanday kesma yoki aylana aslida eng yaqin piksellar töplami bilan almaştiriladi. Bu jarayon rastrlaş deyiladi.",
@@ -11,19 +11,20 @@
   },
   {
    "text": "Brezenxeym algoritmi kesmani faqat butun sonlar bilan çizadi. Har qadamda x bittaga oşadi, qaror parametri esa keyingi piksel töğrimi yoki bir poğona yuqoridami ekanini aniqlaydi. Köpaytiriş ham, haqiqiy sonlar ham kerak emas — şuning uçun u juda tez.",
-   "start": 13.02
+   "start": 12.04
   },
   {
    "text": "Aylana uçun örta nuqta usuli qöllanadi. Aylana sakkiz tomonlama simmetrik, demak faqat sakkizdan bir yoyni hisoblab, qolganini simmetriya bilan olamiz. Ellipsda simmetriya törtta, va qiyalik birga teng nuqtada qadam turi özgaradi, şuning uçun u ikki sohada hisoblanadi.",
-   "start": 35.23
+   "start": 34.78
   },
   {
    "text": "Brezenxeym çiziği «zinapoya» körinişida böladi. Vu algoritmi esa har bir x uçun ikki pikselni böyaydi va yorqinlikni haqiqiy çiziqqaça masofaga qarab bölib, qirralarni silliqlaydi — bu antialyasing.",
-   "start": 55.39
+   "start": 55.3
   },
   {
    "text": "Laboratoriyada piksellar kattalaştirilgan, şuning uçun algoritm işini aniq körasiz: kesma, nişon, ellips, yulduz va hatto Brezenxeym çiziqlaridan iborat yuradigan soat yasaysiz.",
-   "start": 71.61
+   "start": 69.63
   }
- ]
+ ],
+ "voice": "Google Gemini TTS (Charon)"
 }

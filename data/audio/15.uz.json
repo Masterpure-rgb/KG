@@ -2,8 +2,8 @@
  "topic": 15,
  "lang": "uz",
  "title": "Fraktallar va L-tizimlar",
- "file": "audio/15.uz.mp3",
- "duration": 85.45,
+ "file": "audio/15.uz.mp3?v=gemini1",
+ "duration": 76.56,
  "paragraphs": [
   {
    "text": "Ön beşinçi iş — rekursiv fraktallar va L-tizimlar. Daraxt — rekursiv tuzilma: şox uçidan kiçikroq şoxlar ösadi, ulardan yana va hokazo. Funksiya özini özi çaqiradi, va çuqurlik nolga yetganda töxtaydi.",
@@ -11,19 +11,20 @@
   },
   {
    "text": "L-tizim — satrlarni qayta yoziş qoidalari. Boşlanğiç satr aksioma deyiladi, har iteratsiyada har bir belgi qoida böyiça almaştiriladi. Natijani toşbaqa çizadi: F — oldinga yur, plyus va minus — burilişlar.",
-   "start": 19.33
+   "start": 16.12
   },
   {
    "text": "Kvadrat qavslar şoxlanişni beradi: oçuvçi qavs toşbaqa holatini stekka saqlaydi, yopuvçi qavs uni qaytaradi. Şu tarzda bitta qisqa qoida bilan haqiqiy ösimlikka öxşaş şakllar hosil qilinadi.",
-   "start": 34.31
+   "start": 33.39
   },
   {
    "text": "Barnsli paporotnigi — iteratsion funksiyalar tizimi: nuqtaga ehtimolliklari turliça bölgan törtta affin almaştirişdan biri tasodifiy qöllanadi. Uç ölçovli daraxtda esa har bir şoxdan uçta şox, öq atrofida bir xil burçak bilan çiqadi.",
-   "start": 52.32
+   "start": 47.0
   },
   {
    "text": "Laboratoriyada siz rekursiv va tasodifiy daraxtlar, Kox egri çiziği, fraktal ösimlik, paporotnik, Serpinskiy egri çiziği, dekorativ naqş va uç ölçovli daraxtni yasaysiz.",
-   "start": 71.09
+   "start": 63.41
   }
- ]
+ ],
+ "voice": "Google Gemini TTS (Charon)"
 }

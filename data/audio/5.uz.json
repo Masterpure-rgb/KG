@@ -2,8 +2,8 @@
  "topic": 5,
  "lang": "uz",
  "title": "Körinmas çiziq va sirtlarni olib taşlaş",
- "file": "audio/5.uz.mp3",
- "duration": 88.3,
+ "file": "audio/5.uz.mp3?v=gemini1",
+ "duration": 81.88,
  "paragraphs": [
   {
    "text": "Beşinçi iş — körinmas sirtlarni olib taşlaş. Fazoviy sahnada bir obyekt ikkinçisini yopadi, va dastur har bir piksel uçun qaysi sirt kuzatuvçiga eng yaqin ekanini aniqlaşi kerak.",
@@ -11,19 +11,20 @@
   },
   {
    "text": "Eng oddiy qadam — orqa yoqlarni taşlaş. Yopiq jismda bizga orqasi bilan qaragan yoqlar hamişa körinmaydi, ularni çizmasa ham böladi. Buni yoq normali va kamera yönalişini soliştirib, yoki yoq proyeksiyasining aylaniş yönalişiga qarab aniqlaş mumkin.",
-   "start": 15.74
+   "start": 13.56
   },
   {
    "text": "Universal usul — Z-bufer. Har bir piksel uçun eng yaqin sirtning çuqurligi saqlanadi, yangi nuqta faqat undan yaqinroq bölsagina çiziladi. OpenGL da bu GL_DEPTH_TEST bilan yoqiladi. Z-bufer çiziş tartibiga boğliq emas.",
-   "start": 35.71
+   "start": 31.47
   },
   {
    "text": "Rassom algoritmi esa obyektlarni uzoqdan yaqinga qarab saralab çizadi. Şaffof obyektlar uçun aynan şu tartib kerak: avval şaffof bölmaganlar, keyin şaffoflar, çuqurlik buferiga yozmasdan. Roberts algoritmi qavariq jismlarda yaşirin qirralarni tekislik tenglamalari orqali topadi.",
-   "start": 54.35
+   "start": 48.3
   },
   {
    "text": "Laboratoriyada siz yaşirin qirralarni punktir bilan körsatasiz, Z-buferni yoqib-öçirib soliştirasiz, şişa devor yasaysiz va sahna tezligini FPS da ölçaysiz.",
-   "start": 75.94
+   "start": 69.62
   }
- ]
+ ],
+ "voice": "Google Gemini TTS (Charon)"
 }

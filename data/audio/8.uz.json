@@ -2,8 +2,8 @@
  "topic": 8,
  "lang": "uz",
  "title": "OpenGL: materiallar va yoruğlik",
- "file": "audio/8.uz.mp3",
- "duration": 83.4,
+ "file": "audio/8.uz.mp3?v=gemini1",
+ "duration": 81.44,
  "paragraphs": [
   {
    "text": "Sakkizinçi iş — OpenGL da yoritiş va materiallar. Real körinadigan sahna uçun uç narsa kerak: yoruğlik manbai, sirt materiali va normallar.",
@@ -11,19 +11,20 @@
   },
   {
    "text": "Manba glLightfv bilan sozlanadi. Pozitsiyaning törtinçi komponenti birga teng bölsa — bu fazodagi nuqtaviy manba, nolga teng bölsa — quyoş kabi cheksiz uzoqdagi yönaltirilgan manba. Spot, yaʼni projektor, yana yönaliş va konus burçagiga ega.",
-   "start": 12.09
+   "start": 11.25
   },
   {
    "text": "Material sirt yoruğlikni qanday qaytarişini belgilaydi: ambient — soyadagi rang, diffuse — asosiy rang, specular — yaltiroq doğ rangi va shininess — yaltiroqlik darajasi. glColorMaterial yoqilsa, material rangi glColor dan olinadi.",
-   "start": 31.23
+   "start": 30.48
   },
   {
    "text": "Normal — sirtga perpendikulyar birlik vektor, yoritiş unga qarab hisoblanadi. Qölda qurilgan geometriyada har bir yoq yoki uç uçun normal glNormal3f bilan beriladi. Masştablaşdan keyin normallar uzunligi buziladi, buni GL_NORMALIZE tuzatadi.",
-   "start": 50.29
+   "start": 49.69
   },
   {
    "text": "Laboratoriyada siz nuqtaviy va yönaltirilgan manbalar, projektor va rangli manbalarni sinab körasiz, kubga normallar berasiz va masofa böyiça yoruğlik susayişini sozlaysiz.",
-   "start": 69.53
+   "start": 67.94
   }
- ]
+ ],
+ "voice": "Google Gemini TTS (Charon)"
 }
